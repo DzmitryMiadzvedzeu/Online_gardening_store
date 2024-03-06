@@ -1,6 +1,25 @@
 package org.shop.com.entity;
 
-public class User { 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 
+@Entity
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String username;
+    private String email;
+
+
+    public void setUsername(String username) {
+    }
+
+    public void setEmail(String email) {
+    }
 }

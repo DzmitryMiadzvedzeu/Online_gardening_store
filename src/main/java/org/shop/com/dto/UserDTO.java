@@ -2,15 +2,29 @@ package org.shop.com.dto;
 
 public class UserDTO {
 
+    private Long id;
     private String username;
     private String email;
+    private String password;
+    private String phone;
 
     public UserDTO() {
     }
 
-    public UserDTO(String username, String email) {
+    public UserDTO(Long id, String username, String email, String password, String phone) {
+        this.id = id;
         this.username = username;
         this.email = email;
+        this.password = password;
+        this.phone = phone;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -29,5 +43,19 @@ public class UserDTO {
         this.email = email;
     }
 
-}
+    public String getPassword() {
+        return password;
+    }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+}

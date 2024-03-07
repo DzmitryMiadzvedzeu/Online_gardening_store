@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-// UserService.java
 @Service
 public class UserService {
 
@@ -20,7 +19,6 @@ public class UserService {
     }
 
     public User createUser(UserDTO userDTO) {
-        // Perform validation or other business logic if needed
         User user = new User();
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
@@ -31,5 +29,4 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    // Additional methods as needed
 }

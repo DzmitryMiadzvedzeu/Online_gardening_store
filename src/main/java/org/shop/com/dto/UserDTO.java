@@ -5,18 +5,24 @@ public class UserDTO {
     private Long id;
     private String username;
     private String email;
-    private String password;
-    private String phone;
+    private String phoneNumber;
+    private String passwordHash;
+    private Integer userID;
+    private String name;
+    private String role;
 
     public UserDTO() {
     }
 
-    public UserDTO(Long id, String username, String email, String password, String phone) {
+    public UserDTO(Long id, String username, String email, String phoneNumber, String passwordHash, Integer userID, String name, String role) {
         this.id = id;
         this.username = username;
         this.email = email;
-        this.password = password;
-        this.phone = phone;
+        this.phoneNumber = phoneNumber;
+        this.passwordHash = passwordHash;
+        this.userID = userID;
+        this.name = name;
+        this.role = role;
     }
 
     public Long getId() {
@@ -43,19 +49,43 @@ public class UserDTO {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    public Integer getUserID() {
+        return userID;
+    }
+
+    public void setUserID(Integer userID) {
+        this.userID = userID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

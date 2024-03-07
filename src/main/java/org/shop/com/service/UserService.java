@@ -1,13 +1,12 @@
 package org.shop.com.service;
 
-import org.shop.com.dto.UserDTO;
 import org.shop.com.entity.User;
 import org.shop.com.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -19,20 +18,32 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public UserDTO createUser(UserDTO userDTO) {
-        User user = new User(userDTO.getId(), userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword(), userDTO.getPhone());
-        user = userRepository.save(user);
-        return convertToDTO(user);
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
-    public List<UserDTO> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        return users.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+    public Optional<User> getUserById(Long id) {
+        return userRepository.findById(id);
     }
 
-    private UserDTO convertToDTO(User user) {
-        return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getPassword(), user.getPhone());
+    public Optional<User> getUserByEmail(String email) {
+        return Optional.ofNullable(userRepository.findByEmail(email));
+    }
+
+    public User createUser(User user) {
+        return userRepository.save(user);
+    }
+
+    public User updateUser(Long id, User updatedUser) {
+        if (userRepository.existsById(id)) {
+            updatedUser.setId(id);
+            return userRepository.save(updatedUser);
+        } else {
+            return null;
+        }
+    }
+
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
     }
 }

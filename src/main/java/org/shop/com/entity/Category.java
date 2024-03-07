@@ -11,16 +11,17 @@ import lombok.Setter;
 @Getter
 @Entity
 public class Category {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long categoryId;
-    private String name;
 
-    // Constructors, getters, setters
-    public Category() {}
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long categoryId;
+private String name;
 
-    public Category(String name) {
-        this.name = name;
-    }
+// Constructors, getters, setters
+public Category() {}
+
+public Category(String name) {
+    this.name = name;
+}
 
 }

@@ -7,6 +7,9 @@ public class User {
     private String phone;
     private String password;
 
+    public User(String name, String email, String phone, String password) {
+    }
+
     // Конструктор, геттеры и сеттеры
 
     public long getId() {

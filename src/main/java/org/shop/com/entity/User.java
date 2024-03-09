@@ -1,76 +1,20 @@
 package org.shop.com.entity;
 
 public class User {
+    private long id;
+    private String name;
+    private String email;
+    private String phone;
+    private String password;
 
-    private Long id;
-    private String username;
-    private String email; // Уникальный
-    private String phoneNumber; // phone
-    private String passwordHash; //  password
-    private Integer userID; // Primary Key
-    private String name; // VARCHAR
-    private String role; // Администратор
+    // Конструктор, геттеры и сеттеры
 
-    public User() {
-    }
-
-    public User(Long id, String username, String email, String phoneNumber, String passwordHash, Integer userID, String name, String role) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.passwordHash = passwordHash;
-        this.userID = userID;
-        this.name = name;
-        this.role = role;
-    }
-
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-
-    public Integer getUserID() {
-        return userID;
-    }
-
-    public void setUserID(Integer userID) {
-        this.userID = userID;
     }
 
     public String getName() {
@@ -81,11 +25,29 @@ public class User {
         this.name = name;
     }
 
-    public String getRole() {
-        return role;
+    public String getEmail() {
+        return email;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setEmail(String email) {
+        this.email = email;
     }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    // Другие методы
 }

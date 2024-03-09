@@ -1,49 +1,39 @@
 package org.shop.com.service;
 
 import org.shop.com.entity.User;
-import org.shop.com.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Service
 public class UserService {
+    private static final List<User> users = new ArrayList<>();
 
-    private final UserRepository userRepository;
+    public void registerUser(String name, String email, String phone, String password) {
+        users.add(new User(name, email, phone, password));
+    }
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public Optional<User> findUserByEmail(String email) {
+        return users.stream().filter(user -> user.getEmail().equals(email)).findFirst();
+    }
+
+    public void updateUserProfile(long userId, String name, String phone) {
+        users.stream()
+                .filter(user -> user.getId() == userId)
+                .findFirst()
+                .ifPresent(user -> {
+                    user.setName(name);
+                    user.setPhone(phone);
+                });
+    }
+
+    public void deleteUserAccount(long userId) {
+        users.removeIf(user -> user.getId() == userId);
     }
 
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return new ArrayList<>(users);
     }
 
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
-    }
-
-    public Optional<User> getUserByEmail(String email) {
-        return Optional.ofNullable(userRepository.findByEmail(email));
-    }
-
-    public User createUser(User user) {
-        return userRepository.save(user);
-    }
-
-    public User updateUser(Long id, User updatedUser) {
-        if (userRepository.existsById(id)) {
-            updatedUser.setId(id);
-            return userRepository.save(updatedUser);
-        } else {
-            return null;
-        }
-    }
-
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
-    }
 }
+

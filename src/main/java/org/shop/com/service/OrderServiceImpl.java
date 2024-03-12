@@ -1,10 +1,14 @@
 package org.shop.com.service;
 
 import lombok.RequiredArgsConstructor;
+import org.shop.com.dto.OrderDto;
 import org.shop.com.entity.OrderEntity;
 import org.shop.com.repository.OrderJpaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+@Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
@@ -13,6 +17,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderEntity create(OrderEntity entity) {
-        return null;
+        //
+        return repository.save(entity);
     }
+
+    @Override
+    public List<OrderEntity> getAll() {
+        return repository.findAll();
+    }
+
+
 }

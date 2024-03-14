@@ -5,7 +5,7 @@ import org.shop.com.converter.CategoryConverter;
 import org.shop.com.dto.CategoryCreateDTO;
 import org.shop.com.dto.CategoryDTO;
 import org.shop.com.entity.CategoryEntity;
-import org.shop.com.repository.CategoryRepository;
+import org.shop.com.repository.CategoryJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +15,12 @@ import java.util.List;
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
-    private final CategoryRepository categoryRepository;
+    private final CategoryJpaRepository categoryRepository;
     private final CategoryConverter categoryConverter;
 
     @Autowired
-    public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryConverter categoryConverter) {
-        this.categoryRepository = categoryRepository;
+    public CategoryServiceImpl(CategoryJpaRepository categoryJpaRepository, CategoryConverter categoryConverter) {
+        this.categoryRepository = categoryJpaRepository;
         this.categoryConverter = categoryConverter;
     }
 
@@ -42,10 +42,7 @@ public class CategoryServiceImpl implements CategoryService {
         CategoryDTO categoryDTO = new CategoryDTO();
         categoryDTO.setName(createDTO.getName());
 
-        // Преобразуем CategoryDTO в CategoryEntity
         CategoryEntity categoryEntity = categoryConverter.toEntity(categoryDTO);
-
-        // Сохраняем CategoryEntity
         return categoryRepository.save(categoryEntity);
     }
 

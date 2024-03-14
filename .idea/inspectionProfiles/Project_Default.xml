@@ -1,0 +1,38 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="VulnerableLibrariesLocal" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="isIgnoringEnabled" value="true" />
+      <option name="ignoredModules">
+        <list>
+          <option value="onlineShopApp" />
+          <option value="onlineShopApp" />
+          <option value="onlineShopApp" />
+          <option value="onlineShopApp" />
+          <option value="onlineShopApp" />
+          <option value="onlineShopApp" />
+        </list>
+      </option>
+      <option name="ignoredPackages">
+        <list>
+          <option value="org.springframework:spring-web:6.0.16" />
+          <option value="org.yaml:snakeyaml:1.33" />
+          <option value="com.jayway.jsonpath:json-path:2.8.0" />
+          <option value="com.mysql:mysql-connector-j:8.0.32" />
+          <option value="org.springframework.security:spring-security-core:6.1.6" />
+          <option value="com.mysql:mysql-connector-j:8.0.33" />
+        </list>
+      </option>
+      <option name="ignoredReasons">
+        <list>
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

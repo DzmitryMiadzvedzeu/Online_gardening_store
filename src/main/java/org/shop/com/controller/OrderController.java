@@ -30,7 +30,7 @@ public class OrderController {
         return ResponseEntity.ok(orderDtos);
     }
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<OrderDto> addOrder(@RequestBody OrderCreateDto orderCreateDto){
         OrderEntity orderEntity = converter.createDtoToEntity(orderCreateDto);
         OrderEntity createdOrderEntity = orderService.create(orderEntity);

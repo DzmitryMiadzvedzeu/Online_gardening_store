@@ -45,12 +45,4 @@ public class User {
         System.out.println("New password hash: " + user.passwordHash);
         user.delete();
     }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
 }

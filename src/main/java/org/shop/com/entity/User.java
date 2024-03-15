@@ -17,7 +17,7 @@ public class User {
     }
 
     public void delete() {
-        // Реализация удаления пользователя
+
     }
 
     private String hashPassword(String password) {
@@ -44,5 +44,13 @@ public class User {
         user.edit("new_password");
         System.out.println("New password hash: " + user.passwordHash);
         user.delete();
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 }

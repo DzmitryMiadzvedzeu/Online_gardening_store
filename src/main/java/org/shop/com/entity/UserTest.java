@@ -15,7 +15,7 @@ public class UserTest {
 
     @Test
     public void testDeleteUser() {
-        // Добавьте тесты для удаления пользователя
+
     }
 
     @Test

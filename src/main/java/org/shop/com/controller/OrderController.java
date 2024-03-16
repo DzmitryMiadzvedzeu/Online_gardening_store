@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.shop.com.converter.OrderConverter;
 import org.shop.com.dto.OrderCreateDto;
 import org.shop.com.dto.OrderDto;
+import org.shop.com.dto.OrderStatusDto;
 import org.shop.com.entity.OrderEntity;
 import org.shop.com.service.OrderService;
 import org.springframework.http.HttpStatus;
@@ -22,12 +23,24 @@ public class OrderController {
     private final OrderConverter<OrderEntity, OrderDto> converter;
 
 
-    @GetMapping // Добавлен метод для обработки GET запросов
+    @GetMapping
     public ResponseEntity<List<OrderDto>> listAllOrderDto(){
         List<OrderDto> orderDtos = orderService.getAll().stream()
                 .map(converter::toDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(orderDtos);
+    }
+
+    @GetMapping("/{id}/status")
+    public ResponseEntity<OrderStatusDto> getOrderStatus(@PathVariable Long id){
+        return ResponseEntity.ok(orderService.getOrderStatusById(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteOrder(@PathVariable long id){
+        orderService.deleteOrderEntityById(id);
+        return ResponseEntity.noContent().build();
+
     }
 
     @PostMapping

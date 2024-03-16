@@ -1,8 +1,9 @@
 package org.shop.com.service;
 
 import lombok.RequiredArgsConstructor;
-import org.shop.com.dto.OrderDto;
+import org.shop.com.dto.OrderStatusDto;
 import org.shop.com.entity.OrderEntity;
+import org.shop.com.exceptions.OrderNotFoundException;
 import org.shop.com.repository.OrderJpaRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderEntity create(OrderEntity entity) {
-        //
         return repository.save(entity);
     }
 
@@ -26,5 +26,20 @@ public class OrderServiceImpl implements OrderService {
         return repository.findAll();
     }
 
+    @Override
+    public OrderStatusDto getOrderStatusById(long id) {
+        return repository.findById(id)
+                .map(orderEntity -> new OrderStatusDto(orderEntity.getId(),
+                        orderEntity.getStatus()))
+                .orElseThrow(() -> new OrderNotFoundException("Order with id "
+                        + id + " not found"));
+    }
 
+    @Override
+    public OrderEntity deleteOrderEntityById(long id) {
+        OrderEntity orderEntity = repository.findById(id).orElseThrow(() ->
+                new OrderNotFoundException("Order with id " + id + " not found"));
+        repository.deleteById(id);
+        return orderEntity;
+    }
 }

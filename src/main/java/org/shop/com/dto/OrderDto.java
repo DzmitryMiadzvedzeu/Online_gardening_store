@@ -27,7 +27,7 @@ public class OrderDto {
         this.deliveryAddress = deliveryAddress;
         this.deliveryMethod = deliveryMethod;
         this.contactPhone = contactPhone;
-        this.status = OrderStatus.NEW;
+        this.status = OrderStatus.CREATED;
         this.createdAt = new Date();
         this.updatedAt = new Date();
 

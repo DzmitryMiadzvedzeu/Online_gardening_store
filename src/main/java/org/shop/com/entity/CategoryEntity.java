@@ -24,13 +24,5 @@ public class CategoryEntity {
     @Column(name = "name_category")
     private String name;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<ProductEntity> products;
-    public Set<ProductEntity> getProducts() {
-        return products;
-    }
 
-    public void setProducts(Set<ProductEntity> products) {
-        this.products = products;
-    }
 }

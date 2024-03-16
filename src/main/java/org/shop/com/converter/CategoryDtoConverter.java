@@ -11,13 +11,6 @@ import java.util.stream.Collectors;
 @Component
 public class CategoryDtoConverter implements Converter<CategoryEntity, CategoryDTO> {
 
-    private final ProductDtoConverter productDtoConverter;
-
-    @Autowired
-    public CategoryDtoConverter(ProductDtoConverter productDtoConverter) {
-        this.productDtoConverter = productDtoConverter;
-    }
-
     @Override
     public CategoryDTO toDto(CategoryEntity entity) {
         if (entity == null) {
@@ -26,12 +19,6 @@ public class CategoryDtoConverter implements Converter<CategoryEntity, CategoryD
         CategoryDTO dto = new CategoryDTO();
         dto.setCategoryId(entity.getCategoryId());
         dto.setName(entity.getName());
-
-        if (entity.getProducts() != null) {
-            dto.setProducts(entity.getProducts().stream()
-                    .map(productDtoConverter::toDto)
-                    .collect(Collectors.toList()));
-        }
         return dto;
     }
 
@@ -42,7 +29,7 @@ public class CategoryDtoConverter implements Converter<CategoryEntity, CategoryD
         }
         CategoryEntity entity = new CategoryEntity();
         entity.setName(dto.getName());
-
+        // ID устанавливается автоматически при сохранении в базу
         return entity;
     }
 }

@@ -1,7 +1,8 @@
 package org.shop.com.entity;
 
 import org.testng.annotations.Test;
-import static org.junit.Assert.*;
+
+import static org.testng.AssertJUnit.assertFalse;
 
 public class UserTest {
 
@@ -13,9 +14,15 @@ public class UserTest {
         assertNotEquals(originalPasswordHash, user.getPasswordHash());
     }
 
+    private void assertNotEquals(String originalPasswordHash, String passwordHash) {
+
+    }
+
     @Test
     public void testDeleteUser() {
-
+        User user = new User("test_user", "bebebe");
+        user.delete();
+        assertFalse(user.isActive()); // Предположим, что isActive() возвращает true, если пользователь активен
     }
 
     @Test

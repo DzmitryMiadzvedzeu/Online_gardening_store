@@ -1,6 +1,7 @@
 package org.shop.com.controller;
 
-import org.shop.com.converter.CategoryConverter;
+import jakarta.validation.Valid;
+import org.shop.com.converter.CategoryDtoConverter;
 import org.shop.com.dto.CategoryCreateDTO;
 import org.shop.com.dto.CategoryDTO;
 import org.shop.com.entity.CategoryEntity;
@@ -22,18 +23,18 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/categories")
 public class CategoryController {
     private final CategoryService categoryService;
-    private final CategoryConverter categoryConverter;
+    private final CategoryDtoConverter categoryDtoConverter;
 
     @Autowired
-    public CategoryController(CategoryService categoryService, CategoryConverter categoryConverter) {
+    public CategoryController(CategoryService categoryService, CategoryDtoConverter categoryDtoConverter) {
         this.categoryService = categoryService;
-        this.categoryConverter = categoryConverter;
+        this.categoryDtoConverter = categoryDtoConverter;
     }
 
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
         List<CategoryDTO> categoryDTOList = categoryService.getAllCategories().stream()
-                .map(categoryConverter::toDto)
+                .map(categoryDtoConverter::toDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(categoryDTOList);
     }
@@ -42,7 +43,7 @@ public class CategoryController {
     public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
         CategoryEntity categoryEntity = categoryService.getCategoryById(id);
         if (categoryEntity != null) {
-            CategoryDTO categoryDTO = categoryConverter.toDto(categoryEntity);
+            CategoryDTO categoryDTO = categoryDtoConverter.toDto(categoryEntity);
             return ResponseEntity.ok(categoryDTO);
         } else {
             throw new CategoryNotFoundException("Category with id " + id + " not found.");
@@ -50,13 +51,18 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryCreateDTO createDTO) {
+    public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryCreateDTO createDTO) {
         if (createDTO == null || createDTO.getName() == null || createDTO.getName().isEmpty()) {
             throw new CategoryInvalidArgumentException("Invalid category data");
         }
         CategoryEntity createdCategoryEntity = categoryService.createCategory(createDTO);
-        CategoryDTO categoryDTO = categoryConverter.toDto(createdCategoryEntity);
+        CategoryDTO categoryDTO = categoryDtoConverter.toDto(createdCategoryEntity);
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryDTO);
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<CategoryDTO> editCategory(@PathVariable Long id, @Valid @RequestBody CategoryCreateDTO categoryDTO) {
+        CategoryEntity updatedCategory = categoryService.editCategory(id, categoryDTO);
+        return ResponseEntity.ok(categoryDtoConverter.toDto(updatedCategory));
     }
 
     @DeleteMapping("/{id}")

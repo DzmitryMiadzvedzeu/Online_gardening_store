@@ -3,11 +3,13 @@ package org.shop.com.converter;
 
 import org.shop.com.dto.CategoryDTO;
 import org.shop.com.entity.CategoryEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Collectors;
 
 @Component
-public class CategoryConverter implements Converter<CategoryEntity, CategoryDTO> {
+public class CategoryDtoConverter implements Converter<CategoryEntity, CategoryDTO> {
 
     @Override
     public CategoryDTO toDto(CategoryEntity entity) {
@@ -27,6 +29,7 @@ public class CategoryConverter implements Converter<CategoryEntity, CategoryDTO>
         }
         CategoryEntity entity = new CategoryEntity();
         entity.setName(dto.getName());
+        // ID устанавливается автоматически при сохранении в базу
         return entity;
     }
 }

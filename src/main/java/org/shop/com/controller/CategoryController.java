@@ -1,6 +1,7 @@
 package org.shop.com.controller;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.shop.com.converter.CategoryDtoConverter;
 import org.shop.com.dto.CategoryCreateDTO;
 import org.shop.com.dto.CategoryDTO;
@@ -18,9 +19,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-// http://localhost:8080/api/categories
+// http://localhost:8080/v1/categories
+@Slf4j
 @RestController
-@RequestMapping("/api/categories")
+@RequestMapping("/v1/categories")
 public class CategoryController {
     private final CategoryService categoryService;
     private final CategoryDtoConverter categoryDtoConverter;
@@ -30,9 +32,10 @@ public class CategoryController {
         this.categoryService = categoryService;
         this.categoryDtoConverter = categoryDtoConverter;
     }
-
+//
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
+        log.debug("Received request to list all categories");
         List<CategoryDTO> categoryDTOList = categoryService.getAllCategories().stream()
                 .map(categoryDtoConverter::toDto)
                 .collect(Collectors.toList());
@@ -41,33 +44,39 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
+        log.debug("Received request to fetch category by ID: {}", id);
         CategoryEntity categoryEntity = categoryService.getCategoryById(id);
         if (categoryEntity != null) {
             CategoryDTO categoryDTO = categoryDtoConverter.toDto(categoryEntity);
             return ResponseEntity.ok(categoryDTO);
         } else {
+            log.error("Category with ID {} not found", id);
             throw new CategoryNotFoundException("Category with id " + id + " not found.");
         }
     }
 
     @PostMapping
     public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryCreateDTO createDTO) {
-        if (createDTO == null || createDTO.getName() == null || createDTO.getName().isEmpty()) {
-            throw new CategoryInvalidArgumentException("Invalid category data");
-        }
+        log.debug("Received request to create a new category: {}", createDTO.getName());
         CategoryEntity createdCategoryEntity = categoryService.createCategory(createDTO);
         CategoryDTO categoryDTO = categoryDtoConverter.toDto(createdCategoryEntity);
+        log.debug("Category created successfully with ID: {}", createdCategoryEntity.getCategoryId());
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryDTO);
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDTO> editCategory(@PathVariable Long id, @Valid @RequestBody CategoryCreateDTO categoryDTO) {
+        log.debug("Received request to edit category with ID: {}", id);
         CategoryEntity updatedCategory = categoryService.editCategory(id, categoryDTO);
+        log.debug("Category with ID: {} updated successfully", updatedCategory.getCategoryId());
         return ResponseEntity.ok(categoryDtoConverter.toDto(updatedCategory));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+        log.debug("Received request to delete category with ID: {}", id);
         categoryService.deleteCategory(id);
+        log.debug("Category with ID: {} deleted successfully", id);
         return ResponseEntity.noContent().build();
     }
 

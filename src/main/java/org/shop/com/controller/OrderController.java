@@ -1,6 +1,7 @@
 package org.shop.com.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.shop.com.converter.OrderConverter;
 import org.shop.com.dto.OrderCreateDto;
 import org.shop.com.dto.OrderDto;

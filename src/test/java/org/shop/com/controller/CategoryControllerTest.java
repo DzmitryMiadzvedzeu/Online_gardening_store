@@ -1,4 +1,4 @@
-package org.shop.com;
+package org.shop.com.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.shop.com.converter.CategoryDtoConverter;
@@ -67,7 +67,7 @@ class CategoryControllerTest {
                     return new CategoryDTO(entity.getCategoryId(), entity.getName());
                 });
 
-        mockMvc.perform(get("/api/categories")
+        mockMvc.perform(get("/v1/categories")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -87,7 +87,7 @@ class CategoryControllerTest {
         when(categoryService.getCategoryById(categoryId)).thenReturn(categoryEntity);
         when(categoryDtoConverter.toDto(any(CategoryEntity.class))).thenReturn(categoryDTO);
 
-        mockMvc.perform(get("/api/categories/{id}", categoryId)
+        mockMvc.perform(get("/v1/categories/{id}", categoryId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.categoryId", is(categoryId.intValue())))
@@ -104,7 +104,7 @@ class CategoryControllerTest {
         when(categoryService.createCategory(any(CategoryCreateDTO.class))).thenReturn(categoryEntity);
         when(categoryDtoConverter.toDto(any(CategoryEntity.class))).thenReturn(categoryDTO);
 
-        mockMvc.perform(post("/api/categories")
+        mockMvc.perform(post("/v1/categories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createDTO)))
                 .andExpect(status().isCreated())
@@ -124,19 +124,19 @@ class CategoryControllerTest {
         when(categoryService.editCategory(eq(categoryId), any(CategoryCreateDTO.class))).thenReturn(updatedCategoryEntity);
         when(categoryDtoConverter.toDto(any(CategoryEntity.class))).thenReturn(updatedCategoryDTO);
 
-        mockMvc.perform(put("/api/categories/{id}", categoryId)
+        mockMvc.perform(put("/v1/categories/{id}", categoryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(categoryDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.categoryId", is(categoryId.intValue())))
                 .andExpect(jsonPath("$.name", is("Updated Tools")));
     }
-
+//
     @Test
     void testDeleteCategory() throws Exception {
         Long categoryId = 1L;
 
-        mockMvc.perform(delete("/api/categories/{id}", categoryId)
+        mockMvc.perform(delete("/v1/categories/{id}", categoryId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 

@@ -31,7 +31,6 @@ public class OrderEntity {
     message = "does not match phone number format")
     private String contactPhone;
 
-//    @NotEmpty(message = "This field can't be empty")
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 

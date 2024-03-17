@@ -1,18 +1,5 @@
 package org.shop.com.dto;
 
-/*
-{
-  "items": [ на первом спринте это не реализуется
-    {
-      "productId": "string",
-      "quantity": "number"
-    }
-  ],на первом спринте это не реализуется
-  "deliveryAddress": "string",
-  "deliveryMethod": "string"
-}
- */
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

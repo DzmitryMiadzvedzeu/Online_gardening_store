@@ -6,13 +6,11 @@ import java.util.List;
 
 public interface UserService {
 
-    void deleteUserById(Long id);
-
     UserEntity create(UserEntity entity);
 
     List<UserEntity> getAll();
 
-    void update(UserEntity userEntity);
+  //  void update(UserEntity userEntity);
 
-    void delete(String id);
+  //  void delete(String id);
 }

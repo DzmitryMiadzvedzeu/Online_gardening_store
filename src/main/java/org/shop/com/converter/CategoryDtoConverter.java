@@ -3,10 +3,8 @@ package org.shop.com.converter;
 
 import org.shop.com.dto.CategoryDTO;
 import org.shop.com.entity.CategoryEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.stream.Collectors;
 
 @Component
 public class CategoryDtoConverter implements Converter<CategoryEntity, CategoryDTO> {

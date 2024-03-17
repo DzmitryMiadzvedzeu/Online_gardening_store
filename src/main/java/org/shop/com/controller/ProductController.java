@@ -3,7 +3,6 @@ import org.shop.com.converter.ProductConverter;
 import org.shop.com.dto.ProductCreateDto;
 import org.shop.com.dto.ProductDto;
 import org.shop.com.entity.ProductEntity;
-import org.shop.com.exceptions.ProductNotFoundException;
 import org.shop.com.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,74 +13,69 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("v1/products")
+@RequestMapping("/v1/products")
 public class ProductController {
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
+    private final ProductConverter<ProductEntity, ProductDto> productConverter;
 
     @Autowired
-    private ProductConverter<ProductEntity, ProductDto> productConverter;
-    //mapstruct?
-
-    @GetMapping("/{id}")
-    public ProductEntity getById(@PathVariable long id) {
-        return productService.findById(id);
+    public ProductController(ProductService productService, ProductConverter<ProductEntity, ProductDto> productConverter) {
+        this.productService = productService;
+        this.productConverter = productConverter;
     }
 
-    @GetMapping
-    public List<ProductDto> list(@RequestParam(name = "category", required = false) String category,
-                                 @RequestParam(name = "minPrice", required = false) Double minPrice,
-                                @RequestParam(name = "maxPrice", required = false) Double maxPrice,
-//                                 @RequestParam(name = "discount", required = false) Boolean discount,
-                                 @RequestParam(name = "sort", required = false) String sort) {
 
-        List<ProductEntity> productList = productService.getAll(category, minPrice, maxPrice, sort);
-        return productList.stream()
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDto> getById(@PathVariable long id) {
+        ProductEntity productEntity = productService.findById(id);
+        ProductDto productDto = productConverter.toDto(productEntity);
+        return ResponseEntity.ok(productDto);
+    }
+
+
+    @GetMapping
+    public ResponseEntity<List<ProductDto>> list(@RequestParam(name = "category", required = false) String category,
+                                                 @RequestParam(name = "minPrice", required = false) Double minPrice,
+                                                 @RequestParam(name = "maxPrice", required = false) Double maxPrice,
+                                                 @RequestParam(name = "discount", required = false) Boolean discount,
+                                                 @RequestParam(name = "sort", required = false) String sort) {
+        List<ProductDto> productDtos = productService.getAll(category, minPrice, maxPrice, sort).stream()
                 .map(productConverter::toDto)
                 .collect(Collectors.toList());
+        return ResponseEntity.ok(productDtos);
     }
 
     @PostMapping
-    public ResponseEntity<ProductDto> addProduct(@RequestBody ProductCreateDto productDto) {
-        ProductEntity productEntity = productConverter.createDtoToEntity(productDto);
-        ProductEntity entity = productService.create(productEntity);
-        ProductDto dto = productConverter.toDto(entity);
-        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+    public ResponseEntity<ProductDto> addProduct(@RequestBody ProductCreateDto productCreateDto) {
+        ProductEntity productEntity = productConverter.createDtoToEntity(productCreateDto);
+        ProductEntity savedEntity = productService.create(productEntity);
+        ProductDto savedDto = productConverter.toDto(savedEntity);
+        return new ResponseEntity<>(savedDto, HttpStatus.CREATED);
     }
 
 
     @DeleteMapping("/{id}")
-    public void delete (@PathVariable long id) {
-       productService.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable long id) {
+        productService.delete(id);
+        return ResponseEntity.noContent().build();
     }
+
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> editProduct (@PathVariable long id, @RequestBody ProductDto productDto) {
-        ProductEntity product = productService.findById(id);
-        if (product == null) {
-            throw new ProductNotFoundException("Can't find product with id " + id);
-        }
-        product.setName(productDto.getName());
-        product.setDescription(productDto.getDescription());
-        product.setPrice(productDto.getPrice());
-        product.setCategory(productDto.getCategory());
-        product.setImage(productDto.getImage());
-        ProductEntity updatedProduct = productService.update(product);
-        if (updatedProduct == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during update. Try again");
-        } else{
-            ResponseEntity.ok("Product updated successfully");
-        }
-        return null;
+    public ResponseEntity<ProductDto> editProduct(@PathVariable long id, @RequestBody ProductDto productDto) {
+        productDto.setId(id); // Устанавливаем ID продукта из пути
+        ProductEntity productEntityToUpdate = productConverter.toEntity(productDto);
+        ProductEntity updatedProductEntity = productService.update(productEntityToUpdate);
+        ProductDto updatedDto = productConverter.toDto(updatedProductEntity);
+        return ResponseEntity.ok(updatedDto);
     }
 
+
     @GetMapping("/categories")
-    public ResponseEntity<List<String>> listAllCategories () {
-        if (productService.listAllCategories().equals(null)) {
-            ResponseEntity.status(HttpStatus.NO_CONTENT);
-        }
-        return ResponseEntity.ok(productService.listAllCategories());
+    public ResponseEntity<List<String>> listAllCategories() {
+        List<String> categories = productService.listAllCategories();
+        return ResponseEntity.ok(categories);
     }
 }
 

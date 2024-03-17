@@ -29,19 +29,19 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body("User created with id: " + createdUser.getId());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<String> editUser(@PathVariable String id, @RequestBody UserCreateDto userCreateDto) {
-        UserEntity userEntity = convertCreateDtoToEntity(userCreateDto);
-        userEntity.setId(Long.parseLong(id));
-        userService.update(userEntity);
-        return ResponseEntity.ok("User edited");
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<String> editUser(@PathVariable String id, @RequestBody UserCreateDto userCreateDto) {
+//        UserEntity userEntity = convertCreateDtoToEntity(userCreateDto);
+//        userEntity.setId(Long.parseLong(id));
+//        userService.update(userEntity);
+//        return ResponseEntity.ok("User edited");
+//    }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable String id) {
-        userService.delete(id);
-        return ResponseEntity.ok("User deleted");
-    }
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<String> deleteUser(@PathVariable String id) {
+//        userService.delete(id);
+//        return ResponseEntity.ok("User deleted");
+//    }
 
     @GetMapping
     public ResponseEntity<List<UserDto>> listAllUserDto() {
@@ -69,7 +69,4 @@ public class UserController {
         );
     }
 
-    public static void main(String[] args) {
-        SpringApplication.run(UserController.class, args);
-    }
 }

@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class ProductEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @NotBlank(message = "Product name can't be empty")
@@ -27,19 +27,16 @@ public class ProductEntity {
     @Min(value = 1, message = "Incorrect min value")
     private double price;
 
-    @NotBlank (message = "Category can't be empty")
+   // @NotBlank (message = "Category can't be empty")
     //I think there must be Category, not String
-    private String category;
+   // private String category;
 
     @NotBlank (message = "Image url can't be empty")
     private String image;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private CategoryEntity category;
 
-    public ProductEntity(String name, String description, double price, String category, String image) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.category = category;
-        this.image = image;
-    }
+
 }

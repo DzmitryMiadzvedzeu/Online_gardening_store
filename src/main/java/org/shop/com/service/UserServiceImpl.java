@@ -9,14 +9,10 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public abstract class UserServiceImpl implements UserService {
+public  class UserServiceImpl implements UserService {
 
     private final UserJpaRepository repository;
 
-    @Override
-    public void deleteUserById(Long id) {
-
-    }
 
     @Override
     public UserEntity create(UserEntity entity) {

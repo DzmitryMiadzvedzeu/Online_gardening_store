@@ -37,24 +37,4 @@ public class User {
         }
     }
 
-    // Тесты для проверки работоспособности методов (пофиг можно удолить)
-    public static void main(String[] args) {
-        User user = new User("test_user", "bebebe");
-        System.out.println("Original password hash: " + user.passwordHash);
-        user.edit("new_password");
-        System.out.println("New password hash: " + user.passwordHash);
-        user.delete();
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-
-    public boolean isActive() {
-        return false;
-    }
 }

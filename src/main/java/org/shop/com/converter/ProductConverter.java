@@ -5,4 +5,6 @@ public interface ProductConverter <Entity, Dto>{
     Dto toDto (Entity entity);
 
     Entity createDtoToEntity(ProductCreateDto productCreateDto);
+
+    Entity toEntity(Dto dto);
 }

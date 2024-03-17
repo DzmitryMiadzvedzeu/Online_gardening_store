@@ -21,22 +21,8 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public List<ProductEntity> getAll(String category, Double minPrice, Double maxPrice, String sort) {
-        Sort optionsToSort = Sort.unsorted();
-        if (sort!=null) {
-            optionsToSort = Sort.by(sort);
-        }
-
-       List<ProductEntity> list = repository.findAll(optionsToSort);
-
-        if (category != null) {
-            list = repository.findByCategory(category, optionsToSort);
-        }
-        if (minPrice != null) {
-            list = repository.findByPriceGreaterThanEqual(minPrice, optionsToSort);
-        }
-        if (maxPrice != null) {
-            list = repository.findByPriceLessThanEqual(maxPrice, optionsToSort);
-        }
+        // Применяем все фильтры одновременно в одном запросе к базе данных
+        List<ProductEntity> list = repository.findByCategoryAndPriceBetween(category, minPrice, maxPrice, Sort.unsorted());
         return list;
     }
 

@@ -53,7 +53,7 @@ public class CategoryServiceImpl implements CategoryService {
         log.debug("Category created successfully with ID: {}", savedEntity.getCategoryId());
         return savedEntity;
     }
-
+//
     @Override
     public CategoryEntity editCategory(Long id, CategoryCreateDTO categoryDTO) {
         log.debug("Editing category with ID: {}", id);

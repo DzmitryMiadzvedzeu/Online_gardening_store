@@ -131,7 +131,7 @@ class CategoryControllerTest {
                 .andExpect(jsonPath("$.categoryId", is(categoryId.intValue())))
                 .andExpect(jsonPath("$.name", is("Updated Tools")));
     }
-
+//
     @Test
     void testDeleteCategory() throws Exception {
         Long categoryId = 1L;

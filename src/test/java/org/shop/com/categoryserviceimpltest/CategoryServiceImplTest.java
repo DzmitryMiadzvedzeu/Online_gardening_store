@@ -47,7 +47,7 @@ class CategoryServiceImplTest {
         assertThat(result.get(0).getName()).isEqualTo("Gardening Tools");
         assertThat(result.get(1).getName()).isEqualTo("Plant Seeds");
     }
-
+//
     @Test
     void whenGetCategoryById_thenReturnsCategory() {
         CategoryEntity category = new CategoryEntity(1L, "Gardening Tools");

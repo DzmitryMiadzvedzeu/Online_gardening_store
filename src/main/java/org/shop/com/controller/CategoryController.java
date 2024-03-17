@@ -32,7 +32,7 @@ public class CategoryController {
         this.categoryService = categoryService;
         this.categoryDtoConverter = categoryDtoConverter;
     }
-
+//
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
         log.debug("Received request to list all categories");

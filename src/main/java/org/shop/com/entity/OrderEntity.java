@@ -50,4 +50,7 @@ public class OrderEntity {
         this.updatedAt = new Date();
 
     }
+
+    public void setUser(User user) {
+    }
 }

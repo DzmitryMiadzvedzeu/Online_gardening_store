@@ -2,14 +2,18 @@ package org.shop.com.entity;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class User {
     private String username;
     private String passwordHash;
+    private List<OrderEntity> orders;
 
     public User(String username, String password) {
         this.username = username;
         this.passwordHash = hashPassword(password);
+        this.orders = new ArrayList<>();
     }
 
     public void edit(String newPassword) {
@@ -18,6 +22,11 @@ public class User {
 
     public void delete() {
 
+    }
+
+    public void addOrder(OrderEntity order) {
+        orders.add(order);
+        order.setUser(this); // Установка связи
     }
 
     private String hashPassword(String password) {

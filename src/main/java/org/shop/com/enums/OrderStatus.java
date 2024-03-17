@@ -2,6 +2,11 @@ package org.shop.com.enums;
 
 public enum OrderStatus {
 
-    NEW,
-    DONE
+    CREATED,
+    AWAITING_PAYMENT,
+    PAID,
+    ON_THE_WAY,
+    DELIVERED,
+    CANCELED
 }
+

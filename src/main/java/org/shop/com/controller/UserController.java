@@ -1,9 +1,7 @@
 package org.shop.com.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.shop.com.converter.CategoryConverter;
 import org.shop.com.converter.Converter;
-import org.shop.com.converter.UserDtoConverter;
 import org.shop.com.dto.UserCreateDto;
 import org.shop.com.dto.UserDto;
 import org.shop.com.entity.UserEntity;

@@ -1,4 +1,4 @@
-package org.shop.com;
+package org.shop.com.categoryserviceimpltest;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

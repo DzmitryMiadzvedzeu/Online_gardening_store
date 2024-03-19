@@ -7,12 +7,14 @@ import org.shop.com.controller.CategoryController;
 import org.shop.com.dto.CategoryCreateDTO;
 import org.shop.com.dto.CategoryDTO;
 import org.shop.com.entity.CategoryEntity;
+import org.shop.com.exceptions.CategoryNotFoundException;
 import org.shop.com.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,8 +22,7 @@ import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -131,7 +132,7 @@ class CategoryControllerTest {
                 .andExpect(jsonPath("$.categoryId", is(categoryId.intValue())))
                 .andExpect(jsonPath("$.name", is("Updated Tools")));
     }
-//
+
     @Test
     void testDeleteCategory() throws Exception {
         Long categoryId = 1L;
@@ -142,4 +143,16 @@ class CategoryControllerTest {
 
         verify(categoryService).deleteCategory(categoryId);
     }
+
+    @Test
+    void testGetCategoryByIdNotFound() throws Exception {
+        Long categoryId = 1L;
+        when(categoryService.getCategoryById(categoryId)).thenThrow(new CategoryNotFoundException("Category not found"));
+
+        mockMvc.perform(get("/v1/categories/{id}", categoryId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error", is("Category not found")));
+    }
+
 }

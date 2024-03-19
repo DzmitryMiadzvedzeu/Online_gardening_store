@@ -7,7 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
+import java.util.List;
+
 
 @Setter
 @Getter
@@ -24,5 +25,11 @@ public class CategoryEntity {
     @Column(name = "name_category")
     private String name;
 
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ProductEntity> products;
+    public CategoryEntity(Long categoryId, String name) {
+        this.categoryId = categoryId;
+        this.name = name;
+    }
 
 }

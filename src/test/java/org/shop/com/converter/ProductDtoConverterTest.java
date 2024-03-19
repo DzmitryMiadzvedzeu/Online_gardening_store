@@ -2,24 +2,50 @@ package org.shop.com.converter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.shop.com.dto.ProductCreateDto;
 import org.shop.com.dto.ProductDto;
+import org.shop.com.entity.CategoryEntity;
 import org.shop.com.entity.ProductEntity;
+import org.shop.com.repository.CategoryJpaRepository;
+
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 
 class ProductDtoConverterTest {
 
     private ProductDtoConverter converter;
 
+    @Mock
+    private CategoryJpaRepository categoryRepository;
+
     @BeforeEach
     public void init() {
-       converter = new ProductDtoConverter();
+        MockitoAnnotations.openMocks(this);
+        converter = new ProductDtoConverter(categoryRepository);
+
+
+        CategoryEntity category = new CategoryEntity(1L, "Category");
+        when(categoryRepository.findByName("Category")).thenReturn(Optional.of(category));
     }
+
     @Test
     void testToDto() {
-        ProductEntity entity = new ProductEntity( "Name", "Description", 10.0, "Category", "Image");
+        CategoryEntity categoryEntity = new CategoryEntity(1L, "Category");
+
+        ProductEntity entity = new ProductEntity();
+        entity.setName("Name");
+        entity.setDescription("Description");
+        entity.setPrice(10.0);
+        entity.setCategory(categoryEntity);
+        entity.setImage("Image");
+
         ProductDto dto = converter.toDto(entity);
 
         assertNotNull(dto);
@@ -27,26 +53,27 @@ class ProductDtoConverterTest {
         assertEquals(entity.getName(), dto.getName());
         assertEquals(entity.getDescription(), dto.getDescription());
         assertEquals(entity.getPrice(), dto.getPrice());
-        assertEquals(entity.getCategory(), dto.getCategory());
+        assertEquals(categoryEntity.getName(), dto.getCategory());
         assertEquals(entity.getImage(), dto.getImage());
     }
 
     @Test
     void testCreateDtoToEntity() {
-        ProductCreateDto createdDto = new ProductCreateDto("Name", "Description", 10.0, "Category", "Image");
+        ProductCreateDto createdDto = new ProductCreateDto("Name", "Description",
+                                                        10.0, "Category", "Image");
         ProductEntity entity = converter.createDtoToEntity(createdDto);
 
         assertNotNull(entity);
         assertEquals(createdDto.getName(), entity.getName());
         assertEquals(createdDto.getDescription(), entity.getDescription());
         assertEquals(createdDto.getPrice(), entity.getPrice());
-        assertEquals(createdDto.getCategory(), entity.getCategory());
+        assertNotNull(entity.getCategory());
+        assertEquals("Category", entity.getCategory().getName());
         assertEquals(createdDto.getImage(), entity.getImage());
     }
 
     @AfterEach
     public void destroyEach() {
-        System.out.println("Call destroy each method ");
+        System.out.println("Call destroy each method");
     }
 }
-

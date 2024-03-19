@@ -41,6 +41,11 @@ public class OrderEntity {
     @UpdateTimestamp
     private Date updatedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_entity_id")
+    private UserEntity userEntity;
+
+
     public OrderEntity(String deliveryAddress, String deliveryMethod, String contactPhone) {
         this.deliveryAddress = deliveryAddress;
         this.deliveryMethod = deliveryMethod;

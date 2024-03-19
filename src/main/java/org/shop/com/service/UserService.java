@@ -1,18 +1,19 @@
 package org.shop.com.service;
 
+import org.shop.com.dto.UserCreateDto;
 import org.shop.com.entity.UserEntity;
 
 import java.util.List;
 
 public interface UserService {
 
-    void deleteUserById(Long id);
+    UserEntity create(UserCreateDto userCreateDto);
 
-    UserEntity create(UserEntity entity);
+    UserEntity findById(long id);
 
     List<UserEntity> getAll();
 
-    void update(UserEntity userEntity);
+    UserEntity editUser(long id, UserCreateDto userCreateDto);
 
-    void delete(String id);
+    void delete(long id);
 }

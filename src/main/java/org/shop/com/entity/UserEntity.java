@@ -3,12 +3,16 @@ package org.shop.com.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.shop.com.enums.UserRole;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Users")
@@ -41,9 +45,13 @@ public class UserEntity {
     @NotBlank(message = "This field can't be empty")
     private String passwordHash;
 
+    @NotBlank(message = "This field can't be empty")
     @Enumerated(EnumType.STRING)
-    @Column(length = 20) // Указываем размер столбца role
+    @Column(length = 20)
     private UserRole role;
+
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
+    private List<OrderEntity> orderEntities = new ArrayList<>();
 
     public UserEntity(String name, String email, String phoneNumber, String passwordHash, UserRole role) {
         this.name = name;

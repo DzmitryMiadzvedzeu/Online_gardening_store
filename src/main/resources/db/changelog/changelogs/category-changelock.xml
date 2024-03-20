@@ -7,6 +7,30 @@
         http://www.liquibase.org/xml/ns/dbchangelog-ext
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
+    <changeSet id="1" author="Sergey">
+        <comment>create table categories</comment>
+            <createTable tableName="category">
+            <column name="categoryId" autoIncrement="true" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="category_pkey"/>
+            </column>
+            <column name="name_category" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
 
+    <changeSet id="2" author="Sergey">
+        <comment>Insert initial data into categories for garden tools</comment>
+        <insert tableName="category">
+            <column name="name_category" value="Garden Shovels"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name_category" value="Pruning Shears"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name_category" value="Garden Rakes"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name_category" value="Gloves"/>
+        </insert>
+    </changeSet>
 
 </databaseChangeLog>

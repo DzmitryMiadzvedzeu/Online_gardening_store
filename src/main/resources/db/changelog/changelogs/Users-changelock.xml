@@ -8,6 +8,67 @@
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
 
+    <changeSet id="1" author="MedvedevDmitry">
+        <comment>create table users</comment>
+        <createTable tableName="Users">
+            <column name="id" autoIncrement="true" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="order_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phoneNumber" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="passwordHash" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="ENUM">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 
+    <changeSet id="2" author="MedvedevDmitry">
+        <comment>add test data to users</comment>
+        <insert tableName="users">
+            <column name="name" value="John Doe"/>
+            <column name="email" value="exampleOne@mail.com"/>
+            <column name="phoneNumber" value="+1 123 123 1234"/>
+            <!--            2345-->
+            <column name="passwordHash" value="$2a$10$Z.IGSrxjpcn6E7lF9A3xAuOzm43kgRsvQ3co8ZwlJufm30dU7ymVi"/>
+            <column name="role" value="USER"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="name" value="Jane Doe"/>
+            <column name="email" value="exampleTwo@mail.com"/>
+            <column name="phoneNumber" value="+1 223 223 3234"/>
+            <!--            2345-->
+            <column name="passwordHash" value="$2a$10$Z.IGSrxjpcn6E7lF9A3xAuOzm43kgRsvQ3co8ZwlJufm30dU7ymVi"/>
+            <column name="role" value="USER"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="name" value="John Snow"/>
+            <column name="email" value="exampleThree@mail.com"/>
+            <column name="phoneNumber" value="+1 323 323 3234"/>
+            <!--            2345-->
+            <column name="passwordHash" value="$2a$10$Z.IGSrxjpcn6E7lF9A3xAuOzm43kgRsvQ3co8ZwlJufm30dU7ymVi"/>
+            <column name="role" value="USER"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="name" value="Jane Snow"/>
+            <column name="email" value="exampleFour@mail.com"/>
+            <column name="phoneNumber" value="+1 423 423 4234"/>
+            <!--            1234-->
+            <column name="passwordHash" value="$2a$10$45shY7PU4Z4e5efPwElkG.1Suv8HrT03wEBvsAkSH6U6ltwKJnuCi"/>
+            <column name="role" value="ADMIN"/>
+        </insert>
+    </changeSet>
 
 </databaseChangeLog>

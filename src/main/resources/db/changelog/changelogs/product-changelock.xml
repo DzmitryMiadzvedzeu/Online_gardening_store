@@ -33,7 +33,7 @@
             </column>
             <column name="discount_price" type="DECIMAL"/>
             <column name="category_id" type="BIGINT">
-                <constraints nullable="true" referencedTableName="category" referencedColumnNames="categoryId" foreignKeyName="fk_product_category"/>
+                <constraints nullable="false" referencedTableName="category" referencedColumnNames="categoryId" foreignKeyName="fk_product_category"/>
             </column>
         </createTable>
     </changeSet>

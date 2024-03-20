@@ -15,7 +15,7 @@
                 <constraints primaryKey="true" nullable="false" primaryKeyName="order_pkey"/>
             </column>
             <column name="user_id" type="BIGINT">
-            <constraints nullable="true" referencedTableName="Users" referencedColumnNames="id" foreignKeyName="fk_orders_Users"/>
+            <constraints nullable="false" referencedTableName="Users" referencedColumnNames="id" foreignKeyName="fk_orders_Users"/>
             </column>
             <column name="deliveryAddress" type="VARCHAR(255)">
                 <constraints nullable="false"/>

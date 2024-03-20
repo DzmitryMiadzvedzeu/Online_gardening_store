@@ -11,14 +11,15 @@
         <relativePath/>
     </parent>
 
-    <groupId>org.example</groupId>
-    <artifactId>ticketapp</artifactId>
+    <groupId>org.shop.com</groupId>
+    <artifactId>onlineShopApp</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>20</maven.compiler.source>
         <maven.compiler.target>20</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <mapstruct.version>1.4.2.Final</mapstruct.version>
     </properties>
     <dependencies>
 
@@ -72,16 +73,38 @@
             <artifactId>liquibase-core</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
+
 
         <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-security</artifactId>
-            </dependency>
+        </dependency>
 
        </dependencies>
 
        <build>
            <plugins>
+               <plugin>
+                   <groupId>org.apache.maven.plugins</groupId>
+                   <artifactId>maven-compiler-plugin</artifactId>
+                   <version>3.13.0</version>
+                   <configuration>
+                       <release>20</release>
+                       <annotationProcessorPaths>
+                           <path>
+                               <groupId>org.mapstruct</groupId>
+                               <artifactId>mapstruct-processor</artifactId>
+                               <version>${mapstruct.version}</version>
+                           </path>
+                       </annotationProcessorPaths>
+                   </configuration>
+               </plugin>
+
                <plugin>
                    <groupId>org.springframework.boot</groupId>
                    <artifactId>spring-boot-maven-plugin</artifactId>

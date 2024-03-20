@@ -44,37 +44,41 @@
             <column name="name" value="Deluxe Garden Shovel"/>
             <column name="description" value="A sturdy and durable shovel designed for all gardening needs."/>
             <column name="price" value="24.99"/>
-            <column name="image_url" value="deluxe_shovel.jpg"/>
-            <column name="created_at" value="2024-03-20 14:34:02.942000"/>
-            <column name="updated_at" value="2024-03-20 14:34:02.942000"/>
-            <column name="discount_price" valueNumeric="19.99"/>
+            <column name="image" value="deluxe_shovel.jpg"/>
+            <column name="created_at" value="2024-03-20 14:34:02"/>
+            <column name="updated_at" value="2024-03-20 14:34:02"/>
+            <column name="discount_price" value="19.99"/>
+            <column name="category_id" value="1"/>
         </insert>
         <insert tableName="product">
             <column name="name" value="Professional Pruning Shears"/>
             <column name="description" value="Ergonomic pruning shears for precise cutting."/>
-            <column name="price" valueNumeric="34.99"/>
-            <column name="image_url" value="pro_pruning_shears.jpg"/>
-            <column name="created_at" valueComputed="2024-03-21 14:34:02.942000"/>
-            <column name="updated_at" valueComputed="2024-03-21 14:34:02.942000"/>
-            <column name="discount_price" valueNumeric="29.99"/>
+            <column name="price" value="34.99"/>
+            <column name="image" value="pro_pruning_shears.jpg"/>
+            <column name="created_at" value="2024-03-21 14:34:02"/>
+            <column name="updated_at" value="2024-03-21 14:34:02"/>
+            <column name="discount_price" value="29.99"/>
+            <column name="category_id" value="2"/>
         </insert>
         <insert tableName="product">
             <column name="name" value="Heavy-Duty Garden Rake"/>
             <column name="description" value="Perfect rake for collecting leaves and loosening soil."/>
-            <column name="price" valueNumeric="17.99"/>
-            <column name="image_url" value="heavy_duty_rake.jpg"/>
-            <column name="created_at" valueComputed="2024-03-22 14:34:02.942000"/>
-            <column name="updated_at" valueComputed="2024-03-22 14:34:02.942000"/>
-            <column name="discount_price" valueNumeric="null"/>
+            <column name="price" value="17.99"/>
+            <column name="image" value="heavy_duty_rake.jpg"/>
+            <column name="created_at" value="2024-03-22 14:34:02"/>
+            <column name="updated_at" value="2024-03-22 14:34:02"/>
+            <column name="discount_price" value="0.0"/>
+            <column name="category_id" value="3"/>
         </insert>
         <insert tableName="product">
             <column name="name" value="Gardening Gloves"/>
             <column name="description" value="Protective gloves for all types of gardening tasks."/>
             <column name="price" valueNumeric="5.99"/>
-            <column name="image_url" value="gardening_gloves.jpg"/>
-            <column name="created_at" valueComputed="2024-03-23 14:34:02.942000"/>
-            <column name="updated_at" valueComputed="2024-03-23 14:34:02.942000"/>
-            <column name="discount_price" valueNumeric="4.99"/>
+            <column name="image" value="gardening_gloves.jpg"/>
+            <column name="created_at" value="2024-03-23 14:34:02"/>
+            <column name="updated_at" value="2024-03-23 14:34:02"/>
+            <column name="discount_price" value="4.99"/>
+            <column name="category_id" value="4"/>
         </insert>
     </changeSet>
 

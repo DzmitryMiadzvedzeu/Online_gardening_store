@@ -26,7 +26,7 @@
             <column name="passwordHash" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="role" type="ENUM">
+            <column name="role" type="ENUM('USER', 'ADMIN')">
                 <constraints nullable="false"/>
             </column>
         </createTable>

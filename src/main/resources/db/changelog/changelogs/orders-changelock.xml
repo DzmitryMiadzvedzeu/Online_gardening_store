@@ -26,7 +26,7 @@
             <column name="contactPhone" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="status" type="ENUM">
+            <column name="status" type="ENUM('CREATED', 'AWAITING_PAYMENT', 'PAID', 'ON_THE_WAY', 'DELIVERED','CANCELED')">
                 <constraints nullable="false"/>
             </column>
             <column name="createdAt" type="TIMESTAMP">

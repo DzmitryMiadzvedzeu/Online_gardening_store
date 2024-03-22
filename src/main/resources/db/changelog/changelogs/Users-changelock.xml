@@ -20,10 +20,10 @@
             <column name="email" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="phoneNumber" type="VARCHAR(255)">
+            <column name="phone_number" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="passwordHash" type="VARCHAR(255)">
+            <column name="password_hash" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="role" type="ENUM('USER', 'ADMIN')">
@@ -37,36 +37,36 @@
         <insert tableName="users">
             <column name="name" value="John Doe"/>
             <column name="email" value="exampleOne@mail.com"/>
-            <column name="phoneNumber" value="+1 123 123 1234"/>
+            <column name="phone_number" value="+1 123 123 1234"/>
             <!--            2345-->
-            <column name="passwordHash" value="$2a$10$Z.IGSrxjpcn6E7lF9A3xAuOzm43kgRsvQ3co8ZwlJufm30dU7ymVi"/>
+            <column name="password_hash" value="$2a$10$Z.IGSrxjpcn6E7lF9A3xAuOzm43kgRsvQ3co8ZwlJufm30dU7ymVi"/>
             <column name="role" value="USER"/>
         </insert>
 
         <insert tableName="users">
             <column name="name" value="Jane Doe"/>
             <column name="email" value="exampleTwo@mail.com"/>
-            <column name="phoneNumber" value="+1 223 223 3234"/>
+            <column name="phone_number" value="+1 223 223 3234"/>
             <!--            2345-->
-            <column name="passwordHash" value="$2a$10$Z.IGSrxjpcn6E7lF9A3xAuOzm43kgRsvQ3co8ZwlJufm30dU7ymVi"/>
+            <column name="password_hash" value="$2a$10$Z.IGSrxjpcn6E7lF9A3xAuOzm43kgRsvQ3co8ZwlJufm30dU7ymVi"/>
             <column name="role" value="USER"/>
         </insert>
 
         <insert tableName="users">
             <column name="name" value="John Snow"/>
             <column name="email" value="exampleThree@mail.com"/>
-            <column name="phoneNumber" value="+1 323 323 3234"/>
+            <column name="phone_number" value="+1 323 323 3234"/>
             <!--            2345-->
-            <column name="passwordHash" value="$2a$10$Z.IGSrxjpcn6E7lF9A3xAuOzm43kgRsvQ3co8ZwlJufm30dU7ymVi"/>
+            <column name="password_hash" value="$2a$10$Z.IGSrxjpcn6E7lF9A3xAuOzm43kgRsvQ3co8ZwlJufm30dU7ymVi"/>
             <column name="role" value="USER"/>
         </insert>
 
         <insert tableName="users">
             <column name="name" value="Jane Snow"/>
             <column name="email" value="exampleFour@mail.com"/>
-            <column name="phoneNumber" value="+1 423 423 4234"/>
+            <column name="phone_number" value="+1 423 423 4234"/>
             <!--            1234-->
-            <column name="passwordHash" value="$2a$10$45shY7PU4Z4e5efPwElkG.1Suv8HrT03wEBvsAkSH6U6ltwKJnuCi"/>
+            <column name="password_hash" value="$2a$10$45shY7PU4Z4e5efPwElkG.1Suv8HrT03wEBvsAkSH6U6ltwKJnuCi"/>
             <column name="role" value="ADMIN"/>
         </insert>
     </changeSet>

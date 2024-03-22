@@ -17,22 +17,22 @@
             <column name="user_id" type="BIGINT">
             <constraints nullable="false" referencedTableName="Users" referencedColumnNames="id" foreignKeyName="fk_orders_Users"/>
             </column>
-            <column name="deliveryAddress" type="VARCHAR(255)">
+            <column name="delivery_address" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="deliveryMethod" type="VARCHAR(255)">
+            <column name="delivery_method" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="contactPhone" type="VARCHAR(255)">
+            <column name="contact_phone" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="status" type="ENUM('CREATED', 'AWAITING_PAYMENT', 'PAID', 'ON_THE_WAY', 'DELIVERED','CANCELED')">
                 <constraints nullable="false"/>
             </column>
-            <column name="createdAt" type="TIMESTAMP">
+            <column name="created_at" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
-            <column name="updatedAt" type="TIMESTAMP">
+            <column name="updated_at" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -42,42 +42,42 @@
         <comment>add test data to orders</comment>
         <insert tableName="orders">
             <column name="user_id" value="1"/>
-            <column name="deliveryAddress" value="Hamburg, Germany"/>
-            <column name="deliveryMethod" value="by mail"/>
-            <column name="contactPhone" value="+1 123 123 1234"/>
+            <column name="delivery_address" value="Hamburg, Germany"/>
+            <column name="delivery_method" value="by mail"/>
+            <column name="contact_phone" value="+1 123 123 1234"/>
             <column name="status" value="CREATED"/>
-            <column name="createdAt" value="2024-03-20 14:34:02.942000"/>
-            <column name="updatedAt" value="2024-03-20 14:34:02.942000"/>
+            <column name="created_at" value="2024-03-20 14:34:02.942000"/>
+            <column name="updated_at" value="2024-03-20 14:34:02.942000"/>
         </insert>
 
         <insert tableName="orders">
             <column name="user_id" value="2"/>
-            <column name="deliveryAddress" value="Frankfurt am Main, Germany"/>
-            <column name="deliveryMethod" value="by mail"/>
-            <column name="contactPhone" value="+1 223 223 2234"/>
+            <column name="delivery_address" value="Frankfurt am Main, Germany"/>
+            <column name="delivery_method" value="by mail"/>
+            <column name="contact_phone" value="+1 223 223 2234"/>
             <column name="status" value="CREATED"/>
-            <column name="createdAt" value="2024-03-20 14:34:02.942000"/>
-            <column name="updatedAt" value="2024-03-20 14:34:02.942000"/>
+            <column name="created_at" value="2024-03-20 14:34:02.942000"/>
+            <column name="updated_at" value="2024-03-20 14:34:02.942000"/>
         </insert>
 
         <insert tableName="orders">
             <column name="user_id" value="2"/>
-            <column name="deliveryAddress" value="Paris, France"/>
-            <column name="deliveryMethod" value="by courier"/>
-            <column name="contactPhone" value="+1 323 323 3234"/>
+            <column name="delivery_address" value="Paris, France"/>
+            <column name="delivery_method" value="by courier"/>
+            <column name="contact_phone" value="+1 323 323 3234"/>
             <column name="status" value="CREATED"/>
-            <column name="createdAt" value="2024-03-20 14:34:02.942000"/>
-            <column name="updatedAt" value="2024-03-20 14:34:02.942000"/>
+            <column name="created_at" value="2024-03-20 14:34:02.942000"/>
+            <column name="updated_at" value="2024-03-20 14:34:02.942000"/>
         </insert>
 
         <insert tableName="orders">
             <column name="user_id" value="4"/>
-            <column name="deliveryAddress" value="London, England"/>
-            <column name="deliveryMethod" value="by courier"/>
-            <column name="contactPhone" value="+1 423 423 4234"/>
+            <column name="delivery_address" value="London, England"/>
+            <column name="delivery_method" value="by courier"/>
+            <column name="contact_phone" value="+1 423 423 4234"/>
             <column name="status" value="CREATED"/>
-            <column name="createdAt" value="2024-03-20 14:34:02.942000"/>
-            <column name="updatedAt" value="2024-03-20 14:34:02.942000"/>
+            <column name="created_at" value="2024-03-20 14:34:02.942000"/>
+            <column name="updated_at" value="2024-03-20 14:34:02.942000"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

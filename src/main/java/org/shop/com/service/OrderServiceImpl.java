@@ -10,11 +10,15 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
 
     private final OrderJpaRepository repository;
+
+    public OrderServiceImpl(OrderJpaRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public OrderEntity create(OrderEntity entity) {

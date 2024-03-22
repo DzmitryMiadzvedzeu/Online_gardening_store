@@ -40,10 +40,10 @@ public class ProductController {
                                                  @RequestParam(name = "maxPrice", required = false) Double maxPrice,
                                                  @RequestParam(name = "discount", required = false) Boolean discount,
                                                  @RequestParam(name = "sort", required = false) String sort) {
-        List<ProductDto> productDtos = productService.getAll(category, minPrice, maxPrice, sort).stream()
+        List<ProductDto> productDto = productService.getAll(category, minPrice, maxPrice, sort).stream()
                 .map(productConverter::toDto)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(productDtos);
+        return ResponseEntity.ok(productDto);
     }
 
     @PostMapping

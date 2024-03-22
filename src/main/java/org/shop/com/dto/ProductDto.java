@@ -1,13 +1,10 @@
 package org.shop.com.dto;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -19,10 +16,16 @@ public class ProductDto {
 
     private String description;
 
-    private double price;
-
-    private String category;
+    private BigDecimal price;
 
     private String image;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
+    private BigDecimal discountPrice;
+
+    private long categoryId;
 
 }

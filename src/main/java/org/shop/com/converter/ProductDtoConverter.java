@@ -1,12 +1,14 @@
 package org.shop.com.converter;
-
 import org.shop.com.dto.ProductCreateDto;
 import org.shop.com.dto.ProductDto;
 import org.shop.com.entity.CategoryEntity;
 import org.shop.com.entity.ProductEntity;
+import org.shop.com.exceptions.CategoryNotFoundException;
 import org.shop.com.repository.CategoryJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import java.time.LocalDateTime;
+
 @Component
 public class ProductDtoConverter implements ProductConverter<ProductEntity, ProductDto> {
 
@@ -19,15 +21,17 @@ public class ProductDtoConverter implements ProductConverter<ProductEntity, Prod
 
     @Override
     public ProductDto toDto(ProductEntity entity) {
-        String categoryName = entity.getCategory() != null ? entity.getCategory().getName() : null;
-        return new ProductDto(
-                entity.getId(),
-                entity.getName(),
-                entity.getDescription(),
-                entity.getPrice(),
-                categoryName,
-                entity.getImage()
-        );
+        ProductDto productDto = new ProductDto();
+        productDto.setId(entity.getId());
+        productDto.setName(entity.getName());
+        productDto.setDescription(entity.getDescription());
+        productDto.setPrice(entity.getPrice());
+        productDto.setImage(entity.getImage());
+        productDto.setCreatedAt(entity.getCreatedAt());
+        productDto.setUpdatedAt(entity.getUpdatedAt());
+        productDto.setDiscountPrice(entity.getDiscountPrice());
+        productDto.setCategoryId(entity.getCategory() != null ? entity.getCategory().getCategoryId() : 0);
+        return productDto;
     }
 
     @Override
@@ -36,8 +40,10 @@ public class ProductDtoConverter implements ProductConverter<ProductEntity, Prod
         productEntity.setName(productDto.getName());
         productEntity.setDescription(productDto.getDescription());
         productEntity.setPrice(productDto.getPrice());
-        productEntity.setCategory(findCategoryByName(productDto.getCategory()));
         productEntity.setImage(productDto.getImage());
+        CategoryEntity category = categoryRepository.findById(productDto.getCategoryId())
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
+        productEntity.setCategory(category);
         return productEntity;
     }
 
@@ -48,8 +54,13 @@ public class ProductDtoConverter implements ProductConverter<ProductEntity, Prod
         productEntity.setName(dto.getName());
         productEntity.setDescription(dto.getDescription());
         productEntity.setPrice(dto.getPrice());
-        productEntity.setCategory(findCategoryByName(dto.getCategory()));
         productEntity.setImage(dto.getImage());
+        productEntity.setCreatedAt(LocalDateTime.now());
+        productEntity.setUpdatedAt(LocalDateTime.now());
+        productEntity.setDiscountPrice(dto.getDiscountPrice());
+        CategoryEntity category = categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
+        productEntity.setCategory(category);
         return productEntity;
     }
 

@@ -5,8 +5,8 @@ import org.shop.com.exceptions.ProductNotFoundException;
 import org.shop.com.repository.ProductJpaRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,12 +20,12 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public List<ProductEntity> getAll(String category, Double minPrice, Double maxPrice, String sort) {
+    public List<ProductEntity> getAll(String category, BigDecimal minPrice, BigDecimal maxPrice,
+                                      BigDecimal discountPrice, String sort) {
         Sort optionsToSort = Sort.unsorted();
         if (sort!=null) {
             optionsToSort = Sort.by(sort);
         }
-
        List<ProductEntity> list = repository.findAll(optionsToSort);
 
         if (category != null) {
@@ -36,6 +36,10 @@ public class ProductServiceImpl implements ProductService{
         }
         if (maxPrice != null) {
             list = repository.findByPriceLessThanEqual(maxPrice, optionsToSort);
+        }
+
+        if (discountPrice != null) {
+            list = repository.findByDiscountPrice(discountPrice, optionsToSort);
         }
         return list;
     }

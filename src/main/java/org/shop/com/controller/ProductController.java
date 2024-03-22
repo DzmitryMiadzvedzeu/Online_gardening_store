@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,17 +37,17 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<ProductDto>> list(@RequestParam(name = "category", required = false) String category,
-                                                 @RequestParam(name = "minPrice", required = false) Double minPrice,
-                                                 @RequestParam(name = "maxPrice", required = false) Double maxPrice,
-                                                 @RequestParam(name = "discount", required = false) Boolean discount,
+                                                 @RequestParam(name = "minPrice", required = false) BigDecimal minPrice,
+                                                 @RequestParam(name = "maxPrice", required = false) BigDecimal maxPrice,
+                                                 @RequestParam(name = "discount", required = false) BigDecimal discountPrice,
                                                  @RequestParam(name = "sort", required = false) String sort) {
-        List<ProductDto> productDto = productService.getAll(category, minPrice, maxPrice, sort).stream()
+        List<ProductDto> productDto = productService.getAll(category, minPrice, maxPrice, discountPrice, sort).stream()
                 .map(productConverter::toDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(productDto);
     }
 
-    @PostMapping
+    @PostMapping("/products")
     public ResponseEntity<ProductDto> addProduct(@RequestBody ProductCreateDto productCreateDto) {
         ProductEntity productEntity = productConverter.createDtoToEntity(productCreateDto);
         ProductEntity savedEntity = productService.create(productEntity);

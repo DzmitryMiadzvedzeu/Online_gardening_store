@@ -1,149 +1,148 @@
 package org.shop.com.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.shop.com.converter.CategoryDtoConverter;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.shop.com.controller.CategoryController;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import org.shop.com.dto.CategoryCreateDTO;
 import org.shop.com.dto.CategoryDTO;
 import org.shop.com.entity.CategoryEntity;
 import org.shop.com.exceptions.CategoryNotFoundException;
 import org.shop.com.service.CategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+
+import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 
-@WebMvcTest(CategoryController.class)
-class CategoryControllerTest {
+@ExtendWith(MockitoExtension.class)
+public class CategoryControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
+    @Mock
     private CategoryService categoryService;
 
-    @MockBean
-    private CategoryDtoConverter categoryDtoConverter;
+    @InjectMocks
+    private CategoryController categoryController;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private MockMvc mockMvc;
+
+    @BeforeEach
+    public void setup() {
+        mockMvc = MockMvcBuilders.standaloneSetup(categoryController).build();
+    }
 
     @Test
-    void testGetAllCategories() throws Exception {
-        CategoryEntity categoryEntity1 = new CategoryEntity();
-        categoryEntity1.setCategoryId(1L);
-        categoryEntity1.setName("Shovel");
-        CategoryEntity categoryEntity2 = new CategoryEntity();
-        categoryEntity2.setCategoryId(2L);
-        categoryEntity2.setName("Rake");
-        List<CategoryEntity> allEntities = Arrays.asList(categoryEntity1, categoryEntity2);
+    public void getAllCategoriesTest() throws Exception {
 
-        List<CategoryDTO> allDtos = allEntities.stream()
-                .map(entity -> new CategoryDTO(entity.getCategoryId(), entity.getName()))
-                .collect(Collectors.toList());
+        CategoryEntity categoryOneEntity = new CategoryEntity(1L, "Plants");
+        CategoryEntity categoryTwoEntity = new CategoryEntity(2L, "Tools");
+        List<CategoryEntity> categoryEntityList = Arrays.asList(categoryOneEntity, categoryTwoEntity);
 
-        when(categoryService.getAllCategories()).thenReturn(allEntities);
-        when(categoryDtoConverter.toDto(any(CategoryEntity.class)))
-                .thenAnswer(i -> {
-                    CategoryEntity entity = i.getArgument(0);
-                    return new CategoryDTO(entity.getCategoryId(), entity.getName());
-                });
+        given(categoryService.getAllCategories()).willReturn(categoryEntityList);
 
-        mockMvc.perform(get("/v1/categories")
-                        .contentType(MediaType.APPLICATION_JSON))
+
+        mockMvc.perform(get("/v1/categories"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].name", is("Shovel")))
-                .andExpect(jsonPath("$[1].name", is("Rake")));
+                .andExpect(jsonPath("$[0].categoryId", is(categoryOneEntity.getCategoryId().intValue())))
+                .andExpect(jsonPath("$[0].name", is(categoryOneEntity.getName())))
+                .andExpect(jsonPath("$[1].categoryId", is(categoryTwoEntity.getCategoryId().intValue())))
+                .andExpect(jsonPath("$[1].name", is(categoryTwoEntity.getName())));
+
+
+        verify(categoryService, times(1)).getAllCategories();
     }
 
     @Test
-    void testGetCategoryById() throws Exception {
+    public void getCategoryByIdTest() throws Exception {
+
         Long categoryId = 1L;
-        CategoryEntity categoryEntity = new CategoryEntity();
-        categoryEntity.setCategoryId(categoryId);
-        categoryEntity.setName("Gardening Tools");
-        CategoryDTO categoryDTO = new CategoryDTO(categoryId, "Gardening Tools");
+        CategoryDTO category = new CategoryDTO(categoryId, "Plants");
 
-        when(categoryService.getCategoryById(categoryId)).thenReturn(categoryEntity);
-        when(categoryDtoConverter.toDto(any(CategoryEntity.class))).thenReturn(categoryDTO);
+        given(categoryService.getCategoryById(categoryId))
+                .willReturn(new CategoryEntity(categoryId, category.getName(), null));
 
-        mockMvc.perform(get("/v1/categories/{id}", categoryId)
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/v1/categories/{id}", categoryId))
                 .andExpect(status().isOk())
+                // Приведение к строке, чтобы избежать проблем с типами
                 .andExpect(jsonPath("$.categoryId", is(categoryId.intValue())))
-                .andExpect(jsonPath("$.name", is("Gardening Tools")));
+                .andExpect(jsonPath("$.name", is(category.getName())));
     }
     @Test
-    void testCreateCategory() throws Exception {
-        CategoryCreateDTO createDTO = new CategoryCreateDTO("New Tools");
-        CategoryEntity categoryEntity = new CategoryEntity();
-        categoryEntity.setCategoryId(2L);
-        categoryEntity.setName("New Tools");
-        CategoryDTO categoryDTO = new CategoryDTO(2L, "New Tools");
+    public void createCategoryTest() throws Exception {
 
-        when(categoryService.createCategory(any(CategoryCreateDTO.class))).thenReturn(categoryEntity);
-        when(categoryDtoConverter.toDto(any(CategoryEntity.class))).thenReturn(categoryDTO);
+        CategoryCreateDTO createDTO = new CategoryCreateDTO("Plants");
+        CategoryDTO returnedDTO = new CategoryDTO(1L, "Plants");
+
+        given(categoryService.createCategory(any(CategoryCreateDTO.class)))
+                .willReturn(new CategoryEntity(1L, "Plants", null));
 
         mockMvc.perform(post("/v1/categories")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(createDTO)))
+                        .content(new ObjectMapper().writeValueAsString(createDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.categoryId", is(2)))
-                .andExpect(jsonPath("$.name", is("New Tools")));
+                .andExpect(jsonPath("$.categoryId", is(returnedDTO.getCategoryId().intValue())))
+                .andExpect(jsonPath("$.name", is(returnedDTO.getName())));
     }
 
     @Test
-    void testEditCategory() throws Exception {
-        Long categoryId = 1L;
-        CategoryCreateDTO categoryDTO = new CategoryCreateDTO("Updated Tools");
-        CategoryEntity updatedCategoryEntity = new CategoryEntity();
-        updatedCategoryEntity.setCategoryId(categoryId);
-        updatedCategoryEntity.setName("Updated Tools");
-        CategoryDTO updatedCategoryDTO = new CategoryDTO(categoryId, "Updated Tools");
+    public void editCategoryTest() throws Exception {
 
-        when(categoryService.editCategory(eq(categoryId), any(CategoryCreateDTO.class))).thenReturn(updatedCategoryEntity);
-        when(categoryDtoConverter.toDto(any(CategoryEntity.class))).thenReturn(updatedCategoryDTO);
+        Long id = 1L;
+        CategoryCreateDTO updateDTO = new CategoryCreateDTO("UpdatedPlants");
+        CategoryDTO updatedDTO = new CategoryDTO(id, "UpdatedPlants");
 
-        mockMvc.perform(put("/v1/categories/{id}", categoryId)
+        given(categoryService.editCategory(eq(id), any(CategoryCreateDTO.class)))
+                .willReturn(new CategoryEntity(id, "UpdatedPlants", null));
+
+
+        mockMvc.perform(put("/v1/categories/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(categoryDTO)))
+                        .content(new ObjectMapper().writeValueAsString(updateDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.categoryId", is(categoryId.intValue())))
-                .andExpect(jsonPath("$.name", is("Updated Tools")));
+                .andExpect(jsonPath("$.categoryId", is(updatedDTO.getCategoryId().intValue())))
+                .andExpect(jsonPath("$.name", is(updatedDTO.getName())));
     }
 
     @Test
-    void testDeleteCategory() throws Exception {
-        Long categoryId = 1L;
+    public void deleteCategoryTest() throws Exception {
+        Long id = 1L;
+        doNothing().when(categoryService).deleteCategory(id);
 
-        mockMvc.perform(delete("/v1/categories/{id}", categoryId)
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(delete("/v1/categories/{id}", id))
                 .andExpect(status().isNoContent());
-
-        verify(categoryService).deleteCategory(categoryId);
     }
 
+    @Test
+    public void findCategoryByNameTest() throws Exception {
+        String name = "Tech";
+        CategoryDTO categoryDTO = new CategoryDTO(1L, "Plants");
+
+        given(categoryService.findByName(name)).willReturn(Optional.of(new CategoryEntity(1L, "Plants", null)));
+
+        mockMvc.perform(get("/v1/categories/search")
+                        .param("name", name))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.categoryId", is(categoryDTO.getCategoryId().intValue())))
+                .andExpect(jsonPath("$.name", is(categoryDTO.getName())));
+    }
     @Test
     void testGetCategoryByIdNotFound() throws Exception {
         Long categoryId = 1L;

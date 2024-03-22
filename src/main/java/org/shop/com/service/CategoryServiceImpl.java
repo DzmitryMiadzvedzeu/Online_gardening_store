@@ -1,31 +1,30 @@
 package org.shop.com.service;
 
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.shop.com.converter.CategoryDtoConverter;
 import org.shop.com.dto.CategoryCreateDTO;
-import org.shop.com.dto.CategoryDTO;
 import org.shop.com.entity.CategoryEntity;
 import org.shop.com.exceptions.CategoryInvalidArgumentException;
 import org.shop.com.exceptions.CategoryNotFoundException;
+import org.shop.com.mapper.CategoryMapper;
 import org.shop.com.repository.CategoryJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryJpaRepository categoryRepository;
-    private final CategoryDtoConverter categoryDtoConverter;
-
-    @Autowired
-    public CategoryServiceImpl(CategoryJpaRepository categoryJpaRepository, CategoryDtoConverter categoryDtoConverter) {
-        this.categoryRepository = categoryJpaRepository;
-        this.categoryDtoConverter = categoryDtoConverter;
-    }
+  //  private final CategoryDtoConverter categoryDtoConverter;
 
     @Override
     public List<CategoryEntity> getAllCategories() {
@@ -36,19 +35,14 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryEntity getCategoryById(Long id) {
         log.debug("Fetching category by ID: {}", id);
-        return categoryRepository.findById(id).orElseThrow(() -> {
-            log.error("Category with ID {} not found", id);
-            return new CategoryNotFoundException("Category with id " + id + " not found.");
-        });
+        return categoryRepository.findById(id).orElseThrow(() ->
+                new CategoryNotFoundException("Category with id " + id + " not found."));
     }
 
     @Override
     public CategoryEntity createCategory(CategoryCreateDTO createDTO) {
         log.debug("Creating category with name: {}", createDTO.getName());
-        CategoryDTO categoryDTO = new CategoryDTO();
-        categoryDTO.setName(createDTO.getName());
-
-        CategoryEntity categoryEntity = categoryDtoConverter.toEntity(categoryDTO);
+        CategoryEntity categoryEntity = CategoryMapper.INSTANCE.createDtoToEntity(createDTO);
         CategoryEntity savedEntity = categoryRepository.save(categoryEntity);
         log.debug("Category created successfully with ID: {}", savedEntity.getCategoryId());
         return savedEntity;
@@ -77,5 +71,10 @@ public class CategoryServiceImpl implements CategoryService {
         }
         categoryRepository.deleteById(id);
         log.debug("Category with ID: {} deleted successfully", id);
+    }
+    @Override
+    public Optional<CategoryEntity> findByName(String name) {
+        log.debug("Searching for category by name: {}", name);
+        return categoryRepository.findByName(name);
     }
 }

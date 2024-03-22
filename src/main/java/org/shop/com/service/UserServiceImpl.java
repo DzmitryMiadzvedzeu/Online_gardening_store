@@ -6,6 +6,7 @@ import org.shop.com.dto.UserCreateDto;
 import org.shop.com.dto.UserDto;
 import org.shop.com.entity.UserEntity;
 import org.shop.com.exceptions.UserNotFoundException;
+import org.shop.com.mapper.UserMapper;
 import org.shop.com.repository.UserJpaRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,12 +14,19 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserJpaRepository repository;
-    private final UserDtoConverter converter;
+//    private final UserDtoConverter converter;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
+
+    public UserServiceImpl(UserJpaRepository repository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
+        this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
+        this.userMapper = userMapper;
+    }
 
     @Override
     public UserEntity create(UserCreateDto createDto) {
@@ -29,7 +37,7 @@ public class UserServiceImpl implements UserService {
         userDto.setPhoneNumber(createDto.getPhoneNumber());
         userDto.setPasswordHash(hashedPassword);
         userDto.setRole(createDto.getRole());
-        UserEntity savedUserEntity = repository.save(converter.toEntity(userDto));
+        UserEntity savedUserEntity = repository.save(userMapper.toEntity(userDto));
         return savedUserEntity;
     }
 
@@ -49,13 +57,7 @@ public class UserServiceImpl implements UserService {
     public UserEntity editUser(long id, UserCreateDto userDto) {
         return repository.findById(id).map(user -> {
             user.setName(userDto.getName());
-            user.setEmail(userDto.getEmail());
             user.setPhoneNumber(userDto.getPhoneNumber());
-            if (userDto.getPasswordHash() != null && !userDto.getPasswordHash().isBlank()) {
-                String hashedPassword = passwordEncoder.encode(userDto.getPasswordHash());
-                user.setPasswordHash(hashedPassword);
-            }
-            user.setRole(userDto.getRole());
             return repository.save(user);
         }).orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
     }

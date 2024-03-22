@@ -7,6 +7,7 @@ import org.shop.com.dto.OrderCreateDto;
 import org.shop.com.dto.OrderDto;
 import org.shop.com.dto.OrderStatusDto;
 import org.shop.com.entity.OrderEntity;
+import org.shop.com.mapper.OrderMapper;
 import org.shop.com.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,17 +18,22 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/orders")
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class OrderController {
 
     private final OrderService orderService;
-    private final OrderConverter<OrderEntity, OrderDto> converter;
+//    private final OrderConverter<OrderEntity, OrderDto> converter;
+    private final OrderMapper orderMapper;
 
+    public OrderController(OrderService orderService, OrderMapper orderMapper) {
+        this.orderService = orderService;
+        this.orderMapper = orderMapper;
+    }
 
     @GetMapping
     public ResponseEntity<List<OrderDto>> listAllOrderDto(){
         List<OrderDto> orderDtos = orderService.getAll().stream()
-                .map(converter::toDto)
+                .map(orderMapper::toDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(orderDtos);
     }
@@ -46,9 +52,9 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderDto> addOrder(@RequestBody OrderCreateDto orderCreateDto){
-        OrderEntity orderEntity = converter.createDtoToEntity(orderCreateDto);
+        OrderEntity orderEntity = orderMapper.orderCreateDtoToEntity(orderCreateDto);
         OrderEntity createdOrderEntity = orderService.create(orderEntity);
-        OrderDto createdOrderDto = converter.toDto(createdOrderEntity);
+        OrderDto createdOrderDto = orderMapper.toDto(createdOrderEntity);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdOrderDto);
     }
 }

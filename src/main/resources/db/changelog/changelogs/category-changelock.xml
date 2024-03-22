@@ -10,7 +10,7 @@
     <changeSet id="1" author="Sergey">
         <comment>create table categories</comment>
             <createTable tableName="category">
-            <column name="categoryId" autoIncrement="true" type="BIGINT">
+            <column name="category_id" autoIncrement="true" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" primaryKeyName="category_pkey"/>
             </column>
             <column name="name_category" type="VARCHAR(255)"/>

@@ -8,7 +8,7 @@ import org.shop.com.entity.UserEntity;
 import org.shop.com.exceptions.UserNotFoundException;
 import org.shop.com.mapper.UserMapper;
 import org.shop.com.repository.UserJpaRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,23 +19,23 @@ public class UserServiceImpl implements UserService {
 
     private final UserJpaRepository repository;
 //    private final UserDtoConverter converter;
-    private final PasswordEncoder passwordEncoder;
+//    private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
-    public UserServiceImpl(UserJpaRepository repository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
+    public UserServiceImpl(UserJpaRepository repository, UserMapper userMapper) {
         this.repository = repository;
-        this.passwordEncoder = passwordEncoder;
+//        this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
     }
 
     @Override
     public UserEntity create(UserCreateDto createDto) {
-        String hashedPassword = passwordEncoder.encode(createDto.getPasswordHash());
+//        String hashedPassword = passwordEncoder.encode();
         UserDto userDto = new UserDto();
         userDto.setName(createDto.getName());
         userDto.setEmail(createDto.getEmail());
         userDto.setPhoneNumber(createDto.getPhoneNumber());
-        userDto.setPasswordHash(hashedPassword);
+        userDto.setPasswordHash(createDto.getPasswordHash());
         userDto.setRole(createDto.getRole());
         UserEntity savedUserEntity = repository.save(userMapper.toEntity(userDto));
         return savedUserEntity;

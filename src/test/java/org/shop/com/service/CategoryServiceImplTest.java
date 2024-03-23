@@ -1,18 +1,20 @@
 package org.shop.com.service;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.shop.com.converter.CategoryDtoConverter;
 import org.shop.com.dto.CategoryCreateDTO;
 import org.shop.com.dto.CategoryDTO;
 import org.shop.com.entity.CategoryEntity;
 import org.shop.com.exceptions.CategoryInvalidArgumentException;
+import org.shop.com.exceptions.CategoryNotFoundException;
 import org.shop.com.repository.CategoryJpaRepository;
-import org.shop.com.service.CategoryServiceImpl;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,96 +27,107 @@ class CategoryServiceImplTest {
 
     @Mock
     private CategoryJpaRepository categoryRepository;
-
-    @Mock
-    private CategoryDtoConverter categoryDtoConverter;
-
     @InjectMocks
     private CategoryServiceImpl categoryService;
 
     @Test
-    void whenGetAllCategories_thenReturnsCategories() {
-        CategoryEntity category1 = new CategoryEntity(1L, "Gardening Tools");
-        CategoryEntity category2 = new CategoryEntity(2L, "Plant Seeds");
-        List<CategoryEntity> expectedCategories = Arrays.asList(category1, category2);
-
-        when(categoryRepository.findAll()).thenReturn(expectedCategories);
+    void getAllCategories_ShouldReturnAllCategories() {
+        when(categoryRepository.findAll()).thenReturn(Arrays.asList(new CategoryEntity(), new CategoryEntity()));
 
         List<CategoryEntity> result = categoryService.getAllCategories();
 
-        assertThat(result).hasSize(2);
-        assertThat(result.get(0).getName()).isEqualTo("Gardening Tools");
-        assertThat(result.get(1).getName()).isEqualTo("Plant Seeds");
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        verify(categoryRepository).findAll();
+    }
+
+
+    @Test
+    void getCategoryById_WhenCategoryExists_ShouldReturnCategory() {
+        Long id = 1L;
+        CategoryEntity category = new CategoryEntity();
+        when(categoryRepository.findById(id)).thenReturn(Optional.of(category));
+
+        CategoryEntity result = categoryService.getCategoryById(id);
+
+        assertNotNull(result);
+        verify(categoryRepository).findById(id);
+    }
+    @Test
+    void getCategoryById_WhenCategoryDoesNotExist_ShouldThrowException() {
+        Long id = 1L;
+        when(categoryRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(CategoryNotFoundException.class, () -> categoryService.getCategoryById(id));
+        verify(categoryRepository).findById(id);
     }
 
     @Test
-    void whenGetCategoryById_thenReturnsCategory() {
-        CategoryEntity category = new CategoryEntity(1L, "Gardening Tools");
-
-        when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
-
-        CategoryEntity result = categoryService.getCategoryById(1L);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getName()).isEqualTo("Gardening Tools");
-    }
-
-    @Test
-    void whenCreateCategory_thenCategoryIsCreated() {
-        CategoryCreateDTO createDTO = new CategoryCreateDTO("New Tools");
-        CategoryEntity categoryEntity = new CategoryEntity(null, "New Tools");
-        CategoryEntity savedCategoryEntity = new CategoryEntity(1L, "New Tools");
-        CategoryDTO categoryDTO = new CategoryDTO(null, "New Tools");
-
-        when(categoryDtoConverter.toEntity(any(CategoryDTO.class))).thenReturn(categoryEntity);
-        when(categoryRepository.save(any(CategoryEntity.class))).thenReturn(savedCategoryEntity);
+    void createCategory_ShouldCreateAndReturnCategory() {
+        CategoryCreateDTO createDTO = new CategoryCreateDTO();
+        createDTO.setName("Test Category");
+        CategoryEntity category = new CategoryEntity();
+        when(categoryRepository.save(any(CategoryEntity.class))).thenReturn(category);
 
         CategoryEntity result = categoryService.createCategory(createDTO);
 
-        assertThat(result).isNotNull();
-        assertThat(result.getName()).isEqualTo("New Tools");
-    }
-    @Test
-    void whenEditCategory_thenCategoryIsUpdated() {
-        Long categoryId = 1L;
-        CategoryCreateDTO updateDTO = new CategoryCreateDTO("Updated Tools");
-        CategoryEntity existingCategory = new CategoryEntity(categoryId, "Gardening Tools");
-        CategoryEntity updatedCategory = new CategoryEntity(categoryId, "Updated Tools");
-
-        when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(existingCategory));
-
-        when(categoryDtoConverter.toEntity(any(CategoryDTO.class))).thenReturn(updatedCategory);
-        when(categoryRepository.save(any(CategoryEntity.class))).thenReturn(updatedCategory);
-
-        CategoryEntity result = categoryService.editCategory(categoryId, updateDTO);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getName()).isEqualTo(updateDTO.getName());
-
-        verify(categoryRepository).findById(categoryId);
+        assertNotNull(result);
         verify(categoryRepository).save(any(CategoryEntity.class));
     }
     @Test
-    void whenDeleteCategory_withExistingCategory_thenCategoryIsDeleted() {
-        Long categoryId = 1L;
+    void editCategory_WhenCategoryExists_ShouldUpdateAndReturnCategory() {
+        Long id = 1L;
+        CategoryCreateDTO categoryDTO = new CategoryCreateDTO();
+        categoryDTO.setName("Updated Name");
+        CategoryEntity category = new CategoryEntity();
+        when(categoryRepository.findById(id)).thenReturn(Optional.of(category));
+        when(categoryRepository.save(any(CategoryEntity.class))).thenReturn(category);
 
-        when(categoryRepository.existsById(categoryId)).thenReturn(true);
+        CategoryEntity result = categoryService.editCategory(id, categoryDTO);
 
-        categoryService.deleteCategory(categoryId);
-
-        verify(categoryRepository).existsById(categoryId);
-        verify(categoryRepository).deleteById(categoryId);
+        assertNotNull(result);
+        assertEquals("Updated Name", result.getName());
+        verify(categoryRepository).save(category);
+        verify(categoryRepository).findById(id);
     }
+
     @Test
-    void whenDeleteCategory_withNonExistingCategory_thenThrowsException() {
-        Long categoryId = 2L;
+    void editCategory_ShouldThrowExceptionWhenNotFound() {
+        Long id = 1L;
+        when(categoryRepository.findById(id)).thenReturn(Optional.empty());
 
-        when(categoryRepository.existsById(categoryId)).thenReturn(false);
+        assertThrows(CategoryNotFoundException.class, () -> categoryService.editCategory(id, new CategoryCreateDTO()));
+    }
 
-        assertThrows(CategoryInvalidArgumentException.class, () -> categoryService.deleteCategory(categoryId));
+    @Test
+    void deleteCategory_WhenCategoryExists_ShouldDeleteCategory() {
+        Long id = 1L;
+        when(categoryRepository.existsById(id)).thenReturn(true);
 
-        verify(categoryRepository).existsById(categoryId);
-        verify(categoryRepository, never()).deleteById(anyLong());
+        categoryService.deleteCategory(id);
+
+        verify(categoryRepository).deleteById(id);
+    }
+
+    @Test
+    void deleteCategory_WhenCategoryDoesNotExist_ShouldThrowException() {
+        Long id = 1L;
+        when(categoryRepository.existsById(id)).thenReturn(false);
+
+        assertThrows(CategoryInvalidArgumentException.class, () -> categoryService.deleteCategory(id));
+        verify(categoryRepository, never()).deleteById(id);
+    }
+
+
+    @Test
+    void findByName_ShouldReturnCategoryOptional() {
+        String name = "Test Category";
+        when(categoryRepository.findByName(name)).thenReturn(Optional.of(new CategoryEntity()));
+
+        Optional<CategoryEntity> result = categoryService.findByName(name);
+
+        assertTrue(result.isPresent());
+        verify(categoryRepository).findByName(name);
     }
 
 }

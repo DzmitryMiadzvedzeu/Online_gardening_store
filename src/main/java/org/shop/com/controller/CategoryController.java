@@ -46,10 +46,6 @@ public class CategoryController {
     public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
         log.debug("Received request to fetch category by ID: {}", id);
         CategoryEntity categoryEntity = categoryService.getCategoryById(id);
-        if (categoryEntity == null) {
-            log.error("Category with ID {} not found", id);
-            throw new CategoryNotFoundException("Category with id " + id + " not found.");
-        }
         return ResponseEntity.ok(CategoryMapper.INSTANCE.toDto(categoryEntity));
     }
 

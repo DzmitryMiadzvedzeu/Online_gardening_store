@@ -20,10 +20,4 @@ public class OrderCreateDto {
 
     private String contactPhone;
 
-    private OrderStatus status;
-
-    private Date createdAt;
-
-    private Date updatedAt;
-
 }

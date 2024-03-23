@@ -32,7 +32,7 @@ public class OrderEntity {
     private String contactPhone;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private OrderStatus status = OrderStatus.CREATED;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt = new Date();

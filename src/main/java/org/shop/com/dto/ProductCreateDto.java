@@ -19,8 +19,8 @@ public class  ProductCreateDto {
 
     private BigDecimal price;
 
-    private long categoryId;
-
     private String image;
+
+    private long categoryId;
 
 }

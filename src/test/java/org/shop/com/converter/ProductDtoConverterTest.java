@@ -11,6 +11,7 @@ import org.shop.com.entity.CategoryEntity;
 import org.shop.com.entity.ProductEntity;
 import org.shop.com.repository.CategoryJpaRepository;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -42,7 +43,7 @@ class ProductDtoConverterTest {
         ProductEntity entity = new ProductEntity();
         entity.setName("Name");
         entity.setDescription("Description");
-        entity.setPrice(10.0);
+        entity.setPrice(BigDecimal.valueOf(100));
         entity.setCategory(categoryEntity);
         entity.setImage("Image");
 
@@ -53,14 +54,14 @@ class ProductDtoConverterTest {
         assertEquals(entity.getName(), dto.getName());
         assertEquals(entity.getDescription(), dto.getDescription());
         assertEquals(entity.getPrice(), dto.getPrice());
-        assertEquals(categoryEntity.getName(), dto.getCategory());
+        assertEquals(categoryEntity.getName(), dto.getCategoryId());
         assertEquals(entity.getImage(), dto.getImage());
     }
 
     @Test
     void testCreateDtoToEntity() {
         ProductCreateDto createdDto = new ProductCreateDto("Name", "Description",
-                                                        10.0, "Category", "Image");
+                                                        BigDecimal.valueOf(10.0), 2, "Image");
         ProductEntity entity = converter.createDtoToEntity(createdDto);
 
         assertNotNull(entity);

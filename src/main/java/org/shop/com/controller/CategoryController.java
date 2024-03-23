@@ -1,5 +1,10 @@
 package org.shop.com.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+
+
 // http://localhost:8080/v1/categories
 
 @Slf4j
@@ -33,6 +40,14 @@ public class CategoryController {
         this.categoryService = categoryService;
 
     }
+    @Operation(summary = "List all categories")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found the categories",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CategoryDTO.class)) }),
+            @ApiResponse(responseCode = "404", description = "Categories not found",
+                    content = @Content)
+    })
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
         log.debug("Received request to list all categories");

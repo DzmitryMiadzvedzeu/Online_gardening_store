@@ -25,6 +25,6 @@ public class UserCreateDto {
     @JsonProperty("passwordHash")
     private String passwordHash;
 
-    @JsonProperty("role")
-    private UserRole role;
+//    @JsonProperty("role")
+//    private UserRole role;
 }

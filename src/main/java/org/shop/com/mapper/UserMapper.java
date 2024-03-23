@@ -12,9 +12,7 @@ public interface UserMapper {
 
     UserDto toDto(UserEntity userEntity);
 
-
     UserEntity toEntity(UserDto userDto);
-
 
     UserEntity userCreateDtoToEntity(UserCreateDto userCreateDto);
 }

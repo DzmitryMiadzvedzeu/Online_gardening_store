@@ -45,15 +45,13 @@ public class UserEntity {
     @NotBlank(message = "This field can't be empty")
     private String passwordHash;
 
-    @NotBlank(message = "This field can't be empty")
     @Enumerated(EnumType.STRING)
-    @Column(length = 20)
-    private UserRole role;
+    private UserRole role = UserRole.USER;
 
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private List<OrderEntity> orderEntities = new ArrayList<>();
 
-    public UserEntity(String name, String email, String phoneNumber, String passwordHash, UserRole role) {
+    public UserEntity(String name, String email, String phoneNumber, String passwordHash) {
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;

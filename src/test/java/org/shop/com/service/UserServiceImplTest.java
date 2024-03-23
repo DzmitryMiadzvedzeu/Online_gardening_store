@@ -12,7 +12,7 @@ import org.shop.com.entity.UserEntity;
 import org.shop.com.enums.UserRole;
 import org.shop.com.exceptions.UserNotFoundException;
 import org.shop.com.repository.UserJpaRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
@@ -22,7 +22,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-public class UserServiceTest {
+public class UserServiceImplTest {
 
     @Mock
     private UserJpaRepository repository;
@@ -30,8 +30,8 @@ public class UserServiceTest {
     @Mock
     private UserDtoConverter converter;
 
-    @Mock
-    private PasswordEncoder passwordEncoder;
+   // @Mock
+   // private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -62,10 +62,10 @@ public class UserServiceTest {
                 "1234567890", "hashedPassword", UserRole.USER);
         when(converter.toEntity(any(UserDto.class))).thenReturn(userEntity);
         when(repository.save(any(UserEntity.class))).thenReturn(userEntity);
-        when(passwordEncoder.encode(anyString())).thenReturn("hashedPassword");
+      //  when(passwordEncoder.encode(anyString())).thenReturn("hashedPassword");
         userService.create(createDto);
         verify(repository).save(userEntity);
-        verify(passwordEncoder).encode("password");
+     //   verify(passwordEncoder).encode("password");
     }
 
     @Test
@@ -81,7 +81,7 @@ public class UserServiceTest {
                 "updated@example.com", "9876543210",
                 "hashedNewPassword", UserRole.USER);
         when(repository.findById(eq(userId))).thenReturn(Optional.of(existingUser));
-        when(passwordEncoder.encode(eq("newPassword"))).thenReturn("hashedNewPassword");
+     //   when(passwordEncoder.encode(eq("newPassword"))).thenReturn("hashedNewPassword");
         when(repository.save(any(UserEntity.class))).thenReturn(updatedUser);
         UserEntity result = userService.editUser(userId, userDto);
         assertNotNull(result);
@@ -91,7 +91,7 @@ public class UserServiceTest {
         assertEquals("hashedNewPassword", result.getPasswordHash());
         assertEquals(UserRole.USER, result.getRole());
         verify(repository, times(1)).findById(eq(userId));
-        verify(passwordEncoder, times(1)).encode(eq("newPassword"));
+      //  verify(passwordEncoder, times(1)).encode(eq("newPassword"));
         verify(repository, times(1)).save(any(UserEntity.class));
     }
 

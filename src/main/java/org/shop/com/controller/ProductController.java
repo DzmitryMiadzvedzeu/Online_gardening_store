@@ -1,39 +1,32 @@
 package org.shop.com.controller;
-import org.shop.com.converter.ProductConverter;
+import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.ProductCreateDto;
 import org.shop.com.dto.ProductDto;
-import org.shop.com.entity.ProductEntity;
+import org.shop.com.exceptions.ProductNotFoundException;
+import org.shop.com.mapper.ProductMapper;
 import org.shop.com.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/products")
+@Slf4j
 public class ProductController {
 
     private final ProductService productService;
-    private final ProductConverter<ProductEntity, ProductDto> productConverter;
+    private final ProductMapper productMapper;
+
 
     @Autowired
-    public ProductController(ProductService productService, ProductConverter<ProductEntity, ProductDto> productConverter) {
+    public ProductController(ProductService productService,ProductMapper productMapper) {
         this.productService = productService;
-        this.productConverter = productConverter;
+        this.productMapper = productMapper;
     }
-
-
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductDto> getById(@PathVariable long id) {
-        ProductEntity productEntity = productService.findById(id);
-        ProductDto productDto = productConverter.toDto(productEntity);
-        return ResponseEntity.ok(productDto);
-    }
-
 
     @GetMapping
     public ResponseEntity<List<ProductDto>> list(@RequestParam(name = "category", required = false) String category,
@@ -41,43 +34,59 @@ public class ProductController {
                                                  @RequestParam(name = "maxPrice", required = false) BigDecimal maxPrice,
                                                  @RequestParam(name = "discount", required = false) BigDecimal discountPrice,
                                                  @RequestParam(name = "sort", required = false) String sort) {
+        log.debug("Request received to list all products");
         List<ProductDto> productDto = productService.getAll(category, minPrice, maxPrice, discountPrice, sort).stream()
-                .map(productConverter::toDto)
+                .map(productMapper::toDto)
                 .collect(Collectors.toList());
+        log.debug("Return {} products" , productDto.size());
         return ResponseEntity.ok(productDto);
     }
 
-    @PostMapping("/products")
-    public ResponseEntity<ProductDto> addProduct(@RequestBody ProductCreateDto productCreateDto) {
-        ProductEntity productEntity = productConverter.createDtoToEntity(productCreateDto);
-        ProductEntity savedEntity = productService.create(productEntity);
-        ProductDto savedDto = productConverter.toDto(savedEntity);
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDto> getById(@PathVariable long id) {
+        log.debug("Request sent ro get product with id {} ", id);
+        ProductDto productDto = productMapper.toDto(productService.findById(id));
+        log.debug("Return product with id {} ", id );
+        return ResponseEntity.ok(productDto);
+    }
+
+    @PostMapping
+    public ResponseEntity<ProductDto> create(@RequestBody ProductCreateDto productCreateDto) {
+        log.debug("Request received to create a new product");
+        ProductDto savedDto = productMapper.toDto(productService.create(productCreateDto));
+        log.debug("Product created successfully with ID: {}", savedDto.getId());
         return new ResponseEntity<>(savedDto, HttpStatus.CREATED);
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id) {
+        log.debug("Request received to delete product with id {} ", id);
         productService.delete(id);
+        log.debug("Product with id {} deleted successfully ", id);
         return ResponseEntity.noContent().build();
     }
 
-
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDto> editProduct(@PathVariable long id, @RequestBody ProductDto productDto) {
-        productDto.setId(id); // Устанавливаем ID продукта из пути
-        ProductEntity productEntityToUpdate = productConverter.toEntity(productDto);
-        ProductEntity updatedProductEntity = productService.update(productEntityToUpdate);
-        ProductDto updatedDto = productConverter.toDto(updatedProductEntity);
+    public ResponseEntity<ProductDto> edit(@PathVariable long id, @RequestBody ProductDto productDto) {
+        log.debug("Request received to edit product with id {}");
+        productDto.setId(id);
+        ProductDto updatedDto = productMapper.toDto(productService.update(productMapper.toEntity(productDto)));
+        log.debug("Product with id {} edited successfully", id);
         return ResponseEntity.ok(updatedDto);
     }
 
-
-    @GetMapping("/categories")
-    public ResponseEntity<List<String>> listAllCategories() {
-        List<String> categories = productService.listAllCategories();
-        return ResponseEntity.ok(categories);
-    }
+     @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<String> handleProductNotFoundException(ProductNotFoundException ex) {
+    log.error("Product not found: {}", ex.getMessage());
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
 }
+
+     @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception ex) {
+    log.error("Internal server error: {}", ex.getMessage());
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
+   }
+}
+
 
 

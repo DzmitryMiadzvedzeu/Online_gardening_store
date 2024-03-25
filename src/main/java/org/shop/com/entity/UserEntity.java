@@ -54,6 +54,9 @@ public class UserEntity {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private CartEntity cart;
 
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<FavoritesEntity> favorites;
+
     public UserEntity(String name, String email, String phoneNumber, String passwordHash) {
         this.name = name;
         this.email = email;

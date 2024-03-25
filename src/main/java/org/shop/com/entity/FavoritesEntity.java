@@ -21,18 +21,10 @@ public class FavoritesEntity {
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 
-    // перенести это поле в UserEntity
-//    @OneToMany(mappedBy = "Users", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<FavoritesEntity> favoritesEntities = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private ProductEntity productEntity;
-
-
-// перенести это поле в сущность ProductEntity
-//    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<FavoritesEntity> favorites = new ArrayList<>();
 
 
 }

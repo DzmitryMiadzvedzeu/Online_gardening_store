@@ -10,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "product")
@@ -47,6 +48,8 @@ public class ProductEntity {
     @JoinColumn(name = "category")
     private CategoryEntity category;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<CartItemEntity> cartItems;
 
     public ProductEntity(String name, String description, BigDecimal price, String image, CategoryEntity category) {
         this.name = name;

@@ -51,6 +51,9 @@ public class UserEntity {
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private List<OrderEntity> orderEntities = new ArrayList<>();
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private CartEntity cart;
+
     public UserEntity(String name, String email, String phoneNumber, String passwordHash) {
         this.name = name;
         this.email = email;

@@ -19,8 +19,12 @@ public class CartItemEntity {
     @JoinColumn(name = "cart_id")
     private CartEntity cart;
 
-    @Column(name = "product_id")
-    private Long productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    private ProductEntity product;
+
+//    @Column(name = "product_id")
+//    private Long productId;
 
     private Integer quantity;
 

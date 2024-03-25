@@ -23,7 +23,7 @@ public class CartEntity {
     private UserEntity user;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CartItemEntity> items = new ArrayList<>(); // Инициализация пустого списка
+    private List<CartItemEntity> items = new ArrayList<>();
 
     public List<CartItemEntity> getItems() {
         return items;
@@ -31,15 +31,5 @@ public class CartEntity {
 
     public void setItems(List<CartItemEntity> items) {
         this.items = items;
-    }
-
-    public void addItem(CartItemEntity item) {
-        items.add(item);
-        item.setCart(this);
-    }
-
-    public void removeItem(CartItemEntity item) {
-        items.remove(item);
-        item.setCart(null);
     }
 }

@@ -15,7 +15,7 @@ import org.springframework.web.context.request.WebRequest;
 import java.util.List;
 @Slf4j
 @RestController
-@RequestMapping("/carts")
+@RequestMapping("/v1/carts")
 public class CartController {
 
     private final CartService cartService;

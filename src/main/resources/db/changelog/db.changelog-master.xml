@@ -8,9 +8,13 @@
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <include file="db/changelog/changelogs/Users-changelock.xml"/>
-    <include file="db/changelog/changelogs/orders-changelock.xml"/>
     <include file="db/changelog/changelogs/category-changelock.xml"/>
     <include file="db/changelog/changelogs/product-changelock.xml"/>
+    <include file="db/changelog/changelogs/favorites-changelock.xml"/>
+    <include file="db/changelog/changelogs/cart-changelock.xml"/>
+    <include file="db/changelog/changelogs/cartItems-changelock.xml"/>
+    <include file="db/changelog/changelogs/orders-changelock.xml"/>
+    <include file="db/changelog/changelogs/orderItems-changelock.xml"/>
 
 
 </databaseChangeLog>

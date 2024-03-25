@@ -61,8 +61,8 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<OrderDto> addOrder(@RequestBody OrderCreateDto orderCreateDto){
         log.debug("Creating new order with delivery address: {}", orderCreateDto.getDeliveryAddress());
-        log.debug("Creating new order with delivery address: {}", orderCreateDto.getDeliveryMethod());
-        log.debug("Creating new order with delivery address: {}", orderCreateDto.getContactPhone());
+        log.debug("Creating new order with delivery method: {}", orderCreateDto.getDeliveryMethod());
+        log.debug("Creating new order with contact phone: {}", orderCreateDto.getContactPhone());
 
         OrderEntity orderEntity = orderMapper.orderCreateDtoToEntity(orderCreateDto);
         OrderEntity createdOrderEntity = orderService.create(orderEntity);

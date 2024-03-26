@@ -6,12 +6,14 @@ import org.shop.com.dto.CartItemCreateDto;
 import org.shop.com.dto.CartItemDto;
 import org.shop.com.entity.CartEntity;
 import org.shop.com.entity.CartItemEntity;
+import org.shop.com.entity.ProductEntity;
 import org.shop.com.exceptions.CartItemInvalidArgumentException;
 import org.shop.com.exceptions.CartItemNotFoundException;
 import org.shop.com.exceptions.CartNotFoundException;
 import org.shop.com.mapper.CartItemMapper;
 import org.shop.com.repository.CartItemJpaRepository;
 import org.shop.com.repository.CartJpaRepository;
+import org.shop.com.repository.ProductJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,35 +25,36 @@ public class CartItemServiceImpl implements CartItemService {
 
     private final CartItemJpaRepository cartItemRepository;
     private final CartJpaRepository cartRepository;
+    private final ProductJpaRepository productJpaRepository;
     private final CartItemMapper cartItemMapper;
 
     @Autowired
     public CartItemServiceImpl(CartItemJpaRepository cartItemRepository,
-                               CartJpaRepository cartRepository, CartItemMapper cartItemMapper) {
+                               CartJpaRepository cartRepository,
+                               ProductJpaRepository productJpaRepository,
+                               CartItemMapper cartItemMapper) {
         this.cartItemRepository = cartItemRepository;
         this.cartRepository = cartRepository;
+        this.productJpaRepository = productJpaRepository;
         this.cartItemMapper = cartItemMapper;
     }
 
     @Transactional
     @Override
     public CartItemDto addCartItem(CartItemCreateDto cartItemCreateDto, Long cartId) {
-            log.debug("Attempting to add a cart item with product ID: {}, quantity: {} to cart ID: {}",
+        log.debug("Attempting to add a cart item with product ID: {}, quantity: {} to cart ID: {}",
                 cartItemCreateDto.getProductId(), cartItemCreateDto.getQuantity(), cartId);
-        if (cartItemCreateDto.getProductId() == null || cartItemCreateDto.getQuantity() == null) {
-            log.error("Failed to add cart item due to null product ID or quantity. Product ID: {}, Quantity: {}",
-                    cartItemCreateDto.getProductId(), cartItemCreateDto.getQuantity());
-            throw new CartItemInvalidArgumentException("Product ID and quantity must not be null.");
-        }
-        /** Загрузка CartEntity по cartId */
+
         CartEntity cart = cartRepository.findById(cartId)
-                .orElseThrow(() -> {
-                    log.error("Cart not found with id: {}", cartId);
-                    throw new CartNotFoundException("Cart not found with id: " + cartId);
-                });
+                .orElseThrow(() -> new CartNotFoundException("Cart not found with id: " + cartId));
 
         CartItemEntity cartItem = cartItemMapper.fromCreateDto(cartItemCreateDto);
-        cartItem.setCart(cart);
+
+        ProductEntity product = productJpaRepository.findById(cartItemCreateDto.getProductId())
+                .orElseThrow(() -> new RuntimeException("Product not found: " + cartItemCreateDto.getProductId()));
+        cartItem.setProduct(product);
+
+        cartItem.setCart(cart); // Устанавливаем связь с корзиной
         cartItem = cartItemRepository.save(cartItem);
 
         log.debug("Cart item successfully added with ID: {}", cartItem.getId());

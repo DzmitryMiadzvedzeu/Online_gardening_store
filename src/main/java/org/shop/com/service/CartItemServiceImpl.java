@@ -31,11 +31,11 @@ public class CartItemServiceImpl implements CartItemService {
     @Autowired
     public CartItemServiceImpl(CartItemJpaRepository cartItemRepository,
                                CartJpaRepository cartRepository,
-                               ProductJpaRepository productJpaRepository, // Внедряем через конструктор
+                               ProductJpaRepository productJpaRepository,
                                CartItemMapper cartItemMapper) {
         this.cartItemRepository = cartItemRepository;
         this.cartRepository = cartRepository;
-        this.productJpaRepository = productJpaRepository; // Инициализация поля
+        this.productJpaRepository = productJpaRepository;
         this.cartItemMapper = cartItemMapper;
     }
 
@@ -45,14 +45,11 @@ public class CartItemServiceImpl implements CartItemService {
         log.debug("Attempting to add a cart item with product ID: {}, quantity: {} to cart ID: {}",
                 cartItemCreateDto.getProductId(), cartItemCreateDto.getQuantity(), cartId);
 
-        // Проверка входных данных опущена для краткости
-
         CartEntity cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new CartNotFoundException("Cart not found with id: " + cartId));
 
         CartItemEntity cartItem = cartItemMapper.fromCreateDto(cartItemCreateDto);
 
-        // Находим ProductEntity по productId и устанавливаем его в cartItem
         ProductEntity product = productJpaRepository.findById(cartItemCreateDto.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found: " + cartItemCreateDto.getProductId()));
         cartItem.setProduct(product);

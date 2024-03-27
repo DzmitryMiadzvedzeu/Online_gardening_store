@@ -1,6 +1,7 @@
 package org.shop.com.service;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.CartItemCreateDto;
 import org.shop.com.dto.CartItemDto;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CartItemServiceImpl implements CartItemService {
 
     private final CartItemJpaRepository cartItemRepository;
@@ -28,16 +30,6 @@ public class CartItemServiceImpl implements CartItemService {
     private final ProductJpaRepository productJpaRepository;
     private final CartItemMapper cartItemMapper;
 
-    @Autowired
-    public CartItemServiceImpl(CartItemJpaRepository cartItemRepository,
-                               CartJpaRepository cartRepository,
-                               ProductJpaRepository productJpaRepository,
-                               CartItemMapper cartItemMapper) {
-        this.cartItemRepository = cartItemRepository;
-        this.cartRepository = cartRepository;
-        this.productJpaRepository = productJpaRepository;
-        this.cartItemMapper = cartItemMapper;
-    }
 
     @Transactional
     @Override
@@ -54,7 +46,7 @@ public class CartItemServiceImpl implements CartItemService {
                 .orElseThrow(() -> new RuntimeException("Product not found: " + cartItemCreateDto.getProductId()));
         cartItem.setProduct(product);
 
-        cartItem.setCart(cart); // Устанавливаем связь с корзиной
+        cartItem.setCart(cart);
         cartItem = cartItemRepository.save(cartItem);
 
         log.debug("Cart item successfully added with ID: {}", cartItem.getId());

@@ -1,5 +1,11 @@
 package org.shop.com.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.CartItemCreateDto;
 import org.shop.com.dto.CartItemDto;
@@ -26,6 +32,17 @@ public class CartItemController {
         this.cartItemService = cartItemService;
     }
 
+    @Operation(summary = "Add cart item to a cart")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cart item added successfully",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CartItemDto.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid request body or parameters",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Cart not found",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @PostMapping
     public ResponseEntity<CartItemDto> addCartItem(@RequestBody CartItemCreateDto cartItemCreateDto,
                                                    @RequestParam Long cartId) {
@@ -35,6 +52,13 @@ public class CartItemController {
         return ResponseEntity.ok(cartItemDto);
     }
 
+    @Operation(summary = "Remove cart item from a cart")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Cart item removed successfully"),
+            @ApiResponse(responseCode = "404", description = "Cart item not found",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @DeleteMapping("/{cartItemId}")
     public ResponseEntity<Void> removeCartItem(@PathVariable Long cartItemId) {
         log.info("Removing cart item with id: {}", cartItemId);
@@ -42,6 +66,15 @@ public class CartItemController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "Get cart items by cart ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found cart items",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = CartItemDto.class))) }),
+            @ApiResponse(responseCode = "404", description = "Cart not found",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping("/cart/{cartId}")
     public ResponseEntity<List<CartItemDto>> getCartItemsByCartId(@PathVariable Long cartId) {
         log.info("Retrieving items for cart id: {}", cartId);
@@ -49,6 +82,15 @@ public class CartItemController {
         return ResponseEntity.ok(cartItems);
     }
 
+    @Operation(summary = "Update cart item quantity")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cart item quantity updated successfully",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CartItemDto.class)) }),
+            @ApiResponse(responseCode = "404", description = "Cart item not found",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @PutMapping("/{cartItemId}")
     public ResponseEntity<CartItemDto> updateCartItemQuantity(@PathVariable Long cartItemId, @RequestParam Integer quantity) {
         log.info("Updating quantity of cart item id: {} to {}", cartItemId, quantity);

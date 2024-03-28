@@ -57,6 +57,14 @@ public class CategoryController {
         return ResponseEntity.ok(categoryDTOList);
     }
 
+    @Operation(summary = "Get a category by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found the category",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CategoryDTO.class)) }),
+            @ApiResponse(responseCode = "404", description = "Category not found",
+                    content = @Content)
+    })
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
         log.debug("Received request to fetch category by ID: {}", id);
@@ -64,6 +72,12 @@ public class CategoryController {
         return ResponseEntity.ok(CategoryMapper.INSTANCE.toDto(categoryEntity));
     }
 
+    @Operation(summary = "Create a new category")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Category created",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CategoryDTO.class)) })
+    })
     @PostMapping
     public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryCreateDTO createDTO) {
         log.debug("Received request to create a new category: {}", createDTO.getName());
@@ -73,6 +87,14 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryDTO);
     }
 
+    @Operation(summary = "Edit an existing category")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Category updated",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CategoryDTO.class)) }),
+            @ApiResponse(responseCode = "404", description = "Category not found",
+                    content = @Content)
+    })
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDTO> editCategory(@PathVariable Long id, @Valid @RequestBody CategoryCreateDTO categoryDTO) {
         log.debug("Received request to edit category with ID: {}", id);
@@ -81,6 +103,11 @@ public class CategoryController {
         return ResponseEntity.ok(CategoryMapper.INSTANCE.toDto(updatedCategory));
     }
 
+    @Operation(summary = "Delete a category")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Category deleted"),
+            @ApiResponse(responseCode = "404", description = "Category not found")
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         log.debug("Received request to delete category with ID: {}", id);
@@ -88,6 +115,15 @@ public class CategoryController {
         log.debug("Category with ID: {} deleted successfully", id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Find a category by name")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found the category",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CategoryDTO.class)) }),
+            @ApiResponse(responseCode = "404", description = "Category not found",
+                    content = @Content)
+    })
     @GetMapping("/search")
     public ResponseEntity<CategoryDTO> findCategoryByName(@RequestParam String name) {
         log.debug("Received request to find category by name: {}", name);

@@ -5,10 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.CartCreateDto;
 import org.shop.com.dto.CartDto;
 import org.shop.com.entity.CartEntity;
+import org.shop.com.entity.CartItemEntity;
+import org.shop.com.entity.ProductEntity;
+import org.shop.com.entity.UserEntity;
 import org.shop.com.exceptions.CartInvalidArgumentException;
 import org.shop.com.exceptions.CartNotFoundException;
+import org.shop.com.mapper.CartItemMapper;
 import org.shop.com.mapper.CartMapper;
 import org.shop.com.repository.CartJpaRepository;
+import org.shop.com.repository.ProductJpaRepository;
+import org.shop.com.repository.UserJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,35 +25,53 @@ import java.util.stream.Collectors;
 public class CartServiceImpl implements CartService {
 
     private final CartJpaRepository cartRepository;
+    private final UserJpaRepository userRepository;
+    private final ProductJpaRepository productJpaRepository;
     private final CartMapper cartMapper;
+    private final CartItemMapper cartItemMapper;
+
     @Autowired
-    public CartServiceImpl(CartJpaRepository cartRepository, CartMapper cartMapper) {
+    public CartServiceImpl(CartJpaRepository cartRepository, UserJpaRepository userRepository,
+                           ProductJpaRepository productJpaRepository, CartMapper cartMapper, CartItemMapper cartItemMapper) {
         this.cartRepository = cartRepository;
+        this.userRepository = userRepository;
+        this.productJpaRepository = productJpaRepository;
         this.cartMapper = cartMapper;
+        this.cartItemMapper = cartItemMapper;
     }
 
     @Transactional
     @Override
     public CartDto createOrUpdateCart(CartCreateDto createDto) {
         log.debug("Creating or updating cart for user ID: {}", createDto.getUserId());
-        if (createDto.getUserId() == null) {
-            log.error("User ID must not be null");
-            throw new CartInvalidArgumentException("User ID must not be null");
-        }
+        UserEntity user = userRepository.findById(createDto.getUserId())
+                .orElseThrow(() -> new CartInvalidArgumentException("Invalid User ID: " + createDto.getUserId()));
 
         CartEntity cart = cartRepository.findByUserId(createDto.getUserId())
                 .orElseGet(() -> {
-                    CartEntity newCart = cartMapper.fromCreateDto(createDto);
-                    if (newCart.getUser() == null) {
-                        log.error("Invalid User ID: {}", createDto.getUserId());
-                        throw new CartInvalidArgumentException("Invalid User ID: " + createDto.getUserId());
-                    }
+                    CartEntity newCart = new CartEntity();
+                    newCart.setUser(user);
                     return newCart;
                 });
 
+        updateCartEntityFromDto(cart, createDto);
         cart = cartRepository.save(cart);
         log.debug("Cart for user ID: {} created or updated successfully", createDto.getUserId());
         return cartMapper.toDto(cart);
+    }
+
+    private void updateCartEntityFromDto(CartEntity cart, CartCreateDto createDto) {
+        List<CartItemEntity> cartItems = createDto.getItems().stream().map(itemDto -> {
+            CartItemEntity cartItem = cartItemMapper.fromCreateDto(itemDto);
+            ProductEntity product = productJpaRepository.findById(itemDto.getProductId())
+                    .orElseThrow(() -> new CartInvalidArgumentException("Invalid Product ID: " + itemDto.getProductId()));
+            cartItem.setProduct(product);
+            cartItem.setCart(cart);
+            return cartItem;
+        }).collect(Collectors.toList());
+
+        cart.getItems().clear();
+        cart.getItems().addAll(cartItems);
     }
 
 

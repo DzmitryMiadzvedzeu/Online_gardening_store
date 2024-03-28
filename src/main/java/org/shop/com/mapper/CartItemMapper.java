@@ -6,13 +6,13 @@ import org.mapstruct.factory.Mappers;
 import org.shop.com.dto.CartItemCreateDto;
 import org.shop.com.dto.CartItemDto;
 import org.shop.com.entity.CartItemEntity;
+import org.shop.com.repository.ProductJpaRepository;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {ProductJpaRepository.class})
 public interface CartItemMapper {
-    CartItemMapper INSTANCE = Mappers.getMapper(CartItemMapper.class);
     CartItemDto toDto(CartItemEntity cartItemEntity);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "cart", ignore = true) // Это поле будет заполняться отдельно, так как CartEntity не передается в DTO
+    @Mapping(target = "cart", ignore = true)
     CartItemEntity fromCreateDto(CartItemCreateDto createDto);
 }

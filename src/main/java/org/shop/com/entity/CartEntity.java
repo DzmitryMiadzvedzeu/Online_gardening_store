@@ -22,7 +22,8 @@ public class CartEntity {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserEntity user;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    //@OneToMany(mappedBy = "cart", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private List<CartItemEntity> items = new ArrayList<>();
 
     public List<CartItemEntity> getItems() {

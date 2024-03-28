@@ -32,10 +32,10 @@ public class CartItemControllerIntegrationTest {
     @Test
     public void addCartItemTest() throws Exception {
         CartItemCreateDto cartItemCreateDto = new CartItemCreateDto(1L, 5);
-        Long cartId = 1L;
+        long cartId = 1L;
 
         given(cartItemService.addCartItem(any(CartItemCreateDto.class), anyLong()))
-                .willAnswer(invocation -> {   /**willAnswer-позволяет выполнить произвольный код для генерации ответа */
+                .willAnswer(invocation -> {
                     CartItemCreateDto dto = invocation.getArgument(0);
 
                     return new CartItemDto(1L, dto.getProductId(), dto.getQuantity());

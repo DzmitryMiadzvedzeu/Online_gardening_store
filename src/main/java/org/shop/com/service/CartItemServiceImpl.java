@@ -15,7 +15,6 @@ import org.shop.com.mapper.CartItemMapper;
 import org.shop.com.repository.CartItemJpaRepository;
 import org.shop.com.repository.CartJpaRepository;
 import org.shop.com.repository.ProductJpaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -93,7 +92,8 @@ public class CartItemServiceImpl implements CartItemService {
             throw new CartItemInvalidArgumentException("Quantity must be greater than 0.");
         }
 
-        CartItemEntity cartItem = cartItemRepository.findById(cartItemId)
+        CartItemEntity cartItem;
+        cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> {
                     log.error("CartItem not found with ID: {}", cartItemId);
                     throw new CartItemNotFoundException("CartItem not found with ID: " + cartItemId);

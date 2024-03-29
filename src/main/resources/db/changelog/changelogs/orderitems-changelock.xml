@@ -7,7 +7,34 @@
         http://www.liquibase.org/xml/ns/dbchangelog-ext
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
+    <changeSet id="1" author="Mariia">
+        <createTable tableName="orderitems">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="order_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_orderItems_order" references="orders(id)"/>
+            </column>
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_orderItems_product" references="product(id)"/>
+            </column>
+            <column name="quantity" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price_at_purchase" type="DECIMAL">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 
+    <changeSet id="2" author="Mariia">
+        <insert tableName="orderitems">
+            <column name="order_id" value="1"/>
+            <column name="product_id" value="2"/>
+            <column name="quantity" value="8"/>
+            <column name="price_at_purchase" value="234.98"/>
+        </insert>
 
+    </changeSet>
 
 </databaseChangeLog>

@@ -3,11 +3,13 @@ import org.shop.com.entity.ProductEntity;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface ProductJpaRepository extends JpaRepository<ProductEntity, Long> {
 
     Optional<ProductEntity> findById(long id);

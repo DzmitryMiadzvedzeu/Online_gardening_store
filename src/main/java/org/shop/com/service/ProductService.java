@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ProductService {
 
-    ProductEntity create(ProductCreateDto productEntity);
+    ProductEntity create(ProductCreateDto productCreateDto);
 
     List<ProductEntity> getAll(String category, BigDecimal minPrice, BigDecimal maxPrice,
                                BigDecimal discountPrice, String sort);

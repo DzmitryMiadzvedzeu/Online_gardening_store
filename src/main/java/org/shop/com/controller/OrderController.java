@@ -1,21 +1,20 @@
 package org.shop.com.controller;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.shop.com.converter.OrderConverter;
 import org.shop.com.dto.OrderCreateDto;
 import org.shop.com.dto.OrderDto;
 import org.shop.com.dto.OrderStatusDto;
 import org.shop.com.entity.OrderEntity;
 import org.shop.com.mapper.OrderMapper;
 import org.shop.com.service.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
+// http://localhost:8080/v1/orders
 @RestController
 @RequestMapping("/v1/orders")
 //@RequiredArgsConstructor
@@ -26,6 +25,7 @@ public class OrderController {
 //    private final OrderConverter<OrderEntity, OrderDto> converter;
     private final OrderMapper orderMapper;
 
+    @Autowired
     public OrderController(OrderService orderService, OrderMapper orderMapper) {
         this.orderService = orderService;
         this.orderMapper = orderMapper;

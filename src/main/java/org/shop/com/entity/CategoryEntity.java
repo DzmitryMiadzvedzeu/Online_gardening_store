@@ -20,17 +20,16 @@ public class CategoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "category_id")
-    private Long categoryId;
 
-    @Column(name = "name_category")
+    private Long id;
+
     private String name;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductEntity> products;
-    public CategoryEntity(Long categoryId, String name) {
-        this.categoryId = categoryId;
+
+    public CategoryEntity(Long id, String name) {
+        this.id = id;
         this.name = name;
     }
-
 }

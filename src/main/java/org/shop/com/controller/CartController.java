@@ -40,9 +40,9 @@ public class CartController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping
-    public ResponseEntity<CartDto> createOrUpdateCart(@RequestBody CartCreateDto cartCreateDto) {
+    public ResponseEntity<CartDto> createOrUpdate(@RequestBody CartCreateDto cartCreateDto) {
         log.debug("Request to create/update cart: {}", cartCreateDto);
-            CartDto cartDto = cartService.createOrUpdateCart(cartCreateDto);
+            CartDto cartDto = cartService.createOrUpdate(cartCreateDto);
             return ResponseEntity.ok(cartDto);
     }
 
@@ -56,9 +56,9 @@ public class CartController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{userId}")
-    public ResponseEntity<CartDto> getCartByUserId(@PathVariable Long userId) {
+    public ResponseEntity<CartDto> getByUserId(@PathVariable Long userId) {
         log.debug("Request to get cart for user ID: {}", userId);
-        CartDto cartDto = cartService.getCartByUserId(userId);
+        CartDto cartDto = cartService.getByUserId(userId);
         return ResponseEntity.ok(cartDto);
     }
 
@@ -70,9 +70,9 @@ public class CartController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @DeleteMapping("/{cartId}")
-    public ResponseEntity<Void> deleteCart(@PathVariable Long cartId) {
+    public ResponseEntity<Void> delete(@PathVariable Long cartId) {
         log.debug("Request to delete cart with ID: {}", cartId);
-        cartService.deleteCart(cartId);
+        cartService.delete(cartId);
         return ResponseEntity.ok().build();
     }
 
@@ -85,9 +85,9 @@ public class CartController {
     })
 
     @GetMapping
-    public ResponseEntity<List<CartDto>> getAllCarts() {
+    public ResponseEntity<List<CartDto>> getAll() {
         log.debug("Request to get all carts");
-        List<CartDto> carts = cartService.getAllCarts();
+        List<CartDto> carts = cartService.getAll();
         return ResponseEntity.ok(carts);
     }
 

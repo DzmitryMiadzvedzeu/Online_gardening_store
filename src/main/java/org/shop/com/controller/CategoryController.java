@@ -68,7 +68,7 @@ public class CategoryController {
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
         log.debug("Received request to fetch category by ID: {}", id);
-        CategoryEntity categoryEntity = categoryService.getCategoryById(id);
+        CategoryEntity categoryEntity = categoryService.getById(id);
         return ResponseEntity.ok(CategoryMapper.INSTANCE.toDto(categoryEntity));
     }
 
@@ -81,9 +81,9 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryCreateDTO createDTO) {
         log.debug("Received request to create a new category: {}", createDTO.getName());
-        CategoryEntity createdCategoryEntity = categoryService.createCategory(createDTO);
+        CategoryEntity createdCategoryEntity = categoryService.create(createDTO);
         CategoryDTO categoryDTO = CategoryMapper.INSTANCE.toDto(createdCategoryEntity);
-        log.debug("Category created successfully with ID: {}", createdCategoryEntity.getCategoryId());
+        log.debug("Category created successfully with ID: {}", createdCategoryEntity.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryDTO);
     }
 
@@ -98,8 +98,8 @@ public class CategoryController {
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDTO> editCategory(@PathVariable Long id, @Valid @RequestBody CategoryCreateDTO categoryDTO) {
         log.debug("Received request to edit category with ID: {}", id);
-        CategoryEntity updatedCategory = categoryService.editCategory(id, categoryDTO);
-        log.debug("Category with ID: {} updated successfully", updatedCategory.getCategoryId());
+        CategoryEntity updatedCategory = categoryService.edit(id, categoryDTO);
+        log.debug("Category with ID: {} updated successfully", updatedCategory.getId());
         return ResponseEntity.ok(CategoryMapper.INSTANCE.toDto(updatedCategory));
     }
 
@@ -109,9 +109,9 @@ public class CategoryController {
             @ApiResponse(responseCode = "404", description = "Category not found")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("Received request to delete category with ID: {}", id);
-        categoryService.deleteCategory(id);
+        categoryService.delete(id);
         log.debug("Category with ID: {} deleted successfully", id);
         return ResponseEntity.noContent().build();
     }
@@ -125,7 +125,7 @@ public class CategoryController {
                     content = @Content)
     })
     @GetMapping("/search")
-    public ResponseEntity<CategoryDTO> findCategoryByName(@RequestParam String name) {
+    public ResponseEntity<CategoryDTO> findByName(@RequestParam String name) {
         log.debug("Received request to find category by name: {}", name);
         CategoryEntity categoryEntity = categoryService.findByName(name)
                 .orElseThrow(() -> new CategoryNotFoundException("Category with name " + name + " not found."));

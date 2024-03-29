@@ -10,26 +10,26 @@
     <changeSet id="1" author="Sergey">
         <comment>create table categories</comment>
             <createTable tableName="category">
-            <column name="category_id" autoIncrement="true" type="BIGINT">
+            <column name="id" autoIncrement="true" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" primaryKeyName="category_pkey"/>
             </column>
-            <column name="name_category" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
 
     <changeSet id="2" author="Sergey">
         <comment>Insert initial data into categories for garden tools</comment>
         <insert tableName="category">
-            <column name="name_category" value="Garden Shovels"/>
+            <column name="name" value="Garden Shovels"/>
         </insert>
         <insert tableName="category">
-            <column name="name_category" value="Pruning Shears"/>
+            <column name="name" value="Pruning Shears"/>
         </insert>
         <insert tableName="category">
-            <column name="name_category" value="Garden Rakes"/>
+            <column name="name" value="Garden Rakes"/>
         </insert>
         <insert tableName="category">
-            <column name="name_category" value="Gloves"/>
+            <column name="name" value="Gloves"/>
         </insert>
     </changeSet>
 

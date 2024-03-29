@@ -53,7 +53,7 @@ public class CartServiceImplTest {
         when(cartRepository.save(any(CartEntity.class))).thenAnswer(i -> i.getArguments()[0]);
         when(cartMapper.toDto(any(CartEntity.class))).thenReturn(new CartDto());
 
-        CartDto result = cartService.createOrUpdateCart(createDto);
+        CartDto result = cartService.createOrUpdate(createDto);
 
         assertNotNull(result);
         verify(cartRepository, times(1)).save(any(CartEntity.class));
@@ -75,7 +75,7 @@ public class CartServiceImplTest {
         when(cartRepository.save(any(CartEntity.class))).thenAnswer(i -> i.getArguments()[0]);
         when(cartMapper.toDto(any(CartEntity.class))).thenReturn(new CartDto());
 
-        CartDto result = cartService.createOrUpdateCart(createDto);
+        CartDto result = cartService.createOrUpdate(createDto);
 
         assertNotNull(result);
         verify(cartRepository, times(1)).save(existingCart);
@@ -88,7 +88,7 @@ public class CartServiceImplTest {
         when(cartRepository.findByUserId(userId)).thenReturn(Optional.of(new CartEntity()));
         when(cartMapper.toDto(any(CartEntity.class))).thenReturn(new CartDto());
 
-        CartDto result = cartService.getCartByUserId(userId);
+        CartDto result = cartService.getByUserId(userId);
 
         // Проверки
         assertNotNull(result);
@@ -99,7 +99,7 @@ public class CartServiceImplTest {
         when(cartRepository.findByUserId(userId)).thenReturn(Optional.empty());
 
         // Вызов метода и ожидаемое исключение
-        cartService.getCartByUserId(userId);
+        cartService.getByUserId(userId);
     }
 
     /**  удаляет корзину пользователя*/
@@ -108,7 +108,7 @@ public class CartServiceImplTest {
         Long userId = 1L;
         when(cartRepository.existsById(userId)).thenReturn(true);
 
-        cartService.deleteCart(userId);
+        cartService.delete(userId);
 
         verify(cartRepository, times(1)).deleteById(userId);
     }
@@ -119,7 +119,7 @@ public class CartServiceImplTest {
         when(cartRepository.findAll()).thenReturn(Collections.singletonList(new CartEntity()));
         when(cartMapper.toDto(any(CartEntity.class))).thenReturn(new CartDto());
 
-        List<CartDto> result = cartService.getAllCarts();
+        List<CartDto> result = cartService.getAll();
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -130,7 +130,7 @@ public class CartServiceImplTest {
         Long userId = 2L;
         when(cartRepository.existsById(userId)).thenReturn(false);
 
-        cartService.deleteCart(userId);
+        cartService.delete(userId);
     }
     @Test
     public void getAllCarts_ReturnsAllCarts() {
@@ -138,7 +138,7 @@ public class CartServiceImplTest {
         when(cartRepository.findAll()).thenReturn(cartEntities);
         when(cartMapper.toDto(any(CartEntity.class))).thenReturn(new CartDto());
 
-        List<CartDto> result = cartService.getAllCarts();
+        List<CartDto> result = cartService.getAll();
 
         assertNotNull(result);
         assertEquals(cartEntities.size(), result.size());

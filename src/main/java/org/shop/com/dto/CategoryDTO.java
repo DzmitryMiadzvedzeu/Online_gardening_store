@@ -9,12 +9,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CategoryDTO {
 
-    private Long categoryId;
+    private Long id;
     private String name;
 
-
-    public CategoryDTO(Long categoryId, String name) {
-        this.categoryId = categoryId;
+    public CategoryDTO(Long id, String name) {
+        this.id = id;
         this.name = name;
     }
 

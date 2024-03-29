@@ -13,12 +13,12 @@ public interface CategoryService {
 
     List<CategoryEntity> getAllCategories();
 
-    CategoryEntity getCategoryById(Long id);
+    CategoryEntity getById(Long id);
 
     Optional<CategoryEntity> findByName(String name);
 
-    CategoryEntity createCategory(CategoryCreateDTO createDTO);
-    CategoryEntity editCategory(Long id, CategoryCreateDTO categoryDTO);
+    CategoryEntity create(CategoryCreateDTO createDTO);
+    CategoryEntity edit(Long id, CategoryCreateDTO categoryDTO);
 
-    void deleteCategory(Long id);
+    void delete(Long id);
 }

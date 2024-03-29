@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface UserService {
 
+
+
     UserEntity create(UserCreateDto userCreateDto);
 
     UserEntity findById(long id);
@@ -16,4 +18,6 @@ public interface UserService {
     UserEntity editUser(long id, UserCreateDto userCreateDto);
 
     void delete(long id);
+
+    Long getCurrentUserId();
 }

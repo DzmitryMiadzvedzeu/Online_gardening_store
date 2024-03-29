@@ -12,7 +12,7 @@
         <comment>create table users</comment>
         <createTable tableName="Users">
             <column name="id" autoIncrement="true" type="BIGINT">
-                <constraints primaryKey="true" nullable="false" primaryKeyName="order_pkey"/>
+                <constraints primaryKey="true" nullable="false" primaryKeyName="user_pkey"/>
             </column>
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>

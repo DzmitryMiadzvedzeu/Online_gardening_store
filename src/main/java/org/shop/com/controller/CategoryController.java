@@ -49,9 +49,9 @@ public class CategoryController {
                     content = @Content)
     })
     @GetMapping
-    public ResponseEntity<List<CategoryDTO>> getAllCategories() {
+    public ResponseEntity<List<CategoryDTO>> getAll() {
         log.debug("Received request to list all categories");
-        List<CategoryDTO> categoryDTOList = categoryService.getAllCategories().stream()
+        List<CategoryDTO> categoryDTOList = categoryService.getAll().stream()
                 .map(CategoryMapper.INSTANCE::toDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(categoryDTOList);
@@ -66,7 +66,7 @@ public class CategoryController {
                     content = @Content)
     })
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
+    public ResponseEntity<CategoryDTO> getById(@PathVariable Long id) {
         log.debug("Received request to fetch category by ID: {}", id);
         CategoryEntity categoryEntity = categoryService.getById(id);
         return ResponseEntity.ok(CategoryMapper.INSTANCE.toDto(categoryEntity));
@@ -79,7 +79,7 @@ public class CategoryController {
                             schema = @Schema(implementation = CategoryDTO.class)) })
     })
     @PostMapping
-    public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryCreateDTO createDTO) {
+    public ResponseEntity<CategoryDTO> create(@Valid @RequestBody CategoryCreateDTO createDTO) {
         log.debug("Received request to create a new category: {}", createDTO.getName());
         CategoryEntity createdCategoryEntity = categoryService.create(createDTO);
         CategoryDTO categoryDTO = CategoryMapper.INSTANCE.toDto(createdCategoryEntity);
@@ -96,7 +96,7 @@ public class CategoryController {
                     content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryDTO> editCategory(@PathVariable Long id, @Valid @RequestBody CategoryCreateDTO categoryDTO) {
+    public ResponseEntity<CategoryDTO> edit(@PathVariable Long id, @Valid @RequestBody CategoryCreateDTO categoryDTO) {
         log.debug("Received request to edit category with ID: {}", id);
         CategoryEntity updatedCategory = categoryService.edit(id, categoryDTO);
         log.debug("Category with ID: {} updated successfully", updatedCategory.getId());

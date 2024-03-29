@@ -16,13 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
+
 
 import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/cartItems")
+@RequestMapping("/v1/cartItems")
 public class CartItemController {
 
     private final CartItemService cartItemService;
@@ -99,13 +99,13 @@ public class CartItemController {
     }
 
     @ExceptionHandler(CartItemNotFoundException.class)
-    public ResponseEntity<String> handleCartItemNotFoundException(CartItemNotFoundException ex, WebRequest request) {
+    public ResponseEntity<String> handleCartItemNotFoundException(CartItemNotFoundException ex) {
         log.error("Cart item not found exception: {}", ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(CartItemInvalidArgumentException.class)
-    public ResponseEntity<String> handleCartItemInvalidArgumentException(CartItemInvalidArgumentException ex, WebRequest request) {
+    public ResponseEntity<String> handleCartItemInvalidArgumentException(CartItemInvalidArgumentException ex) {
         log.error("Cart item invalid argument exception: {}", ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }

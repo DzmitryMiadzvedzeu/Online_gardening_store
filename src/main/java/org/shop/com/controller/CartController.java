@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
 
 import java.util.List;
 @Slf4j
@@ -43,8 +42,8 @@ public class CartController {
     @PostMapping
     public ResponseEntity<CartDto> createOrUpdateCart(@RequestBody CartCreateDto cartCreateDto) {
         log.debug("Request to create/update cart: {}", cartCreateDto);
-        CartDto cartDto = cartService.createOrUpdateCart(cartCreateDto);
-        return ResponseEntity.ok(cartDto);
+            CartDto cartDto = cartService.createOrUpdateCart(cartCreateDto);
+            return ResponseEntity.ok(cartDto);
     }
 
     @Operation(summary = "Get cart by user ID")
@@ -84,6 +83,7 @@ public class CartController {
                             array = @ArraySchema(schema = @Schema(implementation = CartDto.class))) }),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
+
     @GetMapping
     public ResponseEntity<List<CartDto>> getAllCarts() {
         log.debug("Request to get all carts");
@@ -92,13 +92,13 @@ public class CartController {
     }
 
     @ExceptionHandler(CartNotFoundException.class)
-    public final ResponseEntity<Object> handleCartNotFoundException(CartNotFoundException ex, WebRequest request) {
+    public final ResponseEntity<Object> handleCartNotFoundException(CartNotFoundException ex) {
         log.error("Cart not found exception: {}", ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(CartInvalidArgumentException.class)
-    public final ResponseEntity<Object> handleCartInvalidArgumentException(CartInvalidArgumentException ex, WebRequest request) {
+    public final ResponseEntity<Object> handleCartInvalidArgumentException(CartInvalidArgumentException ex) {
         log.error("Cart invalid argument exception: {}", ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }

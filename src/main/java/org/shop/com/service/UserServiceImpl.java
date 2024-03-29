@@ -13,14 +13,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 @Slf4j
 @Service
-//@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     @Value("${onlineShopApp.user.default.userId}")
     private Long defaultUserId;
 
     private final UserJpaRepository repository;
-//    private final UserDtoConverter converter;
+
 //    private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 

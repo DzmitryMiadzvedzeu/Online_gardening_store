@@ -8,14 +8,13 @@ import org.shop.com.dto.CartItemDto;
 import org.shop.com.entity.CartEntity;
 import org.shop.com.entity.CartItemEntity;
 import org.shop.com.entity.ProductEntity;
-import org.shop.com.exceptions.CartItemInvalidArgumentException;
-import org.shop.com.exceptions.CartItemNotFoundException;
+import org.shop.com.exceptions.CartItemsInvalidArgumentException;
+import org.shop.com.exceptions.CartItemsNotFoundException;
 import org.shop.com.exceptions.CartNotFoundException;
 import org.shop.com.mapper.CartItemMapper;
 import org.shop.com.repository.CartItemJpaRepository;
 import org.shop.com.repository.CartJpaRepository;
 import org.shop.com.repository.ProductJpaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,7 +32,7 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Transactional
     @Override
-    public CartItemDto addCartItem(CartItemCreateDto cartItemCreateDto, Long cartId) {
+    public CartItemDto add(CartItemCreateDto cartItemCreateDto, Long cartId) {
         log.debug("Attempting to add a cart item with product ID: {}, quantity: {} to cart ID: {}",
                 cartItemCreateDto.getProductId(), cartItemCreateDto.getQuantity(), cartId);
 
@@ -55,12 +54,12 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Transactional
     @Override
-    public void removeCartItem(Long cartItemId) {
+    public void remove(Long cartItemId) {
         log.debug("Attempting to remove cart item with ID: {}", cartItemId);
 
         if (!cartItemRepository.existsById(cartItemId)) {
             log.error("Failed to remove cart item. CartItem with ID {} does not exist.", cartItemId);
-            throw new CartItemNotFoundException("CartItem with ID " + cartItemId + " does not exist.");
+            throw new CartItemsNotFoundException("CartItem with ID " + cartItemId + " does not exist.");
         }
 
         cartItemRepository.deleteById(cartItemId);
@@ -68,7 +67,7 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
-    public List<CartItemDto> getCartItemsByCartId(Long cartId) {
+    public List<CartItemDto> getByCartId(Long cartId) {
         log.debug("Retrieving cart items for cart ID: {}", cartId);
 
         if (!cartRepository.existsById(cartId)) {
@@ -85,18 +84,19 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Transactional
     @Override
-    public CartItemDto updateCartItemQuantity(Long cartItemId, Integer quantity) {
+    public CartItemDto updateQuantity(Long cartItemId, Integer quantity) {
         log.debug("Updating quantity for cart item ID: {} to {}", cartItemId, quantity);
 
         if (quantity == null || quantity < 1) {
             log.error("Invalid quantity: {}. Quantity must be greater than 0 for cart item ID: {}", quantity, cartItemId);
-            throw new CartItemInvalidArgumentException("Quantity must be greater than 0.");
+            throw new CartItemsInvalidArgumentException("Quantity must be greater than 0.");
         }
 
-        CartItemEntity cartItem = cartItemRepository.findById(cartItemId)
+        CartItemEntity cartItem;
+        cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> {
                     log.error("CartItem not found with ID: {}", cartItemId);
-                    throw new CartItemNotFoundException("CartItem not found with ID: " + cartItemId);
+                    throw new CartItemsNotFoundException("CartItem not found with ID: " + cartItemId);
                 });
 
         cartItem.setQuantity(quantity);

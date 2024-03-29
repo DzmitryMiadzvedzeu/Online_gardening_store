@@ -1,15 +1,16 @@
 package org.shop.com.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
+
 @Entity
 @Table(name = "cartitems")
+@Data
+@NoArgsConstructor
 public class CartItemEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

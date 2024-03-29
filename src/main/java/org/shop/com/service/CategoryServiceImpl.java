@@ -27,29 +27,29 @@ public class CategoryServiceImpl implements CategoryService {
   //  private final CategoryDtoConverter categoryDtoConverter;
 
     @Override
-    public List<CategoryEntity> getAllCategories() {
+    public List<CategoryEntity> getAll() {
         log.debug("Fetching all categories");
         return categoryRepository.findAll();
     }
 
     @Override
-    public CategoryEntity getCategoryById(Long id) {
+    public CategoryEntity getById(Long id) {
         log.debug("Fetching category by ID: {}", id);
         return categoryRepository.findById(id).orElseThrow(() ->
                 new CategoryNotFoundException("Category with id " + id + " not found."));
     }
 
     @Override
-    public CategoryEntity createCategory(CategoryCreateDTO createDTO) {
+    public CategoryEntity create(CategoryCreateDTO createDTO) {
         log.debug("Creating category with name: {}", createDTO.getName());
         CategoryEntity categoryEntity = CategoryMapper.INSTANCE.createDtoToEntity(createDTO);
         CategoryEntity savedEntity = categoryRepository.save(categoryEntity);
-        log.debug("Category created successfully with ID: {}", savedEntity.getCategoryId());
+        log.debug("Category created successfully with ID: {}", savedEntity.getId());
         return savedEntity;
     }
 //
     @Override
-    public CategoryEntity editCategory(Long id, CategoryCreateDTO categoryDTO) {
+    public CategoryEntity edit(Long id, CategoryCreateDTO categoryDTO) {
         log.debug("Editing category with ID: {}", id);
         return categoryRepository.findById(id).map(category -> {
             category.setName(categoryDTO.getName());
@@ -63,7 +63,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void deleteCategory(Long id) {
+    public void delete(Long id) {
         log.debug("Deleting category with ID: {}", id);
         if (!categoryRepository.existsById(id)) {
             log.error("Category with ID {} not found for deletion", id);

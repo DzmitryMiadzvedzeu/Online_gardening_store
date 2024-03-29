@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
 
 import java.util.List;
 @Slf4j
@@ -41,10 +40,10 @@ public class CartController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping
-    public ResponseEntity<CartDto> createOrUpdateCart(@RequestBody CartCreateDto cartCreateDto) {
+    public ResponseEntity<CartDto> createOrUpdate(@RequestBody CartCreateDto cartCreateDto) {
         log.debug("Request to create/update cart: {}", cartCreateDto);
-        CartDto cartDto = cartService.createOrUpdateCart(cartCreateDto);
-        return ResponseEntity.ok(cartDto);
+            CartDto cartDto = cartService.createOrUpdate(cartCreateDto);
+            return ResponseEntity.ok(cartDto);
     }
 
     @Operation(summary = "Get cart by user ID")
@@ -57,9 +56,9 @@ public class CartController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{userId}")
-    public ResponseEntity<CartDto> getCartByUserId(@PathVariable Long userId) {
+    public ResponseEntity<CartDto> getByUserId(@PathVariable Long userId) {
         log.debug("Request to get cart for user ID: {}", userId);
-        CartDto cartDto = cartService.getCartByUserId(userId);
+        CartDto cartDto = cartService.getByUserId(userId);
         return ResponseEntity.ok(cartDto);
     }
 
@@ -71,9 +70,9 @@ public class CartController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @DeleteMapping("/{cartId}")
-    public ResponseEntity<Void> deleteCart(@PathVariable Long cartId) {
+    public ResponseEntity<Void> delete(@PathVariable Long cartId) {
         log.debug("Request to delete cart with ID: {}", cartId);
-        cartService.deleteCart(cartId);
+        cartService.delete(cartId);
         return ResponseEntity.ok().build();
     }
 
@@ -84,21 +83,22 @@ public class CartController {
                             array = @ArraySchema(schema = @Schema(implementation = CartDto.class))) }),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
+
     @GetMapping
-    public ResponseEntity<List<CartDto>> getAllCarts() {
+    public ResponseEntity<List<CartDto>> getAll() {
         log.debug("Request to get all carts");
-        List<CartDto> carts = cartService.getAllCarts();
+        List<CartDto> carts = cartService.getAll();
         return ResponseEntity.ok(carts);
     }
 
     @ExceptionHandler(CartNotFoundException.class)
-    public final ResponseEntity<Object> handleCartNotFoundException(CartNotFoundException ex, WebRequest request) {
+    public final ResponseEntity<Object> handleCartNotFoundException(CartNotFoundException ex) {
         log.error("Cart not found exception: {}", ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(CartInvalidArgumentException.class)
-    public final ResponseEntity<Object> handleCartInvalidArgumentException(CartInvalidArgumentException ex, WebRequest request) {
+    public final ResponseEntity<Object> handleCartInvalidArgumentException(CartInvalidArgumentException ex) {
         log.error("Cart invalid argument exception: {}", ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }

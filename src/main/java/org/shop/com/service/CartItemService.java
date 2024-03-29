@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface CartItemService {
 
-    CartItemDto addCartItem(CartItemCreateDto cartItemCreateDto, Long cartId);
+    CartItemDto add(CartItemCreateDto cartItemCreateDto, Long cartId);
 
-    void removeCartItem(Long cartItemId);
+    void remove(Long cartItemId);
 
-    List<CartItemDto> getCartItemsByCartId(Long cartId);
+    List<CartItemDto> getByCartId(Long cartId);
 
-    CartItemDto updateCartItemQuantity(Long cartItemId, Integer quantity);
+    CartItemDto updateQuantity(Long cartItemId, Integer quantity);
 }

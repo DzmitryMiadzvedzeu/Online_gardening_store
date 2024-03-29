@@ -29,38 +29,43 @@ public class CartServiceImpl implements CartService {
     private final ProductJpaRepository productJpaRepository;
     private final CartMapper cartMapper;
     private final CartItemMapper cartItemMapper;
+    private final UserService userService;
 
     @Autowired
     public CartServiceImpl(CartJpaRepository cartRepository, UserJpaRepository userRepository,
-                           ProductJpaRepository productJpaRepository, CartMapper cartMapper, CartItemMapper cartItemMapper) {
+                           ProductJpaRepository productJpaRepository, CartMapper cartMapper,
+                           CartItemMapper cartItemMapper, UserService userService) {
         this.cartRepository = cartRepository;
         this.userRepository = userRepository;
         this.productJpaRepository = productJpaRepository;
         this.cartMapper = cartMapper;
         this.cartItemMapper = cartItemMapper;
+        this.userService = userService;
     }
 
     @Transactional
     @Override
-    public CartDto createOrUpdateCart(CartCreateDto createDto) {
+    public CartDto createOrUpdate(CartCreateDto createDto) {
         log.debug("Creating or updating cart for user ID: {}", createDto.getUserId());
-        UserEntity user = userRepository.findById(createDto.getUserId())
-                .orElseThrow(() -> new CartInvalidArgumentException("Invalid User ID: " + createDto.getUserId()));
+        Long userId = userService.getCurrentUserId();
+        log.info("Current user ID: " + userId);
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new CartInvalidArgumentException("Invalid User ID: " + userId));
 
-        CartEntity cart = cartRepository.findByUserId(createDto.getUserId())
+        CartEntity cart = cartRepository.findByUserId(userId)
                 .orElseGet(() -> {
                     CartEntity newCart = new CartEntity();
                     newCart.setUser(user);
                     return newCart;
                 });
 
-        updateCartEntityFromDto(cart, createDto);
+        updateEntityFromDto(cart, createDto);
         cart = cartRepository.save(cart);
         log.debug("Cart for user ID: {} created or updated successfully", createDto.getUserId());
         return cartMapper.toDto(cart);
     }
 
-    private void updateCartEntityFromDto(CartEntity cart, CartCreateDto createDto) {
+    private void updateEntityFromDto(CartEntity cart, CartCreateDto createDto) {
         List<CartItemEntity> cartItems = createDto.getItems().stream().map(itemDto -> {
             CartItemEntity cartItem = cartItemMapper.fromCreateDto(itemDto);
             ProductEntity product = productJpaRepository.findById(itemDto.getProductId())
@@ -76,7 +81,7 @@ public class CartServiceImpl implements CartService {
 
 
     @Override
-    public CartDto getCartByUserId(Long userId) {
+    public CartDto getByUserId(Long userId) {
         log.debug("Retrieving cart for user ID: {}", userId);
         if (userId == null) {
             log.error("User ID must not be null");
@@ -92,7 +97,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void deleteCart(Long userId) {
+    public void delete(Long userId) {
         log.debug("Deleting cart with ID: {}", userId);
         if (!cartRepository.existsById(userId)) {
             log.error("Cart with ID {} does not exist", userId);
@@ -102,7 +107,7 @@ public class CartServiceImpl implements CartService {
         log.debug("Cart with ID: {} deleted successfully", userId);
     }
     @Override
-    public List<CartDto> getAllCarts() {
+    public List<CartDto> getAll() {
         log.debug("Retrieving all carts");
         List<CartDto> carts = cartRepository.findAll().stream()
                 .map(cartMapper::toDto)

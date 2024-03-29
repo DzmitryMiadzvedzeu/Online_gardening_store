@@ -8,9 +8,10 @@ public interface FavoritesService {
 
     List<FavoritesEntity> getUsersFavoritesByUserId (Long userId);
 
-    FavoritesEntity addIntoFavorites(Long userId, Long productId);
+    FavoritesEntity addIntoFavorites(Long userId,Long productId);
 
     void removeProductFromFavorites(Long userId, Long productId);
+
 
 
 

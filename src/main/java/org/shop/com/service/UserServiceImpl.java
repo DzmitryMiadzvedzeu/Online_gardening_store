@@ -2,12 +2,12 @@ package org.shop.com.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.UserCreateDto;
-import org.shop.com.dto.UserDto;
 import org.shop.com.entity.UserEntity;
 import org.shop.com.exceptions.UserNotFoundException;
 import org.shop.com.mapper.UserMapper;
 import org.shop.com.repository.UserJpaRepository;
 //import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +15,9 @@ import java.util.List;
 @Service
 //@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
+    @Value("${onlineShopApp.user.default.userId}")
+    private Long defaultUserId;
 
     private final UserJpaRepository repository;
 //    private final UserDtoConverter converter;
@@ -79,6 +82,12 @@ public class UserServiceImpl implements UserService {
         });
         repository.deleteById(id);
         log.debug("User with ID: {} deleted successfully", id);
+    }
+
+    @Override
+    public Long getCurrentUserId() {
+        // логика доставания айди юзера из контекста аутентиффикации
+        return defaultUserId;
     }
 
 }

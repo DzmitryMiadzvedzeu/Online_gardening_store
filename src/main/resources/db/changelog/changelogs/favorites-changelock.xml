@@ -7,7 +7,18 @@
         http://www.liquibase.org/xml/ns/dbchangelog-ext
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-
-
-
+    <changeSet id="1" author="Dmitry">
+    <comment>create table favorites</comment>
+            <createTable tableName="favorites">
+                <column name="id" type="BIGINT" autoIncrement="true">
+                    <constraints primaryKey="true" nullable="false" primaryKeyName="favorites_pkey"/>
+                </column>
+                <column name="user_id" type="BIGINT">
+                    <constraints nullable="false" referencedTableName="Users" referencedColumnNames="id" foreignKeyName="fk_favorites_Users"/>
+                </column>
+                <column name="product_id" type="BIGINT">
+                    <constraints nullable="false" referencedTableName="product" referencedColumnNames="id" foreignKeyName="fk_favorites_products"/>
+                </column>
+            </createTable>
+    </changeSet>
 </databaseChangeLog>

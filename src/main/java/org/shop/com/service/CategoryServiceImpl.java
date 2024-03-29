@@ -27,7 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
   //  private final CategoryDtoConverter categoryDtoConverter;
 
     @Override
-    public List<CategoryEntity> getAllCategories() {
+    public List<CategoryEntity> getAll() {
         log.debug("Fetching all categories");
         return categoryRepository.findAll();
     }

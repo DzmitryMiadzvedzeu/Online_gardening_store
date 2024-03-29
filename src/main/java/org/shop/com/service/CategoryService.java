@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface CategoryService {
 
-    List<CategoryEntity> getAllCategories();
+    List<CategoryEntity> getAll();
 
     CategoryEntity getById(Long id);
 

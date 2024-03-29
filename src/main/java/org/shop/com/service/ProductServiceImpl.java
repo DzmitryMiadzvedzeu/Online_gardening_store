@@ -2,10 +2,12 @@ package org.shop.com.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.ProductCreateDto;
+import org.shop.com.entity.CategoryEntity;
 import org.shop.com.entity.ProductEntity;
 import org.shop.com.exceptions.ProductNotFoundException;
 import org.shop.com.mapper.ProductMapper;
 import org.shop.com.repository.ProductJpaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
@@ -18,10 +20,14 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductJpaRepository repository;
 
+    private final CategoryService categoryService;
+
     @Override
     public ProductEntity create(ProductCreateDto productCreateDto) {
         log.debug("Creating product: {}", productCreateDto);
+        CategoryEntity categoryById = categoryService.getCategoryById(productCreateDto.getCategoryId());
         ProductEntity createdProduct = ProductMapper.INSTANCE.createDtoToEntity(productCreateDto);
+        createdProduct.setCategory(categoryById);
         ProductEntity savedProduct = repository.save(createdProduct);
         log.debug("Product created successfully with ID: {}", savedProduct.getId());
         return savedProduct;

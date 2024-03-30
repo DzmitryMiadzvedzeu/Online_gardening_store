@@ -1,14 +1,19 @@
 package org.shop.com.controller;
+
 import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.ProductCreateDto;
 import org.shop.com.dto.ProductDto;
+import org.shop.com.entity.CategoryEntity;
+import org.shop.com.entity.ProductEntity;
 import org.shop.com.exceptions.ProductNotFoundException;
 import org.shop.com.mapper.ProductMapper;
+import org.shop.com.service.CategoryService;
 import org.shop.com.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,13 +24,17 @@ import java.util.stream.Collectors;
 public class ProductController {
 
     private final ProductService productService;
+
     private final ProductMapper productMapper;
+
+    private final CategoryService categoryService;
 
 
     @Autowired
-    public ProductController(ProductService productService,ProductMapper productMapper) {
+    public ProductController(ProductService productService, ProductMapper productMapper, CategoryService categoryService) {
         this.productService = productService;
         this.productMapper = productMapper;
+        this.categoryService = categoryService;
     }
 
     @GetMapping
@@ -38,7 +47,7 @@ public class ProductController {
         List<ProductDto> productDto = productService.getAll(category, minPrice, maxPrice, discountPrice, sort).stream()
                 .map(productMapper::toDto)
                 .collect(Collectors.toList());
-        log.debug("Return {} products" , productDto.size());
+        log.debug("Return {} products", productDto.size());
         return ResponseEntity.ok(productDto);
     }
 
@@ -46,7 +55,7 @@ public class ProductController {
     public ResponseEntity<ProductDto> getById(@PathVariable long id) {
         log.debug("Request sent ro get product with id {} ", id);
         ProductDto productDto = productMapper.toDto(productService.findById(id));
-        log.debug("Return product with id {} ", id );
+        log.debug("Return product with id {} ", id);
         return ResponseEntity.ok(productDto);
     }
 
@@ -68,24 +77,32 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductDto> edit(@PathVariable long id, @RequestBody ProductDto productDto) {
-        log.debug("Request received to edit product with id {}");
-        productDto.setId(id);
-        ProductDto updatedDto = productMapper.toDto(productService.update(productMapper.toEntity(productDto)));
+        log.debug("Request received to edit product with id {}", id);
+        ProductEntity existingProduct = productService.findById(id);
+
+        productMapper.updateEntityFromDto(productDto, existingProduct);
+
+        if (productDto.getCategoryId() > 0) {
+            CategoryEntity newCategory = categoryService.getById(productDto.getCategoryId());
+            existingProduct.setCategory(newCategory);
+        }
+
         log.debug("Product with id {} edited successfully", id);
-        return ResponseEntity.ok(updatedDto);
+        return ResponseEntity.ok(productMapper.toDto(productService.update(existingProduct)));
     }
 
-     @ExceptionHandler(ProductNotFoundException.class)
+    @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<String> handleProductNotFoundException(ProductNotFoundException ex) {
-    log.error("Product not found: {}", ex.getMessage());
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-}
+        log.error("Product not found: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
 
-     @ExceptionHandler(Exception.class)
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception ex) {
-    log.error("Internal server error: {}", ex.getMessage());
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
-   }
+        log.error("Internal server error: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
+    }
+
 }
 
 

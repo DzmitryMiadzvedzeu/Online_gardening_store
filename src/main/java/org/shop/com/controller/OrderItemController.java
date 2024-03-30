@@ -25,7 +25,7 @@ public class OrderItemController {
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<List<OrderItemDto>> getOrderItems(@PathVariable long orderId) {
+    public ResponseEntity<List<OrderItemDto>> getAll(@PathVariable long orderId) {
         log.info("Fetching order items for order with id {}", orderId);
         List<OrderItemDto> orderItems = orderItemService.findAllByOrderId(orderId);
         return ResponseEntity.ok(orderItems);

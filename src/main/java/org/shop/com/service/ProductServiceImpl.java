@@ -1,4 +1,5 @@
 package org.shop.com.service;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.ProductCreateDto;
@@ -7,9 +8,9 @@ import org.shop.com.entity.ProductEntity;
 import org.shop.com.exceptions.ProductNotFoundException;
 import org.shop.com.mapper.ProductMapper;
 import org.shop.com.repository.ProductJpaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductEntity create(ProductCreateDto productCreateDto) {
         log.debug("Creating product: {}", productCreateDto);
-        CategoryEntity categoryById = categoryService.getCategoryById(productCreateDto.getCategoryId());
+        CategoryEntity categoryById = categoryService.getById(productCreateDto.getCategoryId());
         ProductEntity createdProduct = ProductMapper.INSTANCE.createDtoToEntity(productCreateDto);
         createdProduct.setCategory(categoryById);
         ProductEntity savedProduct = repository.save(createdProduct);
@@ -90,12 +91,19 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductEntity update(ProductEntity productEntity) {
         log.debug("Updating product: {}", productEntity);
-        if (findById(productEntity.getId()) == null) {
-            log.error("Product with id {} not found", productEntity.getId());
-            throw new ProductNotFoundException("Can't find the product");
-        }
-        ProductEntity updatedProduct = repository.save(productEntity);
+
+        ProductEntity existingProduct = repository.findById(productEntity.getId())
+                .orElseThrow(() -> new ProductNotFoundException("Can't find the product with id " + productEntity.getId()));
+
+        existingProduct.setName(productEntity.getName());
+        existingProduct.setDescription(productEntity.getDescription());
+        existingProduct.setPrice(productEntity.getPrice());
+        existingProduct.setCategory(productEntity.getCategory());
+        existingProduct.setImage(productEntity.getImage());
+
+        ProductEntity updatedProduct = repository.save(existingProduct);
         log.debug("Product updated successfully: {}", updatedProduct);
         return updatedProduct;
     }
+
 }

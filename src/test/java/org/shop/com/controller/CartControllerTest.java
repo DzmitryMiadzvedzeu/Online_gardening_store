@@ -38,9 +38,9 @@ public class CartControllerTest {
 
     @Test
     void createOrUpdateCart_ReturnsOk() {
-        when(cartService.createOrUpdateCart(any(CartCreateDto.class))).thenReturn(cartDto);
+        when(cartService.createOrUpdate(any(CartCreateDto.class))).thenReturn(cartDto);
 
-        ResponseEntity<CartDto> response = cartController.createOrUpdateCart(cartCreateDto);
+        ResponseEntity<CartDto> response = cartController.createOrUpdate(cartCreateDto);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(cartDto, response.getBody());
@@ -49,9 +49,9 @@ public class CartControllerTest {
     @Test
     void getCartByUserId_ReturnsOk() {
         Long userId = 1L;
-        when(cartService.getCartByUserId(userId)).thenReturn(cartDto);
+        when(cartService.getByUserId(userId)).thenReturn(cartDto);
 
-        ResponseEntity<CartDto> response = cartController.getCartByUserId(userId);
+        ResponseEntity<CartDto> response = cartController.getByUserId(userId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(cartDto, response.getBody());
@@ -61,16 +61,16 @@ public class CartControllerTest {
     void deleteCart_ReturnsOk() {
         Long cartId = 1L;
 
-        ResponseEntity<Void> response = cartController.deleteCart(cartId);
+        ResponseEntity<Void> response = cartController.delete(cartId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
     void getAllCarts_ReturnsOk() {
-        when(cartService.getAllCarts()).thenReturn(List.of(cartDto));
+        when(cartService.getAll()).thenReturn(List.of(cartDto));
 
-        ResponseEntity<List<CartDto>> response = cartController.getAllCarts();
+        ResponseEntity<List<CartDto>> response = cartController.getAll();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().size());

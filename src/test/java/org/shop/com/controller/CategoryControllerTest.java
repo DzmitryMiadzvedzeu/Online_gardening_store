@@ -55,34 +55,34 @@ public class CategoryControllerTest {
         CategoryEntity categoryTwoEntity = new CategoryEntity(2L, "Tools");
         List<CategoryEntity> categoryEntityList = Arrays.asList(categoryOneEntity, categoryTwoEntity);
 
-        given(categoryService.getAllCategories()).willReturn(categoryEntityList);
+        given(categoryService.getAll()).willReturn(categoryEntityList);
 
 
         mockMvc.perform(get("/v1/categories"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].categoryId", is(categoryOneEntity.getCategoryId().intValue())))
+                .andExpect(jsonPath("$[0].id", is(categoryOneEntity.getId().intValue())))
                 .andExpect(jsonPath("$[0].name", is(categoryOneEntity.getName())))
-                .andExpect(jsonPath("$[1].categoryId", is(categoryTwoEntity.getCategoryId().intValue())))
+                .andExpect(jsonPath("$[1].id", is(categoryTwoEntity.getId().intValue())))
                 .andExpect(jsonPath("$[1].name", is(categoryTwoEntity.getName())));
 
 
-        verify(categoryService, times(1)).getAllCategories();
+        verify(categoryService, times(1)).getAll();
     }
 
     @Test
     public void getCategoryByIdTest() throws Exception {
 
-        Long categoryId = 1L;
-        CategoryDTO category = new CategoryDTO(categoryId, "Plants");
+        Long id = 1L;
+        CategoryDTO category = new CategoryDTO(id, "Plants");
 
-        given(categoryService.getCategoryById(categoryId))
-                .willReturn(new CategoryEntity(categoryId, category.getName(), null));
+        given(categoryService.getById(id))
+                .willReturn(new CategoryEntity(id, category.getName(), null));
 
-        mockMvc.perform(get("/v1/categories/{id}", categoryId))
+        mockMvc.perform(get("/v1/categories/{id}", id))
                 .andExpect(status().isOk())
-                // Приведение к строке, чтобы избежать проблем с типами
-                .andExpect(jsonPath("$.categoryId", is(categoryId.intValue())))
+
+                .andExpect(jsonPath("$.id", is(id.intValue())))
                 .andExpect(jsonPath("$.name", is(category.getName())));
     }
     @Test
@@ -91,14 +91,14 @@ public class CategoryControllerTest {
         CategoryCreateDTO createDTO = new CategoryCreateDTO("Plants");
         CategoryDTO returnedDTO = new CategoryDTO(1L, "Plants");
 
-        given(categoryService.createCategory(any(CategoryCreateDTO.class)))
+        given(categoryService.create(any(CategoryCreateDTO.class)))
                 .willReturn(new CategoryEntity(1L, "Plants", null));
 
         mockMvc.perform(post("/v1/categories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(createDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.categoryId", is(returnedDTO.getCategoryId().intValue())))
+                .andExpect(jsonPath("$.id", is(returnedDTO.getId().intValue())))
                 .andExpect(jsonPath("$.name", is(returnedDTO.getName())));
     }
 
@@ -109,7 +109,7 @@ public class CategoryControllerTest {
         CategoryCreateDTO updateDTO = new CategoryCreateDTO("UpdatedPlants");
         CategoryDTO updatedDTO = new CategoryDTO(id, "UpdatedPlants");
 
-        given(categoryService.editCategory(eq(id), any(CategoryCreateDTO.class)))
+        given(categoryService.edit(eq(id), any(CategoryCreateDTO.class)))
                 .willReturn(new CategoryEntity(id, "UpdatedPlants", null));
 
 
@@ -117,14 +117,14 @@ public class CategoryControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(updateDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.categoryId", is(updatedDTO.getCategoryId().intValue())))
+                .andExpect(jsonPath("$.id", is(updatedDTO.getId().intValue())))
                 .andExpect(jsonPath("$.name", is(updatedDTO.getName())));
     }
 
     @Test
     public void deleteCategoryTest() throws Exception {
         Long id = 1L;
-        doNothing().when(categoryService).deleteCategory(id);
+        doNothing().when(categoryService).delete(id);
 
         mockMvc.perform(delete("/v1/categories/{id}", id))
                 .andExpect(status().isNoContent());
@@ -140,15 +140,15 @@ public class CategoryControllerTest {
         mockMvc.perform(get("/v1/categories/search")
                         .param("name", name))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.categoryId", is(categoryDTO.getCategoryId().intValue())))
+                .andExpect(jsonPath("$.id", is(categoryDTO.getId().intValue())))
                 .andExpect(jsonPath("$.name", is(categoryDTO.getName())));
     }
     @Test
     void testGetCategoryByIdNotFound() throws Exception {
-        Long categoryId = 1L;
-        when(categoryService.getCategoryById(categoryId)).thenThrow(new CategoryNotFoundException("Category not found"));
+        Long id = 1L;
+        when(categoryService.getById(id)).thenThrow(new CategoryNotFoundException("Category not found"));
 
-        mockMvc.perform(get("/v1/categories/{id}", categoryId)
+        mockMvc.perform(get("/v1/categories/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error", is("Category not found")));

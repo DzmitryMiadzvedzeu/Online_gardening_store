@@ -13,8 +13,8 @@ import org.shop.com.dto.CartItemDto;
 import org.shop.com.entity.CartEntity;
 import org.shop.com.entity.CartItemEntity;
 import org.shop.com.entity.ProductEntity;
-import org.shop.com.exceptions.CartItemInvalidArgumentException;
-import org.shop.com.exceptions.CartItemNotFoundException;
+import org.shop.com.exceptions.CartItemsInvalidArgumentException;
+import org.shop.com.exceptions.CartItemsNotFoundException;
 import org.shop.com.exceptions.CartNotFoundException;
 import org.shop.com.mapper.CartItemMapper;
 import org.shop.com.repository.CartItemJpaRepository;
@@ -56,7 +56,6 @@ class CartItemServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        // Инициализация тестовых данных
         cart = new CartEntity();
         product = new ProductEntity();
         product.setId(productId);
@@ -78,7 +77,7 @@ class CartItemServiceImplTest {
 
     @Test
     void addCartItem_Success() {
-        CartItemDto result = cartItemService.addCartItem(cartItemCreateDto, cartId);
+        CartItemDto result = cartItemService.add(cartItemCreateDto, cartId);
 
         assertNotNull(result);
         assertEquals(cartItemId, result.getId());
@@ -91,7 +90,7 @@ class CartItemServiceImplTest {
     void removeCartItem_Success() {
         when(cartItemRepository.existsById(cartItemId)).thenReturn(true);
 
-        assertDoesNotThrow(() -> cartItemService.removeCartItem(cartItemId));
+        assertDoesNotThrow(() -> cartItemService.remove(cartItemId));
         verify(cartItemRepository).deleteById(cartItemId);
     }
 
@@ -99,7 +98,7 @@ class CartItemServiceImplTest {
     void removeCartItem_NotFound() {
         when(cartItemRepository.existsById(cartItemId)).thenReturn(false);
 
-        assertThrows(CartItemNotFoundException.class, () -> cartItemService.removeCartItem(cartItemId));
+        assertThrows(CartItemsNotFoundException.class, () -> cartItemService.remove(cartItemId));
     }
 
     @Test
@@ -110,7 +109,7 @@ class CartItemServiceImplTest {
         when(cartItemRepository.findByCartId(cartId)).thenReturn(List.of(cartItem));
 
 
-        List<CartItemDto> result = cartItemService.getCartItemsByCartId(cartId);
+        List<CartItemDto> result = cartItemService.getByCartId(cartId);
 
 
         assertNotNull(result);
@@ -132,7 +131,7 @@ class CartItemServiceImplTest {
         });
 
         // Выполнение действия, которое требуется протестировать
-        CartItemDto result = cartItemService.updateCartItemQuantity(cartItemId, newQuantity);
+        CartItemDto result = cartItemService.updateQuantity(cartItemId, newQuantity);
 
 
         assertNotNull(result);
@@ -145,28 +144,28 @@ class CartItemServiceImplTest {
     void updateCartItemQuantity_NotFound() {
         when(cartItemRepository.findById(cartItemId)).thenReturn(Optional.empty());
 
-        assertThrows(CartItemNotFoundException.class, () -> cartItemService.updateCartItemQuantity(cartItemId, 2));
+        assertThrows(CartItemsNotFoundException.class, () -> cartItemService.updateQuantity(cartItemId, 2));
     }
 
     @Test
     void getCartItemsByCartId_CartNotFound() {
         when(cartRepository.existsById(cartId)).thenReturn(false);
 
-        assertThrows(CartNotFoundException.class, () -> cartItemService.getCartItemsByCartId(cartId));
+        assertThrows(CartNotFoundException.class, () -> cartItemService.getByCartId(cartId));
     }
 
     @Test
     void addCartItem_ProductNotFound() {
         when(productJpaRepository.findById(productId)).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () -> cartItemService.addCartItem(cartItemCreateDto, cartId));
+        assertThrows(RuntimeException.class, () -> cartItemService.add(cartItemCreateDto, cartId));
     }
 
     @Test
     void addCartItem_CartNotFound() {
         when(cartRepository.findById(cartId)).thenReturn(Optional.empty());
 
-        assertThrows(CartNotFoundException.class, () -> cartItemService.addCartItem(cartItemCreateDto, cartId));
+        assertThrows(CartNotFoundException.class, () -> cartItemService.add(cartItemCreateDto, cartId));
     }
 
     /** Метод для демонстрации проверки невалидного количества при обновлении элемента корзины. */
@@ -175,6 +174,6 @@ class CartItemServiceImplTest {
         Integer invalidQuantity = 0;
         when(cartItemRepository.findById(cartItemId)).thenReturn(Optional.of(cartItem));
 
-        assertThrows(CartItemInvalidArgumentException.class, () -> cartItemService.updateCartItemQuantity(cartItemId, invalidQuantity));
+        assertThrows(CartItemsInvalidArgumentException.class, () -> cartItemService.updateQuantity(cartItemId, invalidQuantity));
     }
 }

@@ -37,10 +37,8 @@ public class ProductEntity {
     private String image;
 
     @CreationTimestamp
-//    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-//    @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
     private LocalDateTime updatedAt = LocalDateTime.now();
 

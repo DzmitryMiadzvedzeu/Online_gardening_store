@@ -7,9 +7,11 @@ import java.util.List;
 
 public interface OrderItemService {
 
-    OrderItemEntity create(OrderItemCreateDto orderItemCreateDto, long orderId);
-
     List<OrderItemDto> findAllByOrderId(long orderId);
+
+    OrderItemEntity findById(long orderItemId);
+
+    OrderItemEntity create(OrderItemCreateDto orderItemCreateDto, long orderId);
 
     OrderItemDto updateQuantity(long orderItemId, Integer quantity);
 

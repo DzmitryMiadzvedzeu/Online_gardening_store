@@ -13,9 +13,13 @@ public interface OrderItemMapper {
     OrderItemMapper INSTANCE = Mappers.getMapper(OrderItemMapper.class);
 
     @Mapping(source = "product.id", target = "productId")
+    @Mapping(source = "quantity", target = "quantity")
+    @Mapping(source = "priceAtPurchase", target = "priceAtPurchase")
     OrderItemDto toDto(OrderItemEntity orderItemEntity);
 
     @Mapping(source = "productId", target = "product.id")
-    @Mapping(target = "priceAtPurchase", ignore = true)
+    @Mapping(source = "quantity", target = "quantity")
+    @Mapping(source = "priceAtPurchase", target = "priceAtPurchase")
     OrderItemEntity createDtoToEntity(OrderItemCreateDto orderItemCreateDto);
+
 }

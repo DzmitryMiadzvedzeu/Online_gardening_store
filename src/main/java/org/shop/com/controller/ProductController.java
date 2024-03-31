@@ -1,5 +1,4 @@
 package org.shop.com.controller;
-
 import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.ProductCreateDto;
 import org.shop.com.dto.ProductDto;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,7 +51,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getById(@PathVariable long id) {
-        log.debug("Request sent ro get product with id {} ", id);
+        log.debug("Request sent to get product with id {} ", id);
         ProductDto productDto = productMapper.toDto(productService.findById(id));
         log.debug("Return product with id {} ", id);
         return ResponseEntity.ok(productDto);
@@ -65,14 +63,6 @@ public class ProductController {
         ProductDto savedDto = productMapper.toDto(productService.create(productCreateDto));
         log.debug("Product created successfully with ID: {}", savedDto.getId());
         return new ResponseEntity<>(savedDto, HttpStatus.CREATED);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable long id) {
-        log.debug("Request received to delete product with id {} ", id);
-        productService.delete(id);
-        log.debug("Product with id {} deleted successfully ", id);
-        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
@@ -89,6 +79,14 @@ public class ProductController {
 
         log.debug("Product with id {} edited successfully", id);
         return ResponseEntity.ok(productMapper.toDto(productService.update(existingProduct)));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable long id) {
+        log.debug("Request received to delete product with id {} ", id);
+        productService.delete(id);
+        log.debug("Product with id {} deleted successfully ", id);
+        return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(ProductNotFoundException.class)

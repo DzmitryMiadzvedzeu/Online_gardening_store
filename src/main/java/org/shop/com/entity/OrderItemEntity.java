@@ -20,7 +20,7 @@ public class OrderItemEntity {
     @JoinColumn(name = "order_id")
     private OrderEntity order;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "product_id")
     private ProductEntity product;
 

@@ -12,7 +12,7 @@ public class OrderItemDto {
 
     private Long id;
 
-    private Long productId;
+    private long productId;
 
     private Integer quantity;
 

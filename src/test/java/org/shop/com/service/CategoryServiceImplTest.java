@@ -1,13 +1,9 @@
 package org.shop.com.service;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.shop.com.converter.CategoryDtoConverter;
 import org.shop.com.dto.CategoryCreateDTO;
-import org.shop.com.dto.CategoryDTO;
 import org.shop.com.entity.CategoryEntity;
 import org.shop.com.exceptions.CategoryInvalidArgumentException;
 import org.shop.com.exceptions.CategoryNotFoundException;
@@ -16,7 +12,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +29,7 @@ class CategoryServiceImplTest {
     void getAllCategories_ShouldReturnAllCategories() {
         when(categoryRepository.findAll()).thenReturn(Arrays.asList(new CategoryEntity(), new CategoryEntity()));
 
-        List<CategoryEntity> result = categoryService.getAllCategories();
+        List<CategoryEntity> result = categoryService.getAll();
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -48,7 +43,7 @@ class CategoryServiceImplTest {
         CategoryEntity category = new CategoryEntity();
         when(categoryRepository.findById(id)).thenReturn(Optional.of(category));
 
-        CategoryEntity result = categoryService.getCategoryById(id);
+        CategoryEntity result = categoryService.getById(id);
 
         assertNotNull(result);
         verify(categoryRepository).findById(id);
@@ -58,7 +53,7 @@ class CategoryServiceImplTest {
         Long id = 1L;
         when(categoryRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertThrows(CategoryNotFoundException.class, () -> categoryService.getCategoryById(id));
+        assertThrows(CategoryNotFoundException.class, () -> categoryService.getById(id));
         verify(categoryRepository).findById(id);
     }
 
@@ -69,7 +64,7 @@ class CategoryServiceImplTest {
         CategoryEntity category = new CategoryEntity();
         when(categoryRepository.save(any(CategoryEntity.class))).thenReturn(category);
 
-        CategoryEntity result = categoryService.createCategory(createDTO);
+        CategoryEntity result = categoryService.create(createDTO);
 
         assertNotNull(result);
         verify(categoryRepository).save(any(CategoryEntity.class));
@@ -83,7 +78,7 @@ class CategoryServiceImplTest {
         when(categoryRepository.findById(id)).thenReturn(Optional.of(category));
         when(categoryRepository.save(any(CategoryEntity.class))).thenReturn(category);
 
-        CategoryEntity result = categoryService.editCategory(id, categoryDTO);
+        CategoryEntity result = categoryService.edit(id, categoryDTO);
 
         assertNotNull(result);
         assertEquals("Updated Name", result.getName());
@@ -96,7 +91,7 @@ class CategoryServiceImplTest {
         Long id = 1L;
         when(categoryRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertThrows(CategoryNotFoundException.class, () -> categoryService.editCategory(id, new CategoryCreateDTO()));
+        assertThrows(CategoryNotFoundException.class, () -> categoryService.edit(id, new CategoryCreateDTO()));
     }
 
     @Test
@@ -104,7 +99,7 @@ class CategoryServiceImplTest {
         Long id = 1L;
         when(categoryRepository.existsById(id)).thenReturn(true);
 
-        categoryService.deleteCategory(id);
+        categoryService.delete(id);
 
         verify(categoryRepository).deleteById(id);
     }
@@ -114,7 +109,7 @@ class CategoryServiceImplTest {
         Long id = 1L;
         when(categoryRepository.existsById(id)).thenReturn(false);
 
-        assertThrows(CategoryInvalidArgumentException.class, () -> categoryService.deleteCategory(id));
+        assertThrows(CategoryInvalidArgumentException.class, () -> categoryService.delete(id));
         verify(categoryRepository, never()).deleteById(id);
     }
 

@@ -43,11 +43,11 @@ public class CategoryControllerIntegrationTest {
     }
 
     @Test
-    void getCategoryById_WhenCategoryExists_ShouldReturnCategory() throws Exception {
+    void getById_WhenCategoryExists_ShouldReturnCategory() throws Exception {
         mockMvc.perform(get("/v1/categories/{id}", 5)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.categoryId", Matchers.is(5)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is(5)));
     }
 
     @Test

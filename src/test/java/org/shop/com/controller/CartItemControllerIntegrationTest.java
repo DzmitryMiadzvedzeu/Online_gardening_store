@@ -30,18 +30,18 @@ public class CartItemControllerIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Test
-    public void addCartItemTest() throws Exception {
+    public void addTest() throws Exception {
         CartItemCreateDto cartItemCreateDto = new CartItemCreateDto(1L, 5);
-        long cartId = 1L;
+        long id = 1L;
 
-        given(cartItemService.addCartItem(any(CartItemCreateDto.class), anyLong()))
+        given(cartItemService.add(any(CartItemCreateDto.class), anyLong()))
                 .willAnswer(invocation -> {
                     CartItemCreateDto dto = invocation.getArgument(0);
 
                     return new CartItemDto(1L, dto.getProductId(), dto.getQuantity());
                 });
 
-        mockMvc.perform(post("/cartItems?cartId=" + cartId)
+        mockMvc.perform(post("/v1/cartItems?cartId=" + id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(cartItemCreateDto)))
                 .andExpect(status().isOk())
@@ -53,7 +53,7 @@ public class CartItemControllerIntegrationTest {
     public void removeCartItemTest() throws Exception {
         Long cartItemId = 1L;
 
-        mockMvc.perform(delete("/cartItems/{cartItemId}", cartItemId))
+        mockMvc.perform(delete("/v1/cartItems/{cartItemId}", cartItemId))
                 .andExpect(status().isOk());
     }
 
@@ -61,7 +61,7 @@ public class CartItemControllerIntegrationTest {
     public void getCartItemsByCartIdTest() throws Exception {
         Long cartId = 1L;
 
-        mockMvc.perform(get("/cartItems/cart/{cartId}", cartId))
+        mockMvc.perform(get("/v1/cartItems/cart/{cartId}", cartId))
                 .andExpect(status().isOk());
     }
 
@@ -70,7 +70,7 @@ public class CartItemControllerIntegrationTest {
         Long cartItemId = 1L;
         Integer newQuantity = 10;
 
-        mockMvc.perform(put("/cartItems/{cartItemId}?quantity={quantity}", cartItemId, newQuantity))
+        mockMvc.perform(put("/v1/cartItems/{cartItemId}?quantity={quantity}", cartItemId, newQuantity))
                 .andExpect(status().isOk());
     }
 }

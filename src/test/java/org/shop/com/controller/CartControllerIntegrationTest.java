@@ -38,7 +38,7 @@ public class CartControllerIntegrationTest {
         CartCreateDto cartCreateDto = new CartCreateDto(1L, Collections.emptyList());
         CartDto expectedCartDto = new CartDto(1L, 1L);
 
-        given(cartService.createOrUpdateCart(any(CartCreateDto.class))).willReturn(expectedCartDto);
+        given(cartService.createOrUpdate(any(CartCreateDto.class))).willReturn(expectedCartDto);
 
         mockMvc.perform(post("/v1/carts")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -47,7 +47,7 @@ public class CartControllerIntegrationTest {
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.userId").value(1L));
 
-        Mockito.verify(cartService, Mockito.times(1)).createOrUpdateCart(any(CartCreateDto.class));
+        Mockito.verify(cartService, Mockito.times(1)).createOrUpdate(any(CartCreateDto.class));
     }
 
     @Test
@@ -55,14 +55,14 @@ public class CartControllerIntegrationTest {
         Long userId = 1L;
         CartDto expectedCartDto = new CartDto(1L, userId);
 
-        given(cartService.getCartByUserId(userId)).willReturn(expectedCartDto);
+        given(cartService.getByUserId(userId)).willReturn(expectedCartDto);
 
         mockMvc.perform(get("/v1/carts/{userId}", userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.userId").value(userId));
 
-        Mockito.verify(cartService, Mockito.times(1)).getCartByUserId(userId);
+        Mockito.verify(cartService, Mockito.times(1)).getByUserId(userId);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class CartControllerIntegrationTest {
         mockMvc.perform(delete("/v1/carts/{cartId}", cartId))
                 .andExpect(status().isOk());
 
-        Mockito.verify(cartService, Mockito.times(1)).deleteCart(cartId);
+        Mockito.verify(cartService, Mockito.times(1)).delete(cartId);
     }
 
     @Test
@@ -80,7 +80,7 @@ public class CartControllerIntegrationTest {
         CartDto cartDto1 = new CartDto(1L, 1L);
         CartDto cartDto2 = new CartDto(2L, 2L);
 
-        given(cartService.getAllCarts()).willReturn(Arrays.asList(cartDto1, cartDto2));
+        given(cartService.getAll()).willReturn(Arrays.asList(cartDto1, cartDto2));
 
         mockMvc.perform(get("/v1/carts"))
                 .andExpect(status().isOk())
@@ -89,6 +89,6 @@ public class CartControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].id").value(1L))
                 .andExpect(jsonPath("$[1].id").value(2L));
 
-        Mockito.verify(cartService, Mockito.times(1)).getAllCarts();
+        Mockito.verify(cartService, Mockito.times(1)).getAll();
     }
 }

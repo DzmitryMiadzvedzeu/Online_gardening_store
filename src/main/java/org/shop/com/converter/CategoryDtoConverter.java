@@ -5,7 +5,6 @@ import org.shop.com.dto.CategoryDTO;
 import org.shop.com.entity.CategoryEntity;
 import org.springframework.stereotype.Component;
 
-
 @Component
 public class CategoryDtoConverter implements Converter<CategoryEntity, CategoryDTO> {
 
@@ -15,7 +14,7 @@ public class CategoryDtoConverter implements Converter<CategoryEntity, CategoryD
             return null;
         }
         CategoryDTO dto = new CategoryDTO();
-        dto.setCategoryId(entity.getCategoryId());
+        dto.setId(entity.getId());
         dto.setName(entity.getName());
         return dto;
     }
@@ -27,7 +26,6 @@ public class CategoryDtoConverter implements Converter<CategoryEntity, CategoryD
         }
         CategoryEntity entity = new CategoryEntity();
         entity.setName(dto.getName());
-        // ID устанавливается автоматически при сохранении в базу
         return entity;
     }
 }

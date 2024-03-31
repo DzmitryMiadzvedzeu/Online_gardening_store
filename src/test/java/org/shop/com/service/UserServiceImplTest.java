@@ -1,113 +1,118 @@
 package org.shop.com.service;
 
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-//import org.shop.com.converter.UserDtoConverter;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.shop.com.dto.UserCreateDto;
-import org.shop.com.dto.UserDto;
 import org.shop.com.entity.UserEntity;
-import org.shop.com.enums.UserRole;
 import org.shop.com.exceptions.UserNotFoundException;
+import org.shop.com.mapper.UserMapper;
 import org.shop.com.repository.UserJpaRepository;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.shop.com.service.UserServiceImpl;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
 
     @Mock
-    private UserJpaRepository repository;
+    private UserJpaRepository userJpaRepository;
 
-//    @Mock
-//    private UserDtoConverter converter;
-
-   // @Mock
-   // private PasswordEncoder passwordEncoder;
+    @Mock
+    private UserMapper userMapper;
 
     @InjectMocks
     private UserServiceImpl userService;
-//
-//    @Test
-//    void findByIdShouldReturnUser() {
-//        long userId = 1L;
-//        UserEntity userEntity = new UserEntity("Test Name", "test@example.com",
-//                "1234567890", "hashedPassword", UserRole.USER);
-//        when(repository.findById(eq(userId))).thenReturn(Optional.of(userEntity));
-//        UserEntity foundUser = userService.findById(userId);
-//        verify(repository).findById(userId);
-//        assert foundUser == userEntity;
-//    }
 
-//    @Test
-//    void findByIdShouldThrowUserNotFoundException() {
-//        long userId = 1L;
-//        when(repository.findById(eq(userId))).thenReturn(Optional.empty());
-//        assertThrows(UserNotFoundException.class, () -> userService.findById(userId));
-//    }
-//
-//    @Test
-//    void createShouldSaveUserSuccessfully() {
-//        UserCreateDto createDto = new UserCreateDto("Test Name", "test@example.com",
-//                "1234567890", "password", UserRole.USER);
-//        UserEntity userEntity = new UserEntity("Test Name", "test@example.com",
-//                "1234567890", "hashedPassword", UserRole.USER);
-//        when(converter.toEntity(any(UserDto.class))).thenReturn(userEntity);
-//        when(repository.save(any(UserEntity.class))).thenReturn(userEntity);
-//      //  when(passwordEncoder.encode(anyString())).thenReturn("hashedPassword");
-//        userService.create(createDto);
-//        verify(repository).save(userEntity);
-//     //   verify(passwordEncoder).encode("password");
-//    }
-//
-//    @Test
-//    void editUserShouldUpdateUser() {
-//        long userId = 1L;
-//        UserCreateDto userDto = new UserCreateDto("UpdatedName",
-//                "updated@example.com", "9876543210",
-//                "newPassword", UserRole.USER);
-//        UserEntity existingUser = new UserEntity("OriginalName",
-//                "original@example.com", "1234567890",
-//                "originalPassword", UserRole.USER);
-//        UserEntity updatedUser = new UserEntity("UpdatedName",
-//                "updated@example.com", "9876543210",
-//                "hashedNewPassword", UserRole.USER);
-//        when(repository.findById(eq(userId))).thenReturn(Optional.of(existingUser));
-//     //   when(passwordEncoder.encode(eq("newPassword"))).thenReturn("hashedNewPassword");
-//        when(repository.save(any(UserEntity.class))).thenReturn(updatedUser);
-//        UserEntity result = userService.editUser(userId, userDto);
-//        assertNotNull(result);
-//        assertEquals("UpdatedName", result.getName());
-//        assertEquals("updated@example.com", result.getEmail());
-//        assertEquals("9876543210", result.getPhoneNumber());
-//        assertEquals("hashedNewPassword", result.getPasswordHash());
-//        assertEquals(UserRole.USER, result.getRole());
-//        verify(repository, times(1)).findById(eq(userId));
-//      //  verify(passwordEncoder, times(1)).encode(eq("newPassword"));
-//        verify(repository, times(1)).save(any(UserEntity.class));
-//    }
+    private UserEntity userEntity;
+    private UserCreateDto userCreateDto;
 
-    @Test
-    void deleteWhenUserExistsShouldCallDeleteById() {
-        long userId = 1L;
-        when(repository.findById(userId)).thenReturn(Optional.of(new UserEntity()));
-        userService.delete(userId);
-        verify(repository).deleteById(userId);
+    @BeforeEach
+    void setUp() {
+        //тестовые данные, чтобы не писать постоянно
+        userEntity = new UserEntity();
+        userEntity.setId(1L);
+        userEntity.setName("Test User");
+        userEntity.setEmail("test@example.com");
+        userEntity.setPasswordHash("hashedPassword");
+
+        userCreateDto = new UserCreateDto();
+        userCreateDto.setName("Test User");
+        userCreateDto.setEmail("test@example.com");
+        userCreateDto.setPasswordHash("password");
     }
 
     @Test
-    void deleteWhenUserDoesNotExistShouldThrowException() {
-        long userId = 1L;
-        when(repository.findById(userId)).thenReturn(Optional.empty());
-        assertThrows(UserNotFoundException.class, () -> userService.delete(userId));
-        verify(repository, never()).deleteById(anyLong());
+    void create_ShouldCreateUser() {
+        when(userMapper.userCreateDtoToEntity(any(UserCreateDto.class))).thenReturn(userEntity);
+        when(userJpaRepository.save(any(UserEntity.class))).thenReturn(userEntity);
+
+        UserEntity createdUser = userService.create(userCreateDto);
+
+        assertThat(createdUser).isNotNull();
+        assertThat(createdUser.getName()).isEqualTo(userCreateDto.getName());
+        verify(userJpaRepository).save(any(UserEntity.class));
+    }
+
+    @Test
+    void findById_ShouldReturnUser() {
+        when(userJpaRepository.findById(1L)).thenReturn(Optional.of(userEntity));
+
+        UserEntity foundUser = userService.findById(1L);
+
+        assertThat(foundUser).isNotNull();
+        assertThat(foundUser.getId()).isEqualTo(1L);
+    }
+
+    @Test
+    void findById_ShouldThrowUserNotFoundException() {
+        long userId = 2L;
+        when(userJpaRepository.findById(userId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> userService.findById(userId))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessageContaining("There is no users with id " + userId);
+    }
+
+    @Test
+    void getAll_ShouldReturnAllUsers() {
+        when(userJpaRepository.findAll()).thenReturn(Arrays.asList(userEntity));
+
+        List<UserEntity> users = userService.getAll();
+
+        assertThat(users).isNotNull();
+        assertThat(users.size()).isEqualTo(1);
+        assertThat(users.get(0).getEmail()).isEqualTo("test@example.com");
+    }
+
+    @Test
+    void editUser_ShouldEditUser() {
+        when(userJpaRepository.findById(anyLong())).thenReturn(Optional.of(userEntity));
+        when(userJpaRepository.save(any(UserEntity.class))).thenReturn(userEntity);
+
+        UserEntity updatedUser = userService.editUser(1L, userCreateDto);
+
+        assertThat(updatedUser).isNotNull();
+        assertThat(updatedUser.getName()).isEqualTo(userCreateDto.getName());
+    }
+
+    @Test
+    void delete_ShouldDeleteUser() {
+        when(userJpaRepository.findById(1L)).thenReturn(Optional.of(userEntity));
+        doNothing().when(userJpaRepository).deleteById(1L);
+
+        userService.delete(1L);
+
+        verify(userJpaRepository, times(1)).deleteById(1L);
     }
 }

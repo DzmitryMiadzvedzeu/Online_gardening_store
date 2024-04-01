@@ -105,7 +105,7 @@ public class CategoryController {
 
     @Operation(summary = "Delete a category")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Category deleted"),
+            @ApiResponse(responseCode = "200", description = "Category deleted"),
             @ApiResponse(responseCode = "404", description = "Category not found")
     })
     @DeleteMapping("/{id}")

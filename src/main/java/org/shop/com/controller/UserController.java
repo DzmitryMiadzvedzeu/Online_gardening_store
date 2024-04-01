@@ -1,5 +1,10 @@
 package org.shop.com.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.UserCreateDto;
@@ -30,7 +35,7 @@ public class UserController {
         this.userService = userService;
         this.userMapper = userMapper;
     }
-
+    @Operation(summary = "List all users")
     @GetMapping
     public ResponseEntity<List<UserDto>> listAllUserDto() {
         log.debug("Fetching all users");
@@ -39,7 +44,13 @@ public class UserController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(userDtos);
     }
-
+    @Operation(summary = "Register a new user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "User successfully created",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserDto.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid user data")
+    })
     @PostMapping("/register")
     public ResponseEntity<UserDto> registerUser(@RequestBody UserCreateDto userCreateDto) {
         log.debug("Attempting to register user: {}", userCreateDto);
@@ -48,7 +59,7 @@ public class UserController {
         UserDto createUserDto = userMapper.toDto(createUserEntity);
         return ResponseEntity.status(HttpStatus.CREATED).body(createUserDto);
     }
-
+    @Operation(summary = "Edit an existing user")
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> editUser(@PathVariable Long id, @Valid @RequestBody UserCreateDto userCreateDto){
         log.debug("Attempting to edit user with ID: {}", id);
@@ -56,7 +67,7 @@ public class UserController {
         log.debug("User with ID: {} edited successfully", id);
         return ResponseEntity.ok(userMapper.toDto(updatedUser));
     }
-
+    @Operation(summary = "Delete a user")
     @DeleteMapping("/{id}")
     public ResponseEntity deleteUser(@PathVariable Long id){
         log.debug("Attempting to delete user with ID: {}", id);

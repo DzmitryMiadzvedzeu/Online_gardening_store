@@ -6,8 +6,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.shop.com.entity.OrderEntity;
+import org.shop.com.entity.UserEntity;
 import org.shop.com.exceptions.OrderNotFoundException;
 import org.shop.com.repository.OrderJpaRepository;
+import org.shop.com.repository.UserJpaRepository;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -19,16 +22,36 @@ public class OrderServiceTest {
 
     @Mock
     private OrderJpaRepository repository;
+    @Mock
+    private UserService userService;
+    @Mock
+    private HistoryService historyService;
+    @Mock
+    private UserJpaRepository userRepository;
 
     @InjectMocks
     private OrderServiceImpl service;
 
     @Test
-    public void whenCreateOrder_thenOrderMustBeSaved() {
-        OrderEntity order = new OrderEntity("SomeAddress",
-                "SomeMethod", "+123456789");
-        service.create(order);
+    public void whenCreateOrder_thenOrderMustBeSavedAndHistoryAdded() {
+        // сделаю пока что ложного пользователя, до добавления аутентиффикации
+        Long fakeUserId = 1L;
+        UserEntity fakeUser = new UserEntity();
+        fakeUser.setId(fakeUserId);
+        OrderEntity order = new OrderEntity("SomeAddress", "SomeMethod", "+123456789");
+        order.setUserEntity(fakeUser);
+
+        when(userService.getCurrentUserId()).thenReturn(fakeUserId);
+        when(userRepository.findById(fakeUserId)).thenReturn(Optional.of(fakeUser));
+        when(repository.save(any(OrderEntity.class))).thenReturn(order);
+
+        OrderEntity savedOrder = service.create(order);
+
+        assertNotNull(savedOrder);
+        verify(userService, times(1)).getCurrentUserId();
+        verify(userRepository, times(1)).findById(fakeUserId);
         verify(repository, times(1)).save(order);
+        verify(historyService, times(1)).addHistory(order, fakeUser);
     }
 
     @Test

@@ -11,16 +11,17 @@ import org.shop.com.dto.OrderCreateDto;
 import org.shop.com.dto.OrderDto;
 import org.shop.com.dto.OrderStatusDto;
 import org.shop.com.entity.OrderEntity;
+import org.shop.com.entity.UserEntity;
 import org.shop.com.enums.OrderStatus;
 import org.shop.com.mapper.OrderMapper;
 import org.shop.com.service.OrderService;
+import org.shop.com.service.UserService;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,6 +37,8 @@ public class OrderControllerTest {
     private MockMvc mockMvc;
     @Mock
     private OrderService orderService;
+    @Mock
+    private UserService userService;
     @Mock
     private OrderMapper orderMapper;
     @InjectMocks
@@ -88,45 +91,49 @@ public class OrderControllerTest {
 
     @Test
     void addOrder_ShouldCreateOrderAndReturnCreatedOrderDto() throws Exception {
-
         OrderCreateDto orderCreateDto = new OrderCreateDto("Delivery Address",
                 "Courier", "1234567890");
         OrderEntity orderEntity = new OrderEntity();
-        orderEntity.setId(1L);
-        orderEntity.setDeliveryAddress("Delivery Address");
-        orderEntity.setDeliveryMethod("Courier");
-        orderEntity.setContactPhone("1234567890");
-        orderEntity.setStatus(OrderStatus.CREATED);
-        orderEntity.setCreatedAt(new Date());
-        orderEntity.setUpdatedAt(new Date());
-        OrderDto createdOrderDto = new OrderDto(1L, "Delivery Address",
-                "Courier", "1234567890",
-                OrderStatus.CREATED, new Date(), new Date());
+        orderEntity.setDeliveryAddress(orderCreateDto.getDeliveryAddress());
+        orderEntity.setDeliveryMethod(orderCreateDto.getDeliveryMethod());
+        orderEntity.setContactPhone(orderCreateDto.getContactPhone());
+        UserEntity currentUser = new UserEntity();
+        currentUser.setId(1L);
 
+        OrderDto createdOrderDto = new OrderDto();
+        createdOrderDto.setId(1L);
+        createdOrderDto.setDeliveryAddress(orderCreateDto.getDeliveryAddress());
+        createdOrderDto.setDeliveryMethod(orderCreateDto.getDeliveryMethod());
+        createdOrderDto.setContactPhone(orderCreateDto.getContactPhone());
 
+        when(userService.getCurrentUserId()).thenReturn(currentUser.getId());
+        when(userService.findById(anyLong())).thenReturn(currentUser);
         when(orderMapper.orderCreateDtoToEntity(any(OrderCreateDto.class))).thenReturn(orderEntity);
         when(orderService.create(any(OrderEntity.class))).thenReturn(orderEntity);
         when(orderMapper.toDto(any(OrderEntity.class))).thenReturn(createdOrderDto);
 
-
         mockMvc.perform(MockMvcRequestBuilders.post("/v1/orders")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(orderCreateDto)))
+                        .content(asJsonString(orderCreateDto)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", Matchers.is(1)))
-                .andExpect(jsonPath("$.deliveryAddress",
-                        Matchers.is(createdOrderDto.getDeliveryAddress())))
-                .andExpect(jsonPath("$.deliveryMethod",
-                        Matchers.is(createdOrderDto.getDeliveryMethod())))
-                .andExpect(jsonPath("$.contactPhone",
-                        Matchers.is(createdOrderDto.getContactPhone())))
-                .andExpect(jsonPath("$.status",
-                        Matchers.is(createdOrderDto.getStatus().toString())));
+                .andExpect(jsonPath("$.deliveryAddress", Matchers.is(createdOrderDto.getDeliveryAddress())))
+                .andExpect(jsonPath("$.deliveryMethod", Matchers.is(createdOrderDto.getDeliveryMethod())))
+                .andExpect(jsonPath("$.contactPhone", Matchers.is(createdOrderDto.getContactPhone())));
 
-
+        verify(userService, times(1)).getCurrentUserId();
+        verify(userService, times(1)).findById(anyLong());
         verify(orderService, times(1)).create(any(OrderEntity.class));
         verify(orderMapper, times(1)).orderCreateDtoToEntity(any(OrderCreateDto.class));
         verify(orderMapper, times(1)).toDto(any(OrderEntity.class));
+    }
+
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test

@@ -27,10 +27,16 @@ public class OrderItemServiceImpl implements OrderItemService {
 
     private final ProductService productService;
 
-
     @Override
     public List<OrderItemDto> findAllByOrderId(long orderId) {
+        log.info("Fetching all order items for order with id {}", orderId);
         List<OrderItemEntity> orderItems = orderItemRepository.findByOrderId(orderId);
+
+        if (orderItems.isEmpty()) {
+            log.error("No order items found for order with id {}", orderId);
+        } else {
+            log.debug("Successfully found {} order items for order with id {}", orderItems.size(), orderId);
+        }
 
         return orderItems.stream()
                 .map(OrderItemMapper.INSTANCE::toDto)
@@ -46,11 +52,8 @@ public class OrderItemServiceImpl implements OrderItemService {
                 });
     }
 
-
-
-
-    @Override
     @Transactional
+    @Override
     public OrderItemEntity create(OrderItemCreateDto orderItemCreateDto, long orderId) {
         OrderEntity order = orderRepository.findById(orderId).orElseThrow(() -> {
             log.error("Order with id {} not found", orderId);
@@ -74,7 +77,6 @@ public class OrderItemServiceImpl implements OrderItemService {
         }
     }
 
-
     @Transactional
     @Override
     public OrderItemDto updateQuantity(long orderItemId, Integer quantity) {
@@ -90,17 +92,13 @@ public class OrderItemServiceImpl implements OrderItemService {
         return OrderItemMapper.INSTANCE.toDto(orderItemEntity);
     }
 
+    @Transactional
     @Override
     public void delete(long id) {
-        log.debug("Delete order item with id {}", id);
+        log.info("Attempting to delete order item with id {}", id);
         OrderItemEntity deletedOrderItem = findById(id);
-        if (deletedOrderItem != null) {
-            orderItemRepository.delete(deletedOrderItem);
-            log.debug("Order item with id {} deleted successfully", id);
-        } else {
-            log.error("Order item with id {} not found", id);
-            throw new OrderNotFoundException("There is no order item with id " + id);
-        }
+        orderItemRepository.delete(deletedOrderItem);
+        log.debug("Order item with id {} deleted successfully", id);
     }
 
 }

@@ -2,6 +2,9 @@ package org.shop.com.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.*;
 import org.shop.com.entity.OrderItemEntity;
+import org.shop.com.exceptions.OrderItemAlreadyExistsException;
+import org.shop.com.exceptions.OrderItemNotFoundException;
+import org.shop.com.exceptions.OrderNotFoundException;
 import org.shop.com.mapper.OrderItemMapper;
 import org.shop.com.service.OrderItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,4 +68,21 @@ public class OrderItemController {
         return ResponseEntity.noContent().build();
     }
 
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<String> handleOrderNotFoundException(OrderNotFoundException ex) {
+        log.error("Error: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(OrderItemNotFoundException.class)
+    public ResponseEntity<String> handleOrderItemNotFoundException(OrderItemNotFoundException ex) {
+        log.error("Error: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(OrderItemAlreadyExistsException.class)
+    public ResponseEntity<String> handleOrderItemAlreadyExistsException(OrderItemAlreadyExistsException ex) {
+        log.error("Error: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
 }

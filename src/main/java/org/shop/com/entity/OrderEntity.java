@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.shop.com.enums.OrderStatus;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -44,6 +45,9 @@ public class OrderEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<HistoryEntity> history;
 
 
     public OrderEntity(String deliveryAddress, String deliveryMethod, String contactPhone) {

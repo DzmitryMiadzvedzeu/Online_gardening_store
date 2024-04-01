@@ -54,8 +54,11 @@ public class UserEntity {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private CartEntity cart;
 
-//    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<FavoritesEntity> favorites;
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<FavoritesEntity> favorites;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<HistoryEntity> history;
 
     public UserEntity(String name, String email, String phoneNumber, String passwordHash) {
         this.name = name;

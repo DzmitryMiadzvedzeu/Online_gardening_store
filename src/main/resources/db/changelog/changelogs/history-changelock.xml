@@ -1,0 +1,24 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="1" author="Dmitry">
+        <comment>create table history</comment>
+        <createTable tableName="history">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="history_pkey"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" referencedTableName="Users" referencedColumnNames="id" foreignKeyName="fk_history_Users"/>
+            </column>
+            <column name="order_id" type="BIGINT">
+                <constraints nullable="false" referencedTableName="orders" referencedColumnNames="id" foreignKeyName="fk_history_orders"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

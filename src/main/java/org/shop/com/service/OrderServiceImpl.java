@@ -21,23 +21,29 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderJpaRepository repository;
     private final UserJpaRepository userRepository;
+    private final UserService userService;
+    private final HistoryService historyService;
 
-    public OrderServiceImpl(OrderJpaRepository repository, UserJpaRepository userRepository) {
+    public OrderServiceImpl(OrderJpaRepository repository, UserJpaRepository userRepository, UserService userService, HistoryService historyService) {
         this.repository = repository;
         this.userRepository = userRepository;
+        this.userService = userService;
+        this.historyService = historyService;
     }
 
     @Override
     public OrderEntity create(OrderEntity entity) {
         log.debug("Attempting to create order for user ID: {}", entity.getUserEntity().getId());
-        // временный костыль до подключения спринг секьюрити в проект
-        UserEntity userEntity = userRepository.findById(1L)
-                .orElseThrow(() -> new UserNotFoundException("Default user not found"));
-        entity.setUserEntity(userEntity);
+        Long currentUserId = userService.getCurrentUserId();
+        UserEntity currentUser = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + currentUserId));
+        entity.setUserEntity(currentUser);
         OrderEntity savedEntity = repository.save(entity);
+        historyService.addHistory(savedEntity, currentUser);
         log.debug("Order created successfully with ID: {}", savedEntity.getId());
         return savedEntity;
     }
+
 
     @Override
     public List<OrderEntity> getAll() {

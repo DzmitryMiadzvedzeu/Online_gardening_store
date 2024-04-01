@@ -22,4 +22,9 @@ public interface OrderItemMapper {
     @Mapping(source = "priceAtPurchase", target = "priceAtPurchase")
     OrderItemEntity createDtoToEntity(OrderItemCreateDto orderItemCreateDto);
 
+    @Mapping(source = "productId", target = "product.id")
+    @Mapping(source = "quantity", target = "quantity")
+    @Mapping(source = "priceAtPurchase", target = "priceAtPurchase")
+    OrderItemEntity toEntity(OrderItemDto orderItemDto);
+
 }

@@ -1,6 +1,4 @@
 package org.shop.com.service;
-
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +10,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.shop.com.entity.ProductEntity;
 import org.shop.com.repository.ProductJpaRepository;
-import org.shop.com.service.ProductServiceImpl;
 import org.springframework.data.domain.Sort;
 
 import java.math.BigDecimal;
@@ -22,8 +19,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;

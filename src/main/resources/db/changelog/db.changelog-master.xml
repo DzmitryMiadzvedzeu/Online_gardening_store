@@ -15,6 +15,7 @@
     <include file="db/changelog/changelogs/cartItems-changelock.xml"/>
     <include file="db/changelog/changelogs/orders-changelock.xml"/>
     <include file="db/changelog/changelogs/orderItems-changelock.xml"/>
+    <include file="db/changelog/changelogs/history-changelock.xml"/>
 
 
 </databaseChangeLog>

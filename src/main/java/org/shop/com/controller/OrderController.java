@@ -3,10 +3,16 @@ package org.shop.com.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.OrderCreateDto;
 import org.shop.com.dto.OrderDto;
+import org.shop.com.dto.HistoryDto;
 import org.shop.com.dto.OrderStatusDto;
+import org.shop.com.entity.HistoryEntity;
 import org.shop.com.entity.OrderEntity;
+import org.shop.com.entity.UserEntity;
+import org.shop.com.mapper.HistoryMapper;
 import org.shop.com.mapper.OrderMapper;
+import org.shop.com.service.HistoryService;
 import org.shop.com.service.OrderService;
+import org.shop.com.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,18 +23,26 @@ import java.util.stream.Collectors;
 // http://localhost:8080/v1/orders
 @RestController
 @RequestMapping("/v1/orders")
-//@RequiredArgsConstructor
 @Slf4j
 public class OrderController {
 
     private final OrderService orderService;
-//    private final OrderConverter<OrderEntity, OrderDto> converter;
     private final OrderMapper orderMapper;
 
+    private final HistoryService historyService;
+    private final HistoryMapper historyMapper;
+
+    private final UserService userService;
+
+
+
     @Autowired
-    public OrderController(OrderService orderService, OrderMapper orderMapper) {
+    public OrderController(OrderService orderService, OrderMapper orderMapper, HistoryService historyService, HistoryMapper historyMapper, UserService userService) {
         this.orderService = orderService;
         this.orderMapper = orderMapper;
+        this.historyService = historyService;
+        this.historyMapper = historyMapper;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -49,6 +63,15 @@ public class OrderController {
         return ResponseEntity.ok(orderStatus);
     }
 
+    @GetMapping("/history")
+    public ResponseEntity<List<HistoryDto>> getUserOrderHistory() {
+        List<HistoryEntity> userHistory = historyService.getUserHistory();
+        List<HistoryDto> historyDtos = userHistory.stream()
+                .map(historyMapper::toDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(historyDtos);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity deleteOrder(@PathVariable long id){
         log.debug("Request received to delete order with ID: {}", id);
@@ -64,11 +87,16 @@ public class OrderController {
         log.debug("Creating new order with delivery method: {}", orderCreateDto.getDeliveryMethod());
         log.debug("Creating new order with contact phone: {}", orderCreateDto.getContactPhone());
 
+        Long currentUserId = userService.getCurrentUserId();
+        UserEntity currentUser = userService.findById(currentUserId);
+
         OrderEntity orderEntity = orderMapper.orderCreateDtoToEntity(orderCreateDto);
+        orderEntity.setUserEntity(currentUser);
+
         OrderEntity createdOrderEntity = orderService.create(orderEntity);
         OrderDto createdOrderDto = orderMapper.toDto(createdOrderEntity);
 
         log.debug("Order created successfully with ID: {}", createdOrderDto.getId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdOrderDto);
+        return new ResponseEntity<>(createdOrderDto, HttpStatus.CREATED);
     }
 }

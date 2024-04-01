@@ -37,10 +37,8 @@ public class ProductEntity {
     private String image;
 
     @CreationTimestamp
-//    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-//    @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
     private LocalDateTime updatedAt = LocalDateTime.now();
 
@@ -55,6 +53,5 @@ public class ProductEntity {
 
    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
    private List<FavoritesEntity> favorites;
-
 
 }

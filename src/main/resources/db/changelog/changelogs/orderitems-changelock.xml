@@ -28,10 +28,29 @@
     </changeSet>
 
     <changeSet id="2" author="Mariia">
+        <comment>I</comment>
+        <insert tableName="orderitems">
+            <column name="order_id" value="1"/>
+            <column name="product_id" value="1"/>
+            <column name="quantity" value="1"/>
+            <column name="price_at_purchase" value="50"/>
+        </insert>
         <insert tableName="orderitems">
             <column name="order_id" value="1"/>
             <column name="product_id" value="2"/>
-            <column name="quantity" value="8"/>
+            <column name="quantity" value="6"/>
+            <column name="price_at_purchase" value="4999.99"/>
+        </insert>
+        <insert tableName="orderitems">
+            <column name="order_id" value="1"/>
+            <column name="product_id" value="3"/>
+            <column name="quantity" value="109"/>
+            <column name="price_at_purchase" value="1020.08"/>
+        </insert>
+        <insert tableName="orderitems">
+            <column name="order_id" value="1"/>
+            <column name="product_id" value="4"/>
+            <column name="quantity" value="32"/>
             <column name="price_at_purchase" value="234.98"/>
         </insert>
 

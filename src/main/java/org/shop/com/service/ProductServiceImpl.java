@@ -24,17 +24,6 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryService categoryService;
 
     @Override
-    public ProductEntity create(ProductCreateDto productCreateDto) {
-        log.debug("Creating product: {}", productCreateDto);
-        CategoryEntity categoryById = categoryService.getById(productCreateDto.getCategoryId());
-        ProductEntity createdProduct = ProductMapper.INSTANCE.createDtoToEntity(productCreateDto);
-        createdProduct.setCategory(categoryById);
-        ProductEntity savedProduct = repository.save(createdProduct);
-        log.debug("Product created successfully with ID: {}", savedProduct.getId());
-        return savedProduct;
-    }
-
-    @Override
     public List<ProductEntity> getAll(String category, BigDecimal minPrice, BigDecimal maxPrice,
                                       BigDecimal discountPrice, String sort) {
         log.debug("Obtaining all products");
@@ -65,20 +54,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductEntity delete(long id) {
-        log.debug("Delete product with id {}", id);
-        ProductEntity deletedProduct = findById(id);
-        if (deletedProduct != null) {
-            repository.delete(deletedProduct);
-            log.debug("Product with id  {} deleted successfully", id);
-        } else {
-            log.error("Product with id  not found", id);
-            throw new ProductNotFoundException("There is no product with ID " + id);
-        }
-        return deletedProduct;
-    }
-
-    @Override
     public ProductEntity findById(long id) {
         log.debug("Obtaining product with id {}", id);
         return repository.findById(id)
@@ -86,6 +61,17 @@ public class ProductServiceImpl implements ProductService {
                     log.error("Product with id {} not found", id);
                     return new ProductNotFoundException("Can't find product with id " + id);
                 });
+    }
+
+    @Override
+    public ProductEntity create(ProductCreateDto productCreateDto) {
+        log.debug("Creating product: {}", productCreateDto);
+        CategoryEntity categoryById = categoryService.getById(productCreateDto.getCategoryId());
+        ProductEntity createdProduct = ProductMapper.INSTANCE.createDtoToEntity(productCreateDto);
+        createdProduct.setCategory(categoryById);
+        ProductEntity savedProduct = repository.save(createdProduct);
+        log.debug("Product created successfully with ID: {}", savedProduct.getId());
+        return savedProduct;
     }
 
     @Override
@@ -104,6 +90,20 @@ public class ProductServiceImpl implements ProductService {
         ProductEntity updatedProduct = repository.save(existingProduct);
         log.debug("Product updated successfully: {}", updatedProduct);
         return updatedProduct;
+    }
+
+    @Override
+    public ProductEntity delete(long id) {
+        log.debug("Delete product with id {}", id);
+        ProductEntity deletedProduct = findById(id);
+        if (deletedProduct != null) {
+            repository.delete(deletedProduct);
+            log.debug("Product with id  {} deleted successfully", id);
+        } else {
+            log.error("Product with id  not found", id);
+            throw new ProductNotFoundException("There is no product with ID " + id);
+        }
+        return deletedProduct;
     }
 
 }

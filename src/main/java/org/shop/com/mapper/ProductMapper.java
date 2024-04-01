@@ -18,7 +18,6 @@ public interface ProductMapper {
    @Mapping(source = "price", target = "price")
    @Mapping(source = "image", target = "image")
    @Mapping(source = "category.id", target = "categoryId")
-//   @Mapping(target = "createdAt", ignore = true)
    ProductDto toDto(ProductEntity productEntity);
 
    @Mapping(source = "name", target = "name")
@@ -33,12 +32,11 @@ public interface ProductMapper {
    @Mapping(source = "price", target = "price")
    @Mapping(source = "image", target = "image")
    @Mapping(source = "categoryId", target = "category.id")
-//   @Mapping(target = "createdAt", ignore = true)
    ProductEntity toEntity(ProductDto dto);
 
    @Mapping(target = "id", ignore = true)
-   @Mapping(target = "createdAt", ignore = true) // Игнорируем, чтобы не перезаписывать
-   @Mapping(target = "updatedAt", ignore = true) // Игнорируем, чтобы Hibernate сам обновил
+   @Mapping(target = "createdAt", ignore = true)
+   @Mapping(target = "updatedAt", ignore = true)
    void updateEntityFromDto(ProductDto dto, @MappingTarget ProductEntity entity);
 
 }

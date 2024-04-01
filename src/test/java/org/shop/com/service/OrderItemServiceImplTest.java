@@ -84,7 +84,7 @@ class OrderItemServiceImplTest {
         verify(orderRepository).findById(orderId);
         verify(productService).findById(productId);
         verify(orderItemRepository).findByOrderIdAndProductId(orderId, productId);
-        verify(orderItemRepository, never()).save(any(OrderItemEntity.class)); // Убедиться, что сохранение не было вызвано
+        verify(orderItemRepository, never()).save(any(OrderItemEntity.class));
     }
 
     @Test

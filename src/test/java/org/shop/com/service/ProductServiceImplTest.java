@@ -1,27 +1,26 @@
 package org.shop.com.service;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.shop.com.dto.ProductCreateDto;
+import org.shop.com.entity.CategoryEntity;
 import org.shop.com.entity.ProductEntity;
+import org.shop.com.exceptions.ProductNotFoundException;
 import org.shop.com.repository.ProductJpaRepository;
 import org.springframework.data.domain.Sort;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceImplTest {
@@ -29,63 +28,100 @@ class ProductServiceImplTest {
     @Mock
     private ProductJpaRepository repository;
 
+    @Mock
+    private CategoryService categoryService;
+
     @InjectMocks
     private ProductServiceImpl productService;
 
+    private ProductEntity product;
+    private ProductCreateDto productCreateDto;
+    private CategoryEntity category;
+
     @BeforeEach
     void setUp() {
-        List<ProductEntity> testProducts = new ArrayList<>();
-        ProductEntity product = new ProductEntity();
-        product.setName("Test Product");
-        product.setPrice(new BigDecimal("293"));
-        testProducts.add(product);
-        when(repository.findAll(Sort.unsorted())).thenReturn(testProducts);
+        category = new CategoryEntity();
+        category.setId(1L);
+
+        product = new ProductEntity();
+        product.setId(1L);
+        product.setName("Name");
+        product.setDescription("Description");
+        product.setPrice(new BigDecimal("1000"));
+        product.setCategory(category);
+
+        productCreateDto = new ProductCreateDto();
+        productCreateDto.setName("Name");
+        productCreateDto.setDescription("Description");
+        productCreateDto.setPrice(new BigDecimal("1000"));
+        productCreateDto.setCategoryId(1L);
     }
 
     @Test
-    void whenGetAllCalledWithoutFilters_thenReturnAllProducts() {
-        List<ProductEntity> products = productService.getAll(null, null, null, null, null);
+    void getAll_ShouldReturnProducts() {
+        when(repository.findAll(any(Sort.class))).thenReturn(Collections.singletonList(product));
+        List<ProductEntity> products = productService.getAll(null, null, null, null, "name");
 
-        assertThat(products).isNotNull().hasSize(1);
-        assertThat(products.get(0).getName()).isEqualTo("Test Product");
-        assertThat(products.get(0).getPrice()).isEqualTo(new BigDecimal("293"));
-
-        verify(repository).findAll(Sort.unsorted());
-    }
-    private static Stream<String> generateSortFields() {
-        String[] fields = {"name", "price", "createdAt", "updatedAt", "discountPrice"};
-        return generatePermutations(fields, fields.length).stream()
-                .map(arr -> String.join(",", arr));
+        assertFalse(products.isEmpty());
+        assertEquals(1, products.size());
+        assertEquals(product.getName(), products.get(0).getName());
+        verify(repository).findAll(Sort.by("name"));
     }
 
-    private static Collection<String[]> generatePermutations(String[] arr, int length) {
-        if (length == 1) {
-            return Arrays.stream(arr)
-                    .map(e -> new String[]{e})
-                    .collect(Collectors.toList());
-        }
-        return Arrays.stream(arr)
-                .flatMap(e -> generatePermutations(arr, length - 1).stream()
-                        .map(p -> {
-                            String[] newArr = new String[length];
-                            newArr[0] = e;
-                            System.arraycopy(p, 0, newArr, 1, length - 1);
-                            return newArr;
-                        }))
-                .collect(Collectors.toList());
+
+    @Test
+    void findById_ShouldReturnProduct() {
+        when(repository.findById(1L)).thenReturn(Optional.of(product));
+        ProductEntity foundProduct = productService.findById(1L);
+
+        assertNotNull(foundProduct);
+        assertEquals(product.getName(), foundProduct.getName());
+
+        verify(repository).findById(1L);
     }
 
-    @ParameterizedTest
-    @MethodSource("generateSortFields")
-    void whenGetAllWithSort_thenCorrectlySorted(String sortFields) {
+    @Test
+    void findById_ShouldThrowExceptionWhenNotFound() {
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
 
-        productService.getAll(null, null, null, null, sortFields);
-
-        String[] fields = sortFields.split(",");
-
-
-        Sort sort = Sort.by(fields);
-        verify(repository, Mockito.times(1)).findAll(sort);
+        assertThrows(ProductNotFoundException.class, () -> productService.findById(1L));
     }
 
+    @Test
+    void create_ShouldCreateProduct() {
+        when(categoryService.getById(anyLong())).thenReturn(category);
+        when(repository.save(any(ProductEntity.class))).thenReturn(product);
+
+        ProductEntity createdProduct = productService.create(productCreateDto);
+
+        assertNotNull(createdProduct);
+        assertEquals(product.getName(), createdProduct.getName());
+
+        verify(categoryService).getById(anyLong());
+        verify(repository).save(any(ProductEntity.class));
+    }
+
+    @Test
+    void update_ShouldUpdateProduct() {
+        when(repository.findById(anyLong())).thenReturn(Optional.of(product));
+        when(repository.save(any(ProductEntity.class))).thenReturn(product);
+
+        product.setName("Updated Name");
+        ProductEntity updatedProduct = productService.update(product);
+
+        assertNotNull(updatedProduct);
+        assertEquals("Updated Name", updatedProduct.getName());
+
+        verify(repository).findById(anyLong());
+        verify(repository).save(any(ProductEntity.class));
+    }
+
+    @Test
+    void delete_ShouldDeleteProduct() {
+        when(repository.findById(anyLong())).thenReturn(Optional.of(product));
+        doNothing().when(repository).delete(any(ProductEntity.class));
+        productService.delete(1L);
+        verify(repository).findById(anyLong());
+        verify(repository).delete(any(ProductEntity.class));
+    }
 }

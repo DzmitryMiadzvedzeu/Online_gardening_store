@@ -93,7 +93,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductEntity delete(long id) {
+    public void delete(long id) {
         log.debug("Delete product with id {}", id);
         ProductEntity deletedProduct = findById(id);
         if (deletedProduct != null) {
@@ -103,7 +103,5 @@ public class ProductServiceImpl implements ProductService {
             log.error("Product with id  not found", id);
             throw new ProductNotFoundException("There is no product with ID " + id);
         }
-        return deletedProduct;
     }
-
 }

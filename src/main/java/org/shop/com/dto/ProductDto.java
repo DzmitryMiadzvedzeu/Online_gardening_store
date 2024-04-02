@@ -28,4 +28,22 @@ public class ProductDto {
 
     private long categoryId;
 
+    public ProductDto(long id, String name, String description, BigDecimal price, String image, BigDecimal discountPrice, long categoryId) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.image = image;
+        this.discountPrice = discountPrice;
+        this.categoryId = categoryId;
+    }
+
+    public ProductDto( String name, String description, BigDecimal price, String image,  BigDecimal discountPrice) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.image = image;
+        this.discountPrice = discountPrice;
+    }
 }
+

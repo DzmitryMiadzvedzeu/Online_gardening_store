@@ -13,7 +13,7 @@ public interface ProductService {
     List<ProductEntity> getAll(String category, BigDecimal minPrice, BigDecimal maxPrice,
                                BigDecimal discountPrice, String sort);
 
-    ProductEntity delete(long id);
+    void delete(long id);
 
     ProductEntity findById(long id);
 

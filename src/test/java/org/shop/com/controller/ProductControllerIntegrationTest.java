@@ -32,7 +32,8 @@ public class ProductControllerIntegrationTest {
 
     @Test
     void fullProductLifecycleTest() throws Exception {
-        ProductCreateDto newProduct = new ProductCreateDto("Laptop", "High-end gaming laptop", new BigDecimal("2500.00"), "image.jpg", 1L);
+        ProductCreateDto newProduct = new ProductCreateDto("Laptop", "High-end gaming laptop",
+                new BigDecimal("2500.00"), "image.jpg", 1L);
         mockMvc.perform(post("/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newProduct)))
@@ -41,7 +42,8 @@ public class ProductControllerIntegrationTest {
         mockMvc.perform(get("/v1/products"))
                 .andExpect(status().isOk());
 
-        ProductCreateDto updatedProduct = new ProductCreateDto("Updated Laptop", "Updated high-end gaming laptop", new BigDecimal("2600.00"), "updated_image.jpg", 1L);
+        ProductCreateDto updatedProduct = new ProductCreateDto("Updated Laptop",
+                "Updated high-end gaming laptop", new BigDecimal("2600.00"), "updated_image.jpg", 1L);
         mockMvc.perform(put("/v1/products/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updatedProduct)))

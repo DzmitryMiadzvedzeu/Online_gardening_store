@@ -64,6 +64,6 @@ public class UserEntity {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.passwordHash = passwordHash;
-        this.role = role;
+        this.role = UserRole.USER;
     }
 }

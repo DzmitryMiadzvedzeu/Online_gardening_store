@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.shop.com.dto.UserCreateDto;
 import org.shop.com.dto.UserDto;
 import org.shop.com.entity.UserEntity;
+import org.shop.com.enums.UserRole;
 import org.shop.com.mapper.UserMapper;
 import org.shop.com.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,10 +50,10 @@ public class UserControllerIntegrationTest {
     void setUp() {
         testUserCreateDto = new UserCreateDto("Иван", "ivan@example.com",
                 "1234567890", "hashedPassword");
-        testUserEntity = new UserEntity(1L, "Иван", "ivan@example.com",
-                "1234567890", "hashedPassword", null, null, null, null);
+        testUserEntity = new UserEntity("Иван", "ivan@example.com",
+                "1234567890", "hashedPassword");
         testUserDto = new UserDto(1L, "Иван", "ivan@example.com",
-                "1234567890", "hashedPassword", null);
+                "1234567890", "hashedPassword", UserRole.USER);
 
         given(userMapper.toDto(any(UserEntity.class))).willReturn(testUserDto);
         given(userMapper.userCreateDtoToEntity(any(UserCreateDto.class))).willReturn(testUserEntity);

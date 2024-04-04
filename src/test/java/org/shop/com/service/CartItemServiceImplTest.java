@@ -117,6 +117,7 @@ class CartItemServiceImplTest {
         assertEquals(1, result.size());
         verify(cartItemRepository).findByCartId(cartId);
     }
+
     @Test
     void updateCartItemQuantity_Success() {
         Integer newQuantity = 2;
@@ -168,7 +169,9 @@ class CartItemServiceImplTest {
         assertThrows(CartNotFoundException.class, () -> cartItemService.add(cartItemCreateDto, cartId));
     }
 
-    /** Метод для демонстрации проверки невалидного количества при обновлении элемента корзины. */
+    /**
+     * Метод для демонстрации проверки невалидного количества при обновлении элемента корзины.
+     */
     @Test
     void updateCartItemQuantity_InvalidQuantity() {
         Integer invalidQuantity = 0;

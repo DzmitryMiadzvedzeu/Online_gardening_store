@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.CategoryCreateDTO;
 import org.shop.com.dto.CategoryDTO;
@@ -26,25 +27,21 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
-
 // http://localhost:8080/v1/categories
 
 @Slf4j
 @RestController
 @RequestMapping("/v1/categories")
+@RequiredArgsConstructor
 public class CategoryController {
+
     private final CategoryService categoryService;
 
-    @Autowired
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-
-    }
     @Operation(summary = "List all categories")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the categories",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = CategoryDTO.class)) }),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CategoryDTO.class))}),
             @ApiResponse(responseCode = "404", description = "Categories not found",
                     content = @Content)
     })
@@ -60,8 +57,8 @@ public class CategoryController {
     @Operation(summary = "Get a category by ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the category",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = CategoryDTO.class)) }),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CategoryDTO.class))}),
             @ApiResponse(responseCode = "404", description = "Category not found",
                     content = @Content)
     })
@@ -75,8 +72,8 @@ public class CategoryController {
     @Operation(summary = "Create a new category")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Category created",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = CategoryDTO.class)) })
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CategoryDTO.class))})
     })
     @PostMapping
     public ResponseEntity<CategoryDTO> create(@Valid @RequestBody CategoryCreateDTO createDTO) {
@@ -90,8 +87,8 @@ public class CategoryController {
     @Operation(summary = "Edit an existing category")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Category updated",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = CategoryDTO.class)) }),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CategoryDTO.class))}),
             @ApiResponse(responseCode = "404", description = "Category not found",
                     content = @Content)
     })
@@ -119,8 +116,8 @@ public class CategoryController {
     @Operation(summary = "Find a category by name")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the category",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = CategoryDTO.class)) }),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CategoryDTO.class))}),
             @ApiResponse(responseCode = "404", description = "Category not found",
                     content = @Content)
     })
@@ -134,16 +131,16 @@ public class CategoryController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(CategoryInvalidArgumentException.class)
-    public Map<String,String> handleInvalidArgumentException(CategoryInvalidArgumentException exception) {
-        Map<String,String> map = new HashMap<>();
+    public Map<String, String> handleInvalidArgumentException(CategoryInvalidArgumentException exception) {
+        Map<String, String> map = new HashMap<>();
         map.put("error", exception.getMessage());
         return map;
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(CategoryNotFoundException.class)
-    public Map<String,String> handleNotFoundException(CategoryNotFoundException exception) {
-        Map<String,String> map = new HashMap<>();
+    public Map<String, String> handleNotFoundException(CategoryNotFoundException exception) {
+        Map<String, String> map = new HashMap<>();
         map.put("error", exception.getMessage());
         return map;
     }

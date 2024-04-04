@@ -6,13 +6,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.CartCreateDto;
 import org.shop.com.dto.CartDto;
 import org.shop.com.exceptions.CartInvalidArgumentException;
 import org.shop.com.exceptions.CartNotFoundException;
 import org.shop.com.service.CartService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,14 +21,10 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/v1/carts")
+@RequiredArgsConstructor
 public class CartController {
 
     private final CartService cartService;
-
-    @Autowired
-    public CartController(CartService cartService) {
-        this.cartService = cartService;
-    }
 
     @Operation(summary = "Create or update a cart")
     @ApiResponses(value = {
@@ -42,8 +38,8 @@ public class CartController {
     @PostMapping
     public ResponseEntity<CartDto> createOrUpdate(@RequestBody CartCreateDto cartCreateDto) {
         log.debug("Request to create/update cart: {}", cartCreateDto);
-            CartDto cartDto = cartService.createOrUpdate(cartCreateDto);
-            return ResponseEntity.ok(cartDto);
+        CartDto cartDto = cartService.createOrUpdate(cartCreateDto);
+        return ResponseEntity.ok(cartDto);
     }
 
     @Operation(summary = "Get cart by user ID")

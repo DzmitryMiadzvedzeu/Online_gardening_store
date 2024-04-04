@@ -6,8 +6,12 @@ import org.shop.com.dto.CartDto;
 import java.util.List;
 
 public interface CartService {
+
     CartDto createOrUpdate(CartCreateDto createDto);
+
     CartDto getByUserId(Long userId);
+
     void delete(Long userId);
+
     List<CartDto> getAll();
 }

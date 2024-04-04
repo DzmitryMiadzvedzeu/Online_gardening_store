@@ -80,7 +80,7 @@ public class CategoryControllerIntegrationTest {
 
     @Test
     void findCategoryByName_WhenCategoryExists_ShouldReturnCategory() throws Exception {
-        mockMvc.perform(get("/v1/categories/search?name=Test") // Изменено на "Test"
+        mockMvc.perform(get("/v1/categories/search?name=Test")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name", Matchers.is("Test")));

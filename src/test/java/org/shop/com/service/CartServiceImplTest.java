@@ -37,12 +37,15 @@ public class CartServiceImplTest {
     private UserService userService;
     @InjectMocks
     private CartServiceImpl cartService;
+
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
-    /** Создание новой корзины для пользователя, у которого её ещё нет.*/
+    /**
+     * Создание новой корзины для пользователя, у которого её ещё нет.
+     */
     @Test
     public void createOrUpdateCart_NewCart_Success() {
         Long userId = 1L;
@@ -59,7 +62,9 @@ public class CartServiceImplTest {
         verify(cartRepository, times(1)).save(any(CartEntity.class));
     }
 
-    /**Обновление существующей корзины пользователя.*/
+    /**
+     * Обновление существующей корзины пользователя.
+     */
     @Test
     public void createOrUpdateCart_ExistingCart_Success() {
         Long userId = 1L;
@@ -81,7 +86,9 @@ public class CartServiceImplTest {
         verify(cartRepository, times(1)).save(existingCart);
     }
 
-    /** возвращает информацию о корзине пользователя по его ID */
+    /**
+     * возвращает информацию о корзине пользователя по его ID
+     */
     @Test
     public void getCartByUserId_CartExists_Success() {
         Long userId = 1L;
@@ -93,6 +100,7 @@ public class CartServiceImplTest {
         // Проверки
         assertNotNull(result);
     }
+
     @Test(expected = CartNotFoundException.class)
     public void getCartByUserId_CartDoesNotExist_ThrowException() {
         Long userId = 1L;
@@ -102,7 +110,9 @@ public class CartServiceImplTest {
         cartService.getByUserId(userId);
     }
 
-    /**  удаляет корзину пользователя*/
+    /**
+     * удаляет корзину пользователя
+     */
     @Test
     public void deleteCart_CartExists_Success() {
         Long userId = 1L;
@@ -113,7 +123,9 @@ public class CartServiceImplTest {
         verify(cartRepository, times(1)).deleteById(userId);
     }
 
-    /** возвращает список всех корзин*/
+    /**
+     * возвращает список всех корзин
+     */
     @Test
     public void getAllCarts_ReturnsListOfCarts() {
         when(cartRepository.findAll()).thenReturn(Collections.singletonList(new CartEntity()));
@@ -124,7 +136,10 @@ public class CartServiceImplTest {
         assertNotNull(result);
         assertEquals(1, result.size());
     }
-    /**Проверка удаления корзины, когда она не существует*/
+
+    /**
+     * Проверка удаления корзины, когда она не существует
+     */
     @Test(expected = CartNotFoundException.class)
     public void deleteCart_NotExisting_ThrowsException() {
         Long userId = 2L;
@@ -132,6 +147,7 @@ public class CartServiceImplTest {
 
         cartService.delete(userId);
     }
+
     @Test
     public void getAllCarts_ReturnsAllCarts() {
         List<CartEntity> cartEntities = Arrays.asList(new CartEntity(), new CartEntity());
@@ -143,6 +159,4 @@ public class CartServiceImplTest {
         assertNotNull(result);
         assertEquals(cartEntities.size(), result.size());
     }
-
-
 }

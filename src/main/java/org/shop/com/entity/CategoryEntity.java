@@ -1,6 +1,5 @@
 package org.shop.com.entity;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,13 +8,13 @@ import lombok.Setter;
 
 import java.util.List;
 
-
+@Entity
+@Table(name = "category")
 @Setter
 @Getter
-@Table(name = "category")
-@Entity
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+
 public class CategoryEntity {
 
     @Id

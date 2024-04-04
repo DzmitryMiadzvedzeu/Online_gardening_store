@@ -9,12 +9,13 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Entity
 @Table(name = "cart")
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 public class CartEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,15 +24,8 @@ public class CartEntity {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserEntity user;
 
-    //@OneToMany(mappedBy = "cart", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @Setter
+    @Getter
     @OneToMany(mappedBy = "cart", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private List<CartItemEntity> items = new ArrayList<>();
-
-    public List<CartItemEntity> getItems() {
-        return items;
-    }
-
-    public void setItems(List<CartItemEntity> items) {
-        this.items = items;
-    }
 }

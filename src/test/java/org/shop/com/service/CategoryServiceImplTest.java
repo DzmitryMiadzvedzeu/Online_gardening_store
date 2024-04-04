@@ -1,4 +1,5 @@
 package org.shop.com.service;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -48,6 +49,7 @@ class CategoryServiceImplTest {
         assertNotNull(result);
         verify(categoryRepository).findById(id);
     }
+
     @Test
     void getCategoryById_WhenCategoryDoesNotExist_ShouldThrowException() {
         Long id = 1L;
@@ -69,6 +71,7 @@ class CategoryServiceImplTest {
         assertNotNull(result);
         verify(categoryRepository).save(any(CategoryEntity.class));
     }
+
     @Test
     void editCategory_WhenCategoryExists_ShouldUpdateAndReturnCategory() {
         Long id = 1L;
@@ -113,7 +116,6 @@ class CategoryServiceImplTest {
         verify(categoryRepository, never()).deleteById(id);
     }
 
-
     @Test
     void findByName_ShouldReturnCategoryOptional() {
         String name = "Test Category";
@@ -124,5 +126,4 @@ class CategoryServiceImplTest {
         assertTrue(result.isPresent());
         verify(categoryRepository).findByName(name);
     }
-
 }

@@ -9,6 +9,7 @@ import org.shop.com.entity.CartEntity;
 
 @Mapper(componentModel = "spring")
 public interface CartMapper {
+
     CartMapper INSTANCE = Mappers.getMapper(CartMapper.class);
 
     CartDto toDto(CartEntity cartEntity);

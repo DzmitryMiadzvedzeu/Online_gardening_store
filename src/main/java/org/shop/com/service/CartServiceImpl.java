@@ -1,6 +1,7 @@
 package org.shop.com.service;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.CartCreateDto;
 import org.shop.com.dto.CartDto;
@@ -20,28 +21,23 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
     private final CartJpaRepository cartRepository;
-    private final UserJpaRepository userRepository;
-    private final ProductJpaRepository productJpaRepository;
-    private final CartMapper cartMapper;
-    private final CartItemMapper cartItemMapper;
-    private final UserService userService;
 
-    @Autowired
-    public CartServiceImpl(CartJpaRepository cartRepository, UserJpaRepository userRepository,
-                           ProductJpaRepository productJpaRepository, CartMapper cartMapper,
-                           CartItemMapper cartItemMapper, UserService userService) {
-        this.cartRepository = cartRepository;
-        this.userRepository = userRepository;
-        this.productJpaRepository = productJpaRepository;
-        this.cartMapper = cartMapper;
-        this.cartItemMapper = cartItemMapper;
-        this.userService = userService;
-    }
+    private final UserJpaRepository userRepository;
+
+    private final ProductJpaRepository productJpaRepository;
+
+    private final CartMapper cartMapper;
+
+    private final CartItemMapper cartItemMapper;
+
+    private final UserService userService;
 
     @Transactional
     @Override
@@ -106,6 +102,7 @@ public class CartServiceImpl implements CartService {
         cartRepository.deleteById(userId);
         log.debug("Cart with ID: {} deleted successfully", userId);
     }
+
     @Override
     public List<CartDto> getAll() {
         log.debug("Retrieving all carts");

@@ -18,6 +18,7 @@ public interface CategoryService {
     Optional<CategoryEntity> findByName(String name);
 
     CategoryEntity create(CategoryCreateDTO createDTO);
+
     CategoryEntity edit(Long id, CategoryCreateDTO categoryDTO);
 
     void delete(Long id);

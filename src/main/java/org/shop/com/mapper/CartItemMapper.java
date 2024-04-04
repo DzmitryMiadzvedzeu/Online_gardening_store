@@ -9,6 +9,7 @@ import org.shop.com.repository.ProductJpaRepository;
 
 @Mapper(componentModel = "spring", uses = {ProductJpaRepository.class})
 public interface CartItemMapper {
+
     @Mapping(source = "product.id", target = "productId")
     CartItemDto toDto(CartItemEntity cartItemEntity);
 

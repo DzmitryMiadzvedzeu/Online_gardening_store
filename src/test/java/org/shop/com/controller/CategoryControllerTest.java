@@ -31,7 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-
 @ExtendWith(MockitoExtension.class)
 public class CategoryControllerTest {
 
@@ -85,6 +84,7 @@ public class CategoryControllerTest {
                 .andExpect(jsonPath("$.id", is(id.intValue())))
                 .andExpect(jsonPath("$.name", is(category.getName())));
     }
+
     @Test
     public void createCategoryTest() throws Exception {
 
@@ -143,6 +143,7 @@ public class CategoryControllerTest {
                 .andExpect(jsonPath("$.id", is(categoryDTO.getId().intValue())))
                 .andExpect(jsonPath("$.name", is(categoryDTO.getName())));
     }
+
     @Test
     void testGetCategoryByIdNotFound() throws Exception {
         Long id = 1L;
@@ -153,5 +154,4 @@ public class CategoryControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error", is("Category not found")));
     }
-
 }

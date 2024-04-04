@@ -1,9 +1,5 @@
 package org.shop.com.service;
 
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.CategoryCreateDTO;
@@ -12,7 +8,6 @@ import org.shop.com.exceptions.CategoryInvalidArgumentException;
 import org.shop.com.exceptions.CategoryNotFoundException;
 import org.shop.com.mapper.CategoryMapper;
 import org.shop.com.repository.CategoryJpaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,7 +19,6 @@ import java.util.Optional;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryJpaRepository categoryRepository;
-  //  private final CategoryDtoConverter categoryDtoConverter;
 
     @Override
     public List<CategoryEntity> getAll() {
@@ -47,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
         log.debug("Category created successfully with ID: {}", savedEntity.getId());
         return savedEntity;
     }
-//
+
     @Override
     public CategoryEntity edit(Long id, CategoryCreateDTO categoryDTO) {
         log.debug("Editing category with ID: {}", id);
@@ -72,6 +66,7 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.deleteById(id);
         log.debug("Category with ID: {} deleted successfully", id);
     }
+
     @Override
     public Optional<CategoryEntity> findByName(String name) {
         log.debug("Searching for category by name: {}", name);

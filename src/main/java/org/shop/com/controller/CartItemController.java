@@ -6,13 +6,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.CartItemCreateDto;
 import org.shop.com.dto.CartItemDto;
 import org.shop.com.exceptions.CartItemsInvalidArgumentException;
 import org.shop.com.exceptions.CartItemsNotFoundException;
 import org.shop.com.service.CartItemService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,20 +23,16 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/v1/cartItems")
+@RequiredArgsConstructor
 public class CartItemController {
 
     private final CartItemService cartItemService;
 
-    @Autowired
-    public CartItemController(CartItemService cartItemService) {
-        this.cartItemService = cartItemService;
-    }
-
     @Operation(summary = "Add cart item to a cart")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cart item added successfully",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = CartItemDto.class)) }),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CartItemDto.class))}),
             @ApiResponse(responseCode = "400", description = "Invalid request body or parameters",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Cart not found",
@@ -69,8 +65,8 @@ public class CartItemController {
     @Operation(summary = "Get cart items by cart ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found cart items",
-                    content = { @Content(mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = CartItemDto.class))) }),
+                    content = {@Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = CartItemDto.class)))}),
             @ApiResponse(responseCode = "404", description = "Cart not found",
                     content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error")
@@ -85,8 +81,8 @@ public class CartItemController {
     @Operation(summary = "Update cart item quantity")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cart item quantity updated successfully",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = CartItemDto.class)) }),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CartItemDto.class))}),
             @ApiResponse(responseCode = "404", description = "Cart item not found",
                     content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error")

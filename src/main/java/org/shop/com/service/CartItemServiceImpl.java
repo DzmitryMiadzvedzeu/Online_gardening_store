@@ -19,16 +19,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CartItemServiceImpl implements CartItemService {
 
     private final CartItemJpaRepository cartItemRepository;
-    private final CartJpaRepository cartRepository;
-    private final ProductJpaRepository productJpaRepository;
-    private final CartItemMapper cartItemMapper;
 
+    private final CartJpaRepository cartRepository;
+
+    private final ProductJpaRepository productJpaRepository;
+
+    private final CartItemMapper cartItemMapper;
 
     @Transactional
     @Override

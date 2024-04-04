@@ -18,5 +18,4 @@ public class OrderItemCreateDto {
     private Integer quantity;
 
     private BigDecimal priceAtPurchase;
-
 }

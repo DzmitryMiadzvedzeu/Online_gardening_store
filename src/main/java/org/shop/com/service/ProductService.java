@@ -18,5 +18,4 @@ public interface ProductService {
     ProductEntity findById(long id);
 
     ProductEntity update (ProductEntity productEntity);
-
 }

@@ -15,21 +15,16 @@ import java.util.List;
 
 @Service
 @Slf4j
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
-
     private final OrderJpaRepository repository;
-    private final UserJpaRepository userRepository;
-    private final UserService userService;
-    private final HistoryService historyService;
 
-    public OrderServiceImpl(OrderJpaRepository repository, UserJpaRepository userRepository, UserService userService, HistoryService historyService) {
-        this.repository = repository;
-        this.userRepository = userRepository;
-        this.userService = userService;
-        this.historyService = historyService;
-    }
+    private final UserJpaRepository userRepository;
+
+    private final UserService userService;
+
+    private final HistoryService historyService;
 
     @Override
     public OrderEntity create(OrderEntity entity) {

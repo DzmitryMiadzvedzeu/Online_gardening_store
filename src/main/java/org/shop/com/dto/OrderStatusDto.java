@@ -11,5 +11,6 @@ import org.shop.com.enums.OrderStatus;
 public class OrderStatusDto {
 
     private long id;
+
     private OrderStatus status;
 }

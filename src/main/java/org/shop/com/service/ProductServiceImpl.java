@@ -79,7 +79,8 @@ public class ProductServiceImpl implements ProductService {
         log.debug("Updating product: {}", productEntity);
 
         ProductEntity existingProduct = repository.findById(productEntity.getId())
-                .orElseThrow(() -> new ProductNotFoundException("Can't find the product with id " + productEntity.getId()));
+                .orElseThrow(() -> new ProductNotFoundException("Can't find the product with id "
+                        + productEntity.getId()));
 
         existingProduct.setName(productEntity.getName());
         existingProduct.setDescription(productEntity.getDescription());
@@ -98,9 +99,9 @@ public class ProductServiceImpl implements ProductService {
         ProductEntity deletedProduct = findById(id);
         if (deletedProduct != null) {
             repository.delete(deletedProduct);
-            log.debug("Product with id  {} deleted successfully", id);
+            log.debug("Product with id {} deleted successfully", id);
         } else {
-            log.error("Product with id  not found", id);
+            log.error("Product with id not found", id);
             throw new ProductNotFoundException("There is no product with ID " + id);
         }
     }

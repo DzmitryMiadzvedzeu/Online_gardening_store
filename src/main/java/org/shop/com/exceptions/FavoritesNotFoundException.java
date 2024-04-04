@@ -1,8 +1,8 @@
 package org.shop.com.exceptions;
 
-public class FavoritesNotFoundException extends RuntimeException{
+public class FavoritesNotFoundException extends RuntimeException {
 
-    public FavoritesNotFoundException(String message){
+    public FavoritesNotFoundException(String message) {
         super(message);
     }
 }

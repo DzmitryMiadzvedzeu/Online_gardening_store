@@ -19,5 +19,4 @@ public class OrderCreateDto {
     private String deliveryMethod;
 
     private String contactPhone;
-
 }

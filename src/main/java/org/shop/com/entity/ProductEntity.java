@@ -23,14 +23,17 @@ public class ProductEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Product name can't be empty")
     private String name;
 
+    @NotBlank(message = "Product description can't be empty")
     private String description;
 
     @Max(value = 100000, message = "Incorrect max value")
     @Min(value = 1, message = "Incorrect min value")
     private BigDecimal price;
 
+    @NotBlank(message = "Image url can't be empty")
     private String image;
 
     @CreationTimestamp
@@ -48,7 +51,7 @@ public class ProductEntity {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<CartItemEntity> cartItems;
 
-   @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-   private List<FavoritesEntity> favorites;
+    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<FavoritesEntity> favorites;
 
 }

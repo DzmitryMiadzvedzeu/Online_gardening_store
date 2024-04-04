@@ -35,7 +35,8 @@ public class OrderItemServiceImpl implements OrderItemService {
         if (orderItems.isEmpty()) {
             log.error("No order items found for order with id {}", orderId);
         } else {
-            log.debug("Successfully found {} order items for order with id {}", orderItems.size(), orderId);
+            log.debug("Successfully found {} order items for order with id {}",
+                    orderItems.size(), orderId);
         }
 
         return orderItems.stream()
@@ -48,8 +49,8 @@ public class OrderItemServiceImpl implements OrderItemService {
         log.debug("Obtaining order item with id {}", id);
         return orderItemRepository.findById(id).orElseThrow(() -> {
             log.error("Order item with id {} not found", id);
-               return new OrderItemNotFoundException("Can't find order item with id" +id);
-                });
+            return new OrderItemNotFoundException("Can't find order item with id" + id);
+        });
     }
 
     @Transactional
@@ -100,5 +101,4 @@ public class OrderItemServiceImpl implements OrderItemService {
         orderItemRepository.delete(deletedOrderItem);
         log.debug("Order item with id {} deleted successfully", id);
     }
-
 }

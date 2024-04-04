@@ -8,8 +8,6 @@ import org.shop.com.entity.UserEntity;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-
-
     UserDto toDto(UserEntity userEntity);
 
     UserEntity toEntity(UserDto userDto);

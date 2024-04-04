@@ -9,7 +9,6 @@ import org.shop.com.entity.OrderEntity;
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
 
-
     @Mapping(source = "deliveryAddress", target = "deliveryAddress")
     @Mapping(source = "deliveryMethod", target = "deliveryMethod")
     @Mapping(source = "contactPhone", target = "contactPhone")

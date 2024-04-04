@@ -16,22 +16,17 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderDto {
 
-
     private long id;
+
     private String deliveryAddress;
+
     private String deliveryMethod;
+
     private String contactPhone;
+
     private OrderStatus status;
+
     private Date createdAt;
+
     private Date updatedAt;
-
-    public OrderDto(String deliveryAddress, String deliveryMethod, String contactPhone) {
-        this.deliveryAddress = deliveryAddress;
-        this.deliveryMethod = deliveryMethod;
-        this.contactPhone = contactPhone;
-        this.status = OrderStatus.CREATED;
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
-
-    }
 }

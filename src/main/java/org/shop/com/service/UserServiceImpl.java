@@ -1,5 +1,6 @@
 package org.shop.com.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.UserCreateDto;
 import org.shop.com.entity.UserEntity;
@@ -11,8 +12,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     @Value("${onlineShopApp.user.default.userId}")
@@ -20,14 +23,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserJpaRepository repository;
 
-//    private final PasswordEncoder passwordEncoder;
+    //    private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
-
-    public UserServiceImpl(UserJpaRepository repository, UserMapper userMapper) {
-        this.repository = repository;
-//        this.passwordEncoder = passwordEncoder;
-        this.userMapper = userMapper;
-    }
 
     @Override
     public UserEntity create(UserCreateDto userCreateDto) {
@@ -47,7 +44,7 @@ public class UserServiceImpl implements UserService {
     public UserEntity findById(long id) {
         log.debug("Attempting to find a user by ID: {}", id);
         return repository.findById(id)
-                .orElseThrow(()-> {
+                .orElseThrow(() -> {
                     log.error("User not found with ID: {}", id);
                     return new UserNotFoundException("There is no users with id " + id);
                 });
@@ -72,6 +69,7 @@ public class UserServiceImpl implements UserService {
             return new UserNotFoundException("User with id " + id + " not found");
         });
     }
+
     @Override
     public void delete(long id) {
         log.debug("Attempting to delete user with ID: {}", id);
@@ -88,5 +86,4 @@ public class UserServiceImpl implements UserService {
         // логика доставания айди юзера из контекста аутентиффикации
         return defaultUserId;
     }
-
 }

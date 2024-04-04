@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class  ProductCreateDto {
+public class ProductCreateDto {
 
     private String name;
 
@@ -22,5 +22,4 @@ public class  ProductCreateDto {
     private String image;
 
     private long categoryId;
-
 }

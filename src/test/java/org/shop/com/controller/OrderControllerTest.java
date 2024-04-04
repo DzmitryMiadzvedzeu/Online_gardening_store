@@ -21,8 +21,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 import java.util.Arrays;
 import java.util.List;
+
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -49,7 +51,6 @@ public class OrderControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(orderController).build();
     }
 
-
     @Test
     public void listAllOrderDto_ShouldReturnOrders() throws Exception {
         OrderDto orderDto1 = new OrderDto(1L, "Address 1",
@@ -62,7 +63,6 @@ public class OrderControllerTest {
 
         when(orderService.getAll()).thenReturn(Arrays.asList(new OrderEntity(), new OrderEntity()));
         when(orderMapper.toDto(any(OrderEntity.class))).thenAnswer(invocation -> {
-            OrderEntity entity = invocation.getArgument(0);
             // примерно какой DTO возвращать, основываясь на порядке вызова
             int index = (int) (Math.random() * expectedDtos.size());
             return expectedDtos.get(index);
@@ -117,14 +117,18 @@ public class OrderControllerTest {
                         .content(asJsonString(orderCreateDto)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", Matchers.is(1)))
-                .andExpect(jsonPath("$.deliveryAddress", Matchers.is(createdOrderDto.getDeliveryAddress())))
-                .andExpect(jsonPath("$.deliveryMethod", Matchers.is(createdOrderDto.getDeliveryMethod())))
-                .andExpect(jsonPath("$.contactPhone", Matchers.is(createdOrderDto.getContactPhone())));
+                .andExpect(jsonPath("$.deliveryAddress",
+                        Matchers.is(createdOrderDto.getDeliveryAddress())))
+                .andExpect(jsonPath("$.deliveryMethod",
+                        Matchers.is(createdOrderDto.getDeliveryMethod())))
+                .andExpect(jsonPath("$.contactPhone",
+                        Matchers.is(createdOrderDto.getContactPhone())));
 
         verify(userService, times(1)).getCurrentUserId();
         verify(userService, times(1)).findById(anyLong());
         verify(orderService, times(1)).create(any(OrderEntity.class));
-        verify(orderMapper, times(1)).orderCreateDtoToEntity(any(OrderCreateDto.class));
+        verify(orderMapper, times(1)).orderCreateDtoToEntity(any
+                (OrderCreateDto.class));
         verify(orderMapper, times(1)).toDto(any(OrderEntity.class));
     }
 

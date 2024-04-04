@@ -11,7 +11,9 @@ import java.util.Optional;
 public interface FavoritesJpaRepository extends JpaRepository<FavoritesEntity, Long> {
 
     List<FavoritesEntity> findAllByUserEntityId(Long userId);
+
     Optional<FavoritesEntity> findByUserEntityIdAndProductEntityId(Long userId, Long productId);
+
     void deleteByUserEntityIdAndProductEntityId(Long userId, Long productId);
 
     boolean existsByUserEntityIdAndProductEntityId(Long userId, Long productId);

@@ -1,28 +1,23 @@
 package org.shop.com.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.shop.com.entity.HistoryEntity;
 import org.shop.com.entity.OrderEntity;
 import org.shop.com.entity.UserEntity;
 import org.shop.com.repository.HistoryJpaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class HistoryServiceImpl implements HistoryService {
 
     private final HistoryJpaRepository repository;
-    private final UserService userService;
 
-    @Autowired
-    public HistoryServiceImpl(HistoryJpaRepository repository, UserService userService) {
-        this.repository = repository;
-        this.userService = userService;
-        log.debug("HistoryServiceImpl initialized with repository: {} and userService: {}",
-                repository.getClass().getSimpleName(), userService.getClass().getSimpleName());
-    }
+    private final UserService userService;
 
     @Override
     public void addHistory(OrderEntity order, UserEntity user) {

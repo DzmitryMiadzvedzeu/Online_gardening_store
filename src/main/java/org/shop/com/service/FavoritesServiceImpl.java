@@ -1,5 +1,6 @@
 package org.shop.com.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.shop.com.entity.FavoritesEntity;
 import org.shop.com.entity.ProductEntity;
@@ -14,19 +15,14 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class FavoritesServiceImpl implements FavoritesService {
 
-
     private final FavoritesJpaRepository repository;
+
     private final UserService userService;
+
     private final ProductService productService;
-
-    public FavoritesServiceImpl(FavoritesJpaRepository repository, UserService userService, ProductService productService) {
-        this.repository = repository;
-        this.userService = userService;
-        this.productService = productService;
-    }
-
 
     @Override
     public List<FavoritesEntity> getUsersFavoritesByUserId(Long userId) {

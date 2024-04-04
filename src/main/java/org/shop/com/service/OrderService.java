@@ -14,5 +14,4 @@ public interface OrderService {
     OrderStatusDto getOrderStatusById(long id);
 
     OrderEntity deleteOrderEntityById(long id);
-
 }

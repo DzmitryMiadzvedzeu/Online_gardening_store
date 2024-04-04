@@ -37,7 +37,9 @@ class FavoritesControllerTest {
     private FavoritesController favoritesController;
 
     private final Long userId = 1L;
+
     private FavoritesEntity favoritesEntity;
+
     private FavoritesDto favoritesDto;
 
     @BeforeEach

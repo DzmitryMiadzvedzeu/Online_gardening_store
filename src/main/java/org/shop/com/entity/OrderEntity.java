@@ -29,7 +29,7 @@ public class OrderEntity {
     @Pattern(regexp = "^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$"
             + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?){2}\\d{3}$"
             + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?)(\\d{2}[ ]?){2}\\d{2}$",
-    message = "does not match phone number format")
+            message = "does not match phone number format")
     private String contactPhone;
 
     @Enumerated(EnumType.STRING)
@@ -48,7 +48,6 @@ public class OrderEntity {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<HistoryEntity> history;
-
 
     public OrderEntity(String deliveryAddress, String deliveryMethod, String contactPhone) {
         this.deliveryAddress = deliveryAddress;

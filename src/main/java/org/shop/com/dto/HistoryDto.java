@@ -16,5 +16,4 @@ public class HistoryDto {
     private Long userId;
 
     private Long orderId;
-
 }

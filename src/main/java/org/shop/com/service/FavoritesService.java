@@ -6,13 +6,9 @@ import java.util.List;
 
 public interface FavoritesService {
 
-    List<FavoritesEntity> getUsersFavoritesByUserId (Long userId);
+    List<FavoritesEntity> getUsersFavoritesByUserId(Long userId);
 
-    FavoritesEntity addIntoFavorites(Long userId,Long productId);
+    FavoritesEntity addIntoFavorites(Long userId, Long productId);
 
     void removeProductFromFavorites(Long userId, Long productId);
-
-
-
-
 }

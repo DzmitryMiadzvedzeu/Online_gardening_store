@@ -1,6 +1,7 @@
 package org.shop.com.enums;
 
 public enum UserRole {
+
     ADMIN("Admin"),
     USER("User");
 

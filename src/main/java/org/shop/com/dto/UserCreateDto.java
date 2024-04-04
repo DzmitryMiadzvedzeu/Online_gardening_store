@@ -24,5 +24,4 @@ public class UserCreateDto {
 
     @JsonProperty("passwordHash")
     private String passwordHash;
-
 }

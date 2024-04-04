@@ -1,4 +1,5 @@
 package org.shop.com.service;
+
 import org.shop.com.dto.OrderItemCreateDto;
 import org.shop.com.dto.OrderItemDto;
 import org.shop.com.entity.OrderItemEntity;
@@ -16,5 +17,4 @@ public interface OrderItemService {
     OrderItemDto updateQuantity(long orderItemId, Integer quantity);
 
     void delete(long orderId);
-
 }

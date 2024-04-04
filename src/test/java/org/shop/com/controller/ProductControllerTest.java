@@ -136,5 +136,4 @@ class ProductControllerTest {
         mockMvc.perform(delete("/v1/products/{id}", 1L))
                 .andExpect(status().isNoContent());
     }
-
 }

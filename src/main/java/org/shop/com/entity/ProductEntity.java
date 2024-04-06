@@ -18,6 +18,7 @@ import java.util.List;
 @Table(name = "product")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class ProductEntity {
 
     @Id

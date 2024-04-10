@@ -10,8 +10,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.CartCreateDto;
 import org.shop.com.dto.CartDto;
+import org.shop.com.dto.CartItemCreateDto;
+import org.shop.com.dto.CartItemDto;
 import org.shop.com.exceptions.CartInvalidArgumentException;
 import org.shop.com.exceptions.CartNotFoundException;
+import org.shop.com.service.CartItemService;
 import org.shop.com.service.CartService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,17 +61,17 @@ public class CartController {
         return ResponseEntity.ok(cartDto);
     }
 
-    @Operation(summary = "Delete a cart by ID")
+    @Operation(summary = "Delete a cart by user ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Cart deleted successfully"),
             @ApiResponse(responseCode = "404", description = "Cart not found", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @DeleteMapping("/{cartId}")
-    public ResponseEntity<Void> delete(@PathVariable Long cartId) {
-        log.debug("Request to delete cart with ID: {}", cartId);
-        cartService.delete(cartId);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{userId}/products/{productId}")
+    public ResponseEntity<Void> delete(@PathVariable Long userId, @PathVariable Long productId) {
+        log.info("Removing product with ID: {} from cart for user ID: {}", productId, userId);
+        cartService.delete(userId, productId);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Get all carts")
@@ -78,7 +81,6 @@ public class CartController {
                             array = @ArraySchema(schema = @Schema(implementation = CartDto.class))) }),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-
     @GetMapping
     public ResponseEntity<List<CartDto>> getAll() {
         log.debug("Request to get all carts");

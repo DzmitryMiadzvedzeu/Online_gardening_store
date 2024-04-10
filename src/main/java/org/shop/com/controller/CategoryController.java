@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private final CategoryMapper categoryMapper;
 
     @Operation(summary = "List all categories")
     @ApiResponses(value = {
@@ -49,7 +50,7 @@ public class CategoryController {
     public ResponseEntity<List<CategoryDTO>> getAll() {
         log.debug("Received request to list all categories");
         List<CategoryDTO> categoryDTOList = categoryService.getAll().stream()
-                .map(CategoryMapper.INSTANCE::toDto)
+                .map(categoryMapper::toDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(categoryDTOList);
     }
@@ -66,7 +67,7 @@ public class CategoryController {
     public ResponseEntity<CategoryDTO> getById(@PathVariable Long id) {
         log.debug("Received request to fetch category by ID: {}", id);
         CategoryEntity categoryEntity = categoryService.getById(id);
-        return ResponseEntity.ok(CategoryMapper.INSTANCE.toDto(categoryEntity));
+        return ResponseEntity.ok(categoryMapper.toDto(categoryEntity));
     }
 
     @Operation(summary = "Create a new category")
@@ -79,7 +80,7 @@ public class CategoryController {
     public ResponseEntity<CategoryDTO> create(@Valid @RequestBody CategoryCreateDTO createDTO) {
         log.debug("Received request to create a new category: {}", createDTO.getName());
         CategoryEntity createdCategoryEntity = categoryService.create(createDTO);
-        CategoryDTO categoryDTO = CategoryMapper.INSTANCE.toDto(createdCategoryEntity);
+        CategoryDTO categoryDTO = categoryMapper.toDto(createdCategoryEntity);
         log.debug("Category created successfully with ID: {}", createdCategoryEntity.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryDTO);
     }
@@ -97,7 +98,7 @@ public class CategoryController {
         log.debug("Received request to edit category with ID: {}", id);
         CategoryEntity updatedCategory = categoryService.edit(id, categoryDTO);
         log.debug("Category with ID: {} updated successfully", updatedCategory.getId());
-        return ResponseEntity.ok(CategoryMapper.INSTANCE.toDto(updatedCategory));
+        return ResponseEntity.ok(categoryMapper.toDto(updatedCategory));
     }
 
     @Operation(summary = "Delete a category")
@@ -126,7 +127,7 @@ public class CategoryController {
         log.debug("Received request to find category by name: {}", name);
         CategoryEntity categoryEntity = categoryService.findByName(name)
                 .orElseThrow(() -> new CategoryNotFoundException("Category with name " + name + " not found."));
-        return ResponseEntity.ok(CategoryMapper.INSTANCE.toDto(categoryEntity));
+        return ResponseEntity.ok(categoryMapper.toDto(categoryEntity)); // Используем внедренный маппер
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

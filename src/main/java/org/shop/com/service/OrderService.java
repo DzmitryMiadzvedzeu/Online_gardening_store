@@ -11,7 +11,7 @@ public interface OrderService {
 
     List<OrderEntity> getAll();
 
-    OrderStatusDto getOrderStatusById(long id);
+    OrderStatusDto getStatus(long id);
 
-    OrderEntity deleteOrderEntityById(long id);
+    OrderEntity delete(long id);
 }

@@ -20,21 +20,19 @@ public class HistoryServiceImpl implements HistoryService {
     private final UserService userService;
 
     @Override
-    public void addHistory(OrderEntity order, UserEntity user) {
+    public void add(OrderEntity order, UserEntity user) {
         log.debug("Adding history for user: {} and order: {}", user.getId(), order.getId());
         HistoryEntity history = new HistoryEntity();
         history.setOrder(order);
         history.setUser(user);
-        log.info("History added for user: {} and order: {}", user.getId(), order.getId());
         repository.save(history);
     }
 
     @Override
-    public List<HistoryEntity> getUserHistory() {
+    public List<HistoryEntity> get() {
         Long userId = userService.getCurrentUserId();
         log.debug("Retrieving history for user: {}", userId);
         List<HistoryEntity> history = repository.findByUser_Id(userId);
-        log.info("Retrieved {} history records for user: {}", history.size(), userId);
         return history;
     }
 }

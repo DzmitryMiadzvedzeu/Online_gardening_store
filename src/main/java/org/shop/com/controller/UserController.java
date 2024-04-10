@@ -34,7 +34,7 @@ public class UserController {
 
     @Operation(summary = "List all users")
     @GetMapping
-    public ResponseEntity<List<UserDto>> listAllUserDto() {
+    public ResponseEntity<List<UserDto>> listAll() {
         log.debug("Fetching all users");
         List<UserDto> userDtos = userService.getAll().stream()
                 .map(userMapper::toDto)
@@ -50,8 +50,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Invalid user data")
     })
     @PostMapping("/register")
-    public ResponseEntity<UserDto> registerUser(@RequestBody UserCreateDto userCreateDto) {
-        log.debug("Attempting to register user: {}", userCreateDto);
+    public ResponseEntity<UserDto> register(@RequestBody UserCreateDto userCreateDto) {
         UserEntity createUserEntity = userService.create(userCreateDto);
         log.debug("User registered successfully: {}", createUserEntity.getId());
         UserDto createUserDto = userMapper.toDto(createUserEntity);
@@ -60,19 +59,17 @@ public class UserController {
 
     @Operation(summary = "Edit an existing user")
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> editUser(@PathVariable Long id, @Valid @RequestBody UserCreateDto userCreateDto) {
+    public ResponseEntity<UserDto> edit(@PathVariable Long id, @Valid @RequestBody UserCreateDto userCreateDto) {
         log.debug("Attempting to edit user with ID: {}", id);
-        UserEntity updatedUser = userService.editUser(id, userCreateDto);
-        log.debug("User with ID: {} edited successfully", id);
+        UserEntity updatedUser = userService.edit(id, userCreateDto);
         return ResponseEntity.ok(userMapper.toDto(updatedUser));
     }
 
     @Operation(summary = "Delete a user")
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteUser(@PathVariable Long id) {
+    public ResponseEntity delete(@PathVariable Long id) {
         log.debug("Attempting to delete user with ID: {}", id);
         userService.delete(id);
-        log.debug("User with ID: {} deleted successfully", id);
         return ResponseEntity.noContent().build();
     }
 

@@ -4,9 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.shop.com.enums.OrderStatus;
 
-import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,4 +18,6 @@ public class OrderCreateDto {
     private String deliveryMethod;
 
     private String contactPhone;
+
+    private List<OrderItemCreateDto> items;
 }

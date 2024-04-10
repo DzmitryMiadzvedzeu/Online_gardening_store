@@ -19,7 +19,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -82,7 +81,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     void whenEditUser_thenReturns200() throws Exception {
-        given(userService.editUser(any(Long.class), any(UserCreateDto.class))).willReturn(testUserEntity);
+        given(userService.edit(any(Long.class), any(UserCreateDto.class))).willReturn(testUserEntity);
 
         mockMvc.perform(put("/v1/users/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)

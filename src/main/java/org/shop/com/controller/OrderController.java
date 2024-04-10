@@ -8,12 +8,12 @@ import org.shop.com.dto.HistoryDto;
 import org.shop.com.dto.OrderStatusDto;
 import org.shop.com.entity.HistoryEntity;
 import org.shop.com.entity.OrderEntity;
+import org.shop.com.entity.OrderItemEntity;
 import org.shop.com.entity.UserEntity;
 import org.shop.com.mapper.HistoryMapper;
+import org.shop.com.mapper.OrderItemMapper;
 import org.shop.com.mapper.OrderMapper;
-import org.shop.com.service.HistoryService;
-import org.shop.com.service.OrderService;
-import org.shop.com.service.UserService;
+import org.shop.com.service.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,32 +31,33 @@ public class OrderController {
     private final OrderService orderService;
     private final OrderMapper orderMapper;
 
+    private final OrderItemMapper orderItemMapper;
+    private final OrderItemService orderItemService;
+
     private final HistoryService historyService;
     private final HistoryMapper historyMapper;
 
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<OrderDto>> listAllOrderDto() {
+    public ResponseEntity<List<OrderDto>> getAll() {
         log.debug("Request received to list all orders");
         List<OrderDto> orderDtos = orderService.getAll().stream()
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
-        log.debug("Returning {} orders", orderDtos.size());
         return ResponseEntity.ok(orderDtos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderStatusDto> getOrderStatus(@PathVariable Long id) {
+    public ResponseEntity<OrderStatusDto> getStatus(@PathVariable Long id) {
         log.debug("Request received to get the status of order with ID: {}", id);
-        OrderStatusDto orderStatus = orderService.getOrderStatusById(id);
-        log.debug("Returning status for order ID {}: {}", id, orderStatus.getStatus());
+        OrderStatusDto orderStatus = orderService.getStatus(id);
         return ResponseEntity.ok(orderStatus);
     }
 
     @GetMapping("/history")
     public ResponseEntity<List<HistoryDto>> getUserOrderHistory() {
-        List<HistoryEntity> userHistory = historyService.getUserHistory();
+        List<HistoryEntity> userHistory = historyService.get();
         List<HistoryDto> historyDtos = userHistory.stream()
                 .map(historyMapper::toDto)
                 .collect(Collectors.toList());
@@ -64,30 +65,36 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteOrder(@PathVariable long id) {
+    public ResponseEntity delete(@PathVariable long id) {
         log.debug("Request received to delete order with ID: {}", id);
-        orderService.deleteOrderEntityById(id);
-        log.debug("Order with ID: {} deleted successfully", id);
+        orderService.delete(id);
         return ResponseEntity.noContent().build();
 
     }
 
     @PostMapping
-    public ResponseEntity<OrderDto> addOrder(@RequestBody OrderCreateDto orderCreateDto) {
-        log.debug("Creating new order with delivery address: {}", orderCreateDto.getDeliveryAddress());
-        log.debug("Creating new order with delivery method: {}", orderCreateDto.getDeliveryMethod());
-        log.debug("Creating new order with contact phone: {}", orderCreateDto.getContactPhone());
+    public ResponseEntity<?> create(@RequestBody OrderCreateDto orderCreateDto) {
+        try {
+            Long currentUserId = userService.getCurrentUserId();
+            UserEntity currentUser = userService.findById(currentUserId);
 
-        Long currentUserId = userService.getCurrentUserId();
-        UserEntity currentUser = userService.findById(currentUserId);
+            OrderEntity orderEntity = orderMapper.orderCreateDtoToEntity(orderCreateDto);
+            orderEntity.setUserEntity(currentUser);
 
-        OrderEntity orderEntity = orderMapper.orderCreateDtoToEntity(orderCreateDto);
-        orderEntity.setUserEntity(currentUser);
+            List<OrderItemEntity> orderItems = orderCreateDto.getItems().stream()
+                    .map(orderItemMapper::createDtoToEntity)
+                    .map(orderItemService::prepareOrderItem)
+                    .collect(Collectors.toList());
 
-        OrderEntity createdOrderEntity = orderService.create(orderEntity);
-        OrderDto createdOrderDto = orderMapper.toDto(createdOrderEntity);
+            orderItems.forEach(item -> item.setOrder(orderEntity));
+            orderEntity.setOrderItems(orderItems);
+            OrderEntity createdOrder = orderService.create(orderEntity);
 
-        log.debug("Order created successfully with ID: {}", createdOrderDto.getId());
-        return new ResponseEntity<>(createdOrderDto, HttpStatus.CREATED);
+            OrderDto createdOrderDto = orderMapper.toDto(createdOrder);
+            return new ResponseEntity<>(createdOrderDto, HttpStatus.CREATED);
+        } catch (Exception ex) {
+            log.error("Error creating order: {}", ex.getMessage(), ex);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating order: " + ex.getMessage());
+        }
     }
 }

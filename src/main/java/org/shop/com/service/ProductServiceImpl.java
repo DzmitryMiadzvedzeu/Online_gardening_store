@@ -69,9 +69,7 @@ public class ProductServiceImpl implements ProductService {
         CategoryEntity categoryById = categoryService.getById(productCreateDto.getCategoryId());
         ProductEntity createdProduct = ProductMapper.INSTANCE.createDtoToEntity(productCreateDto);
         createdProduct.setCategory(categoryById);
-        ProductEntity savedProduct = repository.save(createdProduct);
-        log.debug("Product created successfully with ID: {}", savedProduct.getId());
-        return savedProduct;
+        return repository.save(createdProduct);
     }
 
     @Override
@@ -87,10 +85,7 @@ public class ProductServiceImpl implements ProductService {
         existingProduct.setPrice(productEntity.getPrice());
         existingProduct.setCategory(productEntity.getCategory());
         existingProduct.setImage(productEntity.getImage());
-
-        ProductEntity updatedProduct = repository.save(existingProduct);
-        log.debug("Product updated successfully: {}", updatedProduct);
-        return updatedProduct;
+        return repository.save(existingProduct);
     }
 
     @Override
@@ -99,7 +94,6 @@ public class ProductServiceImpl implements ProductService {
         ProductEntity deletedProduct = findById(id);
         if (deletedProduct != null) {
             repository.delete(deletedProduct);
-            log.debug("Product with id {} deleted successfully", id);
         } else {
             log.error("Product with id not found", id);
             throw new ProductNotFoundException("There is no product with ID " + id);

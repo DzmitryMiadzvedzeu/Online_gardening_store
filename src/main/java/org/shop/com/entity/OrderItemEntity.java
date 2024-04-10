@@ -28,7 +28,6 @@ public class OrderItemEntity {
     @NotNull
     private Integer quantity;
 
-    @JoinColumn(name = "price_at_purchase")
+    @Column
     private BigDecimal priceAtPurchase;
-
 }

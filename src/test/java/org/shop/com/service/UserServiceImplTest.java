@@ -11,7 +11,6 @@ import org.shop.com.entity.UserEntity;
 import org.shop.com.exceptions.UserNotFoundException;
 import org.shop.com.mapper.UserMapper;
 import org.shop.com.repository.UserJpaRepository;
-import org.shop.com.service.UserServiceImpl;
 
 import java.util.Arrays;
 import java.util.List;
@@ -100,7 +99,7 @@ public class UserServiceImplTest {
         when(userJpaRepository.findById(anyLong())).thenReturn(Optional.of(userEntity));
         when(userJpaRepository.save(any(UserEntity.class))).thenReturn(userEntity);
 
-        UserEntity updatedUser = userService.editUser(1L, userCreateDto);
+        UserEntity updatedUser = userService.edit(1L, userCreateDto);
 
         assertThat(updatedUser).isNotNull();
         assertThat(updatedUser.getName()).isEqualTo(userCreateDto.getName());

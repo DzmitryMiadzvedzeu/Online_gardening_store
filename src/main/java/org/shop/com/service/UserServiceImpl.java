@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity editUser(long id, UserCreateDto userDto) {
+    public UserEntity edit(long id, UserCreateDto userDto) {
         log.debug("Attempting to edit user with ID: {}", id);
         return repository.findById(id).map(user -> {
             user.setName(userDto.getName());

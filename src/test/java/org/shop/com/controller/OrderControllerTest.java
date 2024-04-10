@@ -80,7 +80,7 @@ public class OrderControllerTest {
         Long orderId = 1L;
         OrderStatusDto orderStatusDto = new OrderStatusDto(orderId, OrderStatus.CREATED);
 
-        when(orderService.getOrderStatusById(orderId)).thenReturn(orderStatusDto);
+        when(orderService.getStatus(orderId)).thenReturn(orderStatusDto);
 
         mockMvc.perform(get("/v1/orders/{id}", orderId)
                         .contentType(MediaType.APPLICATION_JSON))

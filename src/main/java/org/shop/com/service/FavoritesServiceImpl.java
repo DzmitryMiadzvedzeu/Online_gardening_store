@@ -36,14 +36,12 @@ public class FavoritesServiceImpl implements FavoritesService {
         UserEntity user = userService.findById(userId);
         ProductEntity product = productService.findById(productId);
         repository.findByUserEntityIdAndProductEntityId(userId, productId).ifPresent(f -> {
-            log.debug("Product with ID: {} is already in favorites for user with ID: {}", productId, userId);
             throw new ProductIllegalArgumentException("This product is already in favorites");
         });
         FavoritesEntity favorite = new FavoritesEntity();
         favorite.setUserEntity(user);
         favorite.setProductEntity(product);
         FavoritesEntity savedFavorite = repository.save(favorite);
-        log.debug("Successfully added product with ID: {} to favorites for user with ID: {}", productId, userId);
         return savedFavorite;
     }
 
@@ -53,10 +51,8 @@ public class FavoritesServiceImpl implements FavoritesService {
         log.debug("Attempting to remove product with ID: {} from favorites for user with ID: {}", productId, userId);
         boolean exists = repository.existsByUserEntityIdAndProductEntityId(userId, productId);
         if (!exists) {
-            log.debug("Cannot find favorites entry for user with ID: {} and product with ID: {}", userId, productId);
             throw new FavoritesNotFoundException("Favorites not found");
         }
         repository.deleteByUserEntityIdAndProductEntityId(userId, productId);
-        log.debug("Successfully removed product with ID: {} from favorites for user with ID: {}", productId, userId);
     }
 }

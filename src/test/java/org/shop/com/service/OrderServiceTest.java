@@ -51,7 +51,7 @@ public class OrderServiceTest {
         verify(userService, times(1)).getCurrentUserId();
         verify(userRepository, times(1)).findById(fakeUserId);
         verify(repository, times(1)).save(order);
-        verify(historyService, times(1)).addHistory(order, fakeUser);
+        verify(historyService, times(1)).add(order, fakeUser);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class OrderServiceTest {
         order.setId(orderId);
         when(repository.findById(orderId)).thenReturn(Optional.of(order));
         doNothing().when(repository).deleteById(orderId);
-        OrderEntity deletedOrder = service.deleteOrderEntityById(orderId);
+        OrderEntity deletedOrder = service.delete(orderId);
         assertNotNull(deletedOrder);
         verify(repository, times(1)).deleteById(orderId);
     }
@@ -85,6 +85,6 @@ public class OrderServiceTest {
         long orderId = 1L;
         when(repository.findById(orderId)).thenReturn(Optional.empty());
         assertThrows(OrderNotFoundException.class,
-                () -> service.deleteOrderEntityById(orderId));
+                () -> service.delete(orderId));
     }
 }

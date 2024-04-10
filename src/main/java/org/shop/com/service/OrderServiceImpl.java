@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.OrderStatusDto;
 import org.shop.com.entity.OrderEntity;
+import org.shop.com.entity.OrderItemEntity;
 import org.shop.com.entity.UserEntity;
 import org.shop.com.exceptions.OrderNotFoundException;
 import org.shop.com.exceptions.UserNotFoundException;
@@ -24,32 +25,36 @@ public class OrderServiceImpl implements OrderService {
 
     private final UserService userService;
 
-    private final HistoryService historyService;
+    private final OrderItemService orderItemService;
 
     @Override
     public OrderEntity create(OrderEntity entity) {
-        log.debug("Attempting to create order for user ID: {}", entity.getUserEntity().getId());
         Long currentUserId = userService.getCurrentUserId();
         UserEntity currentUser = userRepository.findById(currentUserId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + currentUserId));
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: "
+                        + currentUserId));
         entity.setUserEntity(currentUser);
-        OrderEntity savedEntity = repository.save(entity);
-        historyService.addHistory(savedEntity, currentUser);
-        log.debug("Order created successfully with ID: {}", savedEntity.getId());
-        return savedEntity;
-    }
 
+        OrderEntity createdOrder = repository.save(entity);
+
+        if (entity.getOrderItems() != null) {
+            for (OrderItemEntity item : entity.getOrderItems()) {
+                item.setOrder(createdOrder);
+                orderItemService.prepareOrderItem(item);
+            }
+        }
+        return createdOrder;
+    }
 
     @Override
     public List<OrderEntity> getAll() {
         log.debug("Fetching all orders");
         List<OrderEntity> orders = repository.findAll();
-        log.debug("Found {} orders", orders.size());
         return orders;
     }
 
     @Override
-    public OrderStatusDto getOrderStatusById(long id) {
+    public OrderStatusDto getStatus(long id) {
         return repository.findById(id)
                 .map(orderEntity -> new OrderStatusDto(orderEntity.getId(),
                         orderEntity.getStatus()))
@@ -58,7 +63,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderEntity deleteOrderEntityById(long id) {
+    public OrderEntity delete(long id) {
         log.debug("Attempting to delete order with ID: {}", id);
         OrderEntity orderEntity = repository.findById(id).orElseThrow(() ->
                 new OrderNotFoundException("Order with id " + id + " not found"));

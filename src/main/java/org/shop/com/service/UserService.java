@@ -13,7 +13,7 @@ public interface UserService {
 
     List<UserEntity> getAll();
 
-    UserEntity editUser(long id, UserCreateDto userCreateDto);
+    UserEntity edit(long id, UserCreateDto userCreateDto);
 
     void delete(long id);
 

@@ -39,7 +39,7 @@ public class FavoritesController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FavoritesDto>> getAllFavorites() {
+    public ResponseEntity<List<FavoritesDto>> getAll() {
         log.debug("Getting all favorites for current user");
         Long userId = userService.getCurrentUserId(); // Получаем ID текущего пользователя(,,)
         List<FavoritesDto> favoritesDtos = favoritesService.getUsersFavoritesByUserId(userId)

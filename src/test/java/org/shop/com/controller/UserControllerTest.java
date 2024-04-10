@@ -102,7 +102,7 @@ class UserControllerTest {
         UserDto updatedUserDto = new UserDto(userId, "UpdatedName",
                 "original@example.com", "9876543210",
                 "originalHash", UserRole.USER);
-        given(userService.editUser(eq(userId), any(UserCreateDto.class))).willReturn(updatedUser);
+        given(userService.edit(eq(userId), any(UserCreateDto.class))).willReturn(updatedUser);
         given(userMapper.toDto(any(UserEntity.class))).willReturn(updatedUserDto);
         mockMvc.perform(put("/v1/users/{id}", userId)
                         .contentType(MediaType.APPLICATION_JSON)

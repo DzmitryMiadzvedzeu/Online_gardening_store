@@ -54,5 +54,4 @@ public class ProductEntity {
 
     @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FavoritesEntity> favorites;
-
 }

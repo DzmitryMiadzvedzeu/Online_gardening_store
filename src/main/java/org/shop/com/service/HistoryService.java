@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface HistoryService {
 
-    List<HistoryEntity> getUserHistory();
+    List<HistoryEntity> get();
 
-    void addHistory(OrderEntity order, UserEntity user);
+    void add(OrderEntity order, UserEntity user);
 }

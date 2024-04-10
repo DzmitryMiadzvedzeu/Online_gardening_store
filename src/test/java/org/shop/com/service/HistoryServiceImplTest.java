@@ -38,7 +38,7 @@ class HistoryServiceImplTest {
         OrderEntity order = new OrderEntity();
         UserEntity user = new UserEntity();
 
-        historyService.addHistory(order, user);
+        historyService.add(order, user);
 
         verify(historyJpaRepository, times(1)).save(any(HistoryEntity.class));
     }
@@ -53,7 +53,7 @@ class HistoryServiceImplTest {
         when(userService.getCurrentUserId()).thenReturn(userId);
         when(historyJpaRepository.findByUser_Id(userId)).thenReturn(expectedHistory);
 
-        List<HistoryEntity> actualHistory = historyService.getUserHistory();
+        List<HistoryEntity> actualHistory = historyService.get();
 
         verify(userService, times(1)).getCurrentUserId();
         verify(historyJpaRepository, times(1)).findByUser_Id(userId);

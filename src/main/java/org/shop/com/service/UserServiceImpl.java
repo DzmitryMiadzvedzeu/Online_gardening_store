@@ -31,12 +31,6 @@ public class UserServiceImpl implements UserService {
         log.debug("Attempting to create a user: {}", userEntity.getEmail());
 //        String hashedPassword = passwordEncoder.encode();
         return repository.save(userEntity);
-//        UserCreateDto userCreateDto = new UserCreateDto();
-//        userCreateDto.setName(userCreateDto.getName());
-//        userCreateDto.setEmail(userCreateDto.getEmail());
-//        userCreateDto.setPhoneNumber(userCreateDto.getPhoneNumber());
-//        userCreateDto.setPasswordHash(userCreateDto.getPasswordHash());
-//        return repository.save(userMapper.userCreateDtoToEntity(userCreateDto));
     }
 
     @Override

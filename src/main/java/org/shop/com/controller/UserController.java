@@ -58,14 +58,6 @@ public class UserController {
         return new ResponseEntity<>(createdUserDto, HttpStatus.CREATED);
     }
 
-//    @PostMapping("/register")
-//    public ResponseEntity<UserDto> register(@RequestBody UserCreateDto userCreateDto) {
-//        UserEntity createUserEntity = userService.create(userCreateDto);
-//        log.debug("User registered successfully: {}", createUserEntity.getId());
-//        UserDto createUserDto = userMapper.toDto(createUserEntity);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(createUserDto);
-//    }
-
     @Operation(summary = "Edit an existing user")
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> edit(@PathVariable Long id, @Valid @RequestBody UserCreateDto userCreateDto) {

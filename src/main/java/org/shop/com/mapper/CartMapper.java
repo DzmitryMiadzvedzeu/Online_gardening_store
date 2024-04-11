@@ -10,5 +10,4 @@ import org.shop.com.entity.CartEntity;
 public interface CartMapper {
 
     CartDto toDto(CartEntity cartEntity);
-
 }

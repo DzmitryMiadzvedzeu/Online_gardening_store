@@ -7,15 +7,12 @@ import org.shop.com.exceptions.ProductNotFoundException;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 
-
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderItemServiceImpl implements OrderItemService {
 
     private final ProductService productService;
-
 
     @Override
     public OrderItemEntity prepareOrderItem(OrderItemEntity orderItem) {

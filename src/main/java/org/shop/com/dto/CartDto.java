@@ -15,5 +15,4 @@ public class CartDto {
     private Long id;
 
     private Long userId;
-
 }

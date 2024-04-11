@@ -56,7 +56,7 @@ public class UserServiceImplTest {
         when(userMapper.userCreateDtoToEntity(any(UserCreateDto.class))).thenReturn(userEntity);
         when(userJpaRepository.save(any(UserEntity.class))).thenReturn(userEntity);
 
-        UserEntity createdUser = userService.create(userCreateDto);
+        UserEntity createdUser = userService.create(userEntity);
 
         assertThat(createdUser).isNotNull();
         assertThat(createdUser.getName()).isEqualTo(userCreateDto.getName());

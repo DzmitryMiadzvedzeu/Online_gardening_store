@@ -72,7 +72,7 @@ class FavoritesControllerTest {
         when(favoritesService.getUsersFavoritesByUserId(userId)).thenReturn(Arrays.asList(favoritesEntity));
         when(favoritesMapper.toDto(favoritesEntity)).thenReturn(favoritesDto);
 
-        ResponseEntity<List<FavoritesDto>> response = favoritesController.getAllFavorites();
+        ResponseEntity<List<FavoritesDto>> response = favoritesController.getAll();
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).hasSize(1);

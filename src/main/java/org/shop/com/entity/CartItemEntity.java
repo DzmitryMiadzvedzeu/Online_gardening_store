@@ -26,5 +26,4 @@ public class CartItemEntity {
     private ProductEntity product;
 
     private Integer quantity;
-
 }

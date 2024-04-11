@@ -23,5 +23,4 @@ public class CartEntity {
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<CartItemEntity> items = new ArrayList<>();
-
 }

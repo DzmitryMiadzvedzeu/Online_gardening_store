@@ -3,6 +3,8 @@ package org.shop.com.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -13,4 +15,5 @@ public class CartDto {
     private Long id;
 
     private Long userId;
+
 }

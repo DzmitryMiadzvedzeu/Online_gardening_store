@@ -19,6 +19,7 @@ import java.util.Optional;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryJpaRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
 
     @Override
     public List<CategoryEntity> getAll() {
@@ -36,7 +37,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryEntity create(CategoryCreateDTO createDTO) {
         log.debug("Creating category with name: {}", createDTO.getName());
-        CategoryEntity categoryEntity = CategoryMapper.INSTANCE.createDtoToEntity(createDTO);
+        CategoryEntity categoryEntity = categoryMapper.createDtoToEntity(createDTO);
         CategoryEntity savedEntity = categoryRepository.save(categoryEntity);
         log.debug("Category created successfully with ID: {}", savedEntity.getId());
         return savedEntity;

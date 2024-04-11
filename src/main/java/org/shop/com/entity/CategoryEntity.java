@@ -14,7 +14,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class CategoryEntity {
 
     @Id
@@ -27,8 +26,4 @@ public class CategoryEntity {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductEntity> products;
 
-    public CategoryEntity(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
 }

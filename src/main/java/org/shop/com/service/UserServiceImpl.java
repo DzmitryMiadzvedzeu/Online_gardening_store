@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
     public Long getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
-            throw new SecurityException("Пользователь не аутентифицирован");
+            throw new SecurityException("User is not authenticated");
         }
 
         Object principal = authentication.getPrincipal();
@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
             UserEntity user = getByLogin(username);
             return user.getId();
         } else {
-            throw new IllegalArgumentException("Основной объект аутентификации не может быть использован для получения ID");
+            throw new IllegalArgumentException("The primary authentication object cannot be used to obtain the ID");
         }
     }
 

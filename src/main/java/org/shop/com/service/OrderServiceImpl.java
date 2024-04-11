@@ -27,6 +27,8 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderItemService orderItemService;
 
+    private final HistoryService historyService;
+
     @Override
     public OrderEntity create(OrderEntity entity) {
         Long currentUserId = userService.getCurrentUserId();
@@ -43,6 +45,9 @@ public class OrderServiceImpl implements OrderService {
                 orderItemService.prepareOrderItem(item);
             }
         }
+
+        historyService.add(createdOrder, currentUser);
+
         return createdOrder;
     }
 

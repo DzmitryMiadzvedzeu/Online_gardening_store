@@ -16,6 +16,7 @@ import org.shop.com.entity.OrderEntity;
 import org.shop.com.entity.OrderItemEntity;
 import org.shop.com.entity.UserEntity;
 import org.shop.com.exceptions.OrderNotFoundException;
+import org.shop.com.exceptions.UserNotFoundException;
 import org.shop.com.mapper.HistoryMapper;
 import org.shop.com.mapper.OrderItemMapper;
 import org.shop.com.mapper.OrderMapper;
@@ -112,30 +113,29 @@ public class OrderController {
             @ApiResponse(responseCode = "500", description = "Internal server error due to a processing error")
     })
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody OrderCreateDto orderCreateDto) {
-        try {
-            Long currentUserId = userService.getCurrentUserId();
-            UserEntity currentUser = userService.findById(currentUserId);
-
-            OrderEntity orderEntity = orderMapper.orderCreateDtoToEntity(orderCreateDto);
-            orderEntity.setUserEntity(currentUser);
-
-            List<OrderItemEntity> orderItems = orderCreateDto.getItems().stream()
-                    .map(orderItemMapper::createDtoToEntity)
-                    .map(orderItemService::prepareOrderItem)
-                    .collect(Collectors.toList());
-
-            orderItems.forEach(item -> item.setOrder(orderEntity));
-            orderEntity.setOrderItems(orderItems);
-            OrderEntity createdOrder = orderService.create(orderEntity);
-
-            OrderDto createdOrderDto = orderMapper.toDto(createdOrder);
-            return new ResponseEntity<>(createdOrderDto, HttpStatus.CREATED);
-        } catch (Exception ex) {
-            log.error("Error creating order: {}", ex.getMessage(), ex);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating order: " + ex.getMessage());
+    public ResponseEntity<OrderDto> addOrder(@RequestBody OrderCreateDto orderCreateDto) {
+        Long currentUserId = userService.getCurrentUserId();
+        UserEntity currentUser = userService.findById(currentUserId);
+        if (currentUser == null) {
+            throw new UserNotFoundException("User with ID: " + currentUserId + " not found");
         }
+        OrderEntity orderEntity = orderMapper.orderCreateDtoToEntity(orderCreateDto);
+        orderEntity.setUserEntity(currentUser);
+
+        List<OrderItemEntity> orderItems = orderCreateDto.getItems().stream()
+                .map(orderItemMapper::createDtoToEntity)
+                .map(orderItemService::prepareOrderItem)
+                .collect(Collectors.toList());
+
+        orderItems.forEach(item -> item.setOrder(orderEntity));
+        orderEntity.setOrderItems(orderItems);
+
+        OrderEntity createdOrder = orderService.create(orderEntity);
+
+        OrderDto createdOrderDto = orderMapper.toDto(createdOrder);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdOrderDto);
     }
+
     @ExceptionHandler(OrderNotFoundException.class)
     public ResponseEntity<String> handleOrderNotFoundException(OrderNotFoundException ex) {
         log.error("Order not found: {}", ex.getMessage());

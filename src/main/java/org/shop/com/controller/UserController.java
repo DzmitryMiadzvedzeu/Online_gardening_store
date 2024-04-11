@@ -50,12 +50,21 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Invalid user data")
     })
     @PostMapping("/register")
-    public ResponseEntity<UserDto> register(@RequestBody UserCreateDto userCreateDto) {
-        UserEntity createUserEntity = userService.create(userCreateDto);
-        log.debug("User registered successfully: {}", createUserEntity.getId());
-        UserDto createUserDto = userMapper.toDto(createUserEntity);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createUserDto);
+    public ResponseEntity<UserDto> register(@Valid @RequestBody UserCreateDto userCreateDto) {
+        UserEntity userEntity = userMapper.userCreateDtoToEntity(userCreateDto);
+        UserEntity createdUserEntity = userService.create(userEntity);
+        UserDto createdUserDto = userMapper.toDto(createdUserEntity);
+        log.debug("User registered with ID: {}", createdUserDto.getId());
+        return new ResponseEntity<>(createdUserDto, HttpStatus.CREATED);
     }
+
+//    @PostMapping("/register")
+//    public ResponseEntity<UserDto> register(@RequestBody UserCreateDto userCreateDto) {
+//        UserEntity createUserEntity = userService.create(userCreateDto);
+//        log.debug("User registered successfully: {}", createUserEntity.getId());
+//        UserDto createUserDto = userMapper.toDto(createUserEntity);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(createUserDto);
+//    }
 
     @Operation(summary = "Edit an existing user")
     @PutMapping("/{id}")

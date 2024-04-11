@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface UserService {
 
-    UserEntity create(UserCreateDto userCreateDto);
+    UserEntity create(UserEntity userEntity);
 
     UserEntity findById(long id);
 

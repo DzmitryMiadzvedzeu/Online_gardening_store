@@ -27,17 +27,16 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public UserEntity create(UserCreateDto userCreateDto) {
-        log.debug("Attempting to create a user: {}", userCreateDto.getEmail());
+    public UserEntity create(UserEntity userEntity) {
+        log.debug("Attempting to create a user: {}", userEntity.getEmail());
 //        String hashedPassword = passwordEncoder.encode();
+        return repository.save(userEntity);
 //        UserCreateDto userCreateDto = new UserCreateDto();
-        userCreateDto.setName(userCreateDto.getName());
-        userCreateDto.setEmail(userCreateDto.getEmail());
-        userCreateDto.setPhoneNumber(userCreateDto.getPhoneNumber());
-        userCreateDto.setPasswordHash(userCreateDto.getPasswordHash());
-        UserEntity savedUserEntity = repository.save(userMapper.userCreateDtoToEntity(userCreateDto));
-        log.debug("User created successfully with ID: {}", savedUserEntity.getId());
-        return savedUserEntity;
+//        userCreateDto.setName(userCreateDto.getName());
+//        userCreateDto.setEmail(userCreateDto.getEmail());
+//        userCreateDto.setPhoneNumber(userCreateDto.getPhoneNumber());
+//        userCreateDto.setPasswordHash(userCreateDto.getPasswordHash());
+//        return repository.save(userMapper.userCreateDtoToEntity(userCreateDto));
     }
 
     @Override
@@ -62,7 +61,6 @@ public class UserServiceImpl implements UserService {
         return repository.findById(id).map(user -> {
             user.setName(userDto.getName());
             user.setPhoneNumber(userDto.getPhoneNumber());
-            log.debug("User with ID: {} edited successfully", id);
             return repository.save(user);
         }).orElseThrow(() -> {
             log.error("User with id {} not found for editing", id);
@@ -78,7 +76,6 @@ public class UserServiceImpl implements UserService {
             return new UserNotFoundException("There is no users with id " + id);
         });
         repository.deleteById(id);
-        log.debug("User with ID: {} deleted successfully", id);
     }
 
     @Override

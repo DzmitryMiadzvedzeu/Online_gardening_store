@@ -1,5 +1,6 @@
 package org.shop.com.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,7 +26,7 @@ public class UserDto {
     @JsonProperty("phoneNumber")
     private String phoneNumber;
 
-    @JsonProperty("passwordHash")
+    @JsonIgnore
     private String passwordHash;
 
     @JsonProperty("role")

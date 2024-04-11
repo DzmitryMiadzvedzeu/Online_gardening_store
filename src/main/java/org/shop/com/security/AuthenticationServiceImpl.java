@@ -41,4 +41,5 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // для интереса, сгенерированный токен можно проверить на сайте jwt.io
         return new JwtAuthenticationResponse(token);
     }
+
 }

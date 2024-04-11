@@ -6,6 +6,9 @@ import org.shop.com.dto.UserCreateDto;
 import org.shop.com.entity.UserEntity;
 import org.shop.com.exceptions.UserNotFoundException;
 import org.shop.com.repository.UserJpaRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -73,8 +76,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Long getCurrentUserId() {
-        // логика доставания айди юзера из контекста аутентиффикации
-        return defaultUserId;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new SecurityException("Пользователь не аутентифицирован");
+        }
+
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof UserDetails) {
+            String username = ((UserDetails) principal).getUsername();
+            UserEntity user = getByLogin(username);
+            return user.getId();
+        } else {
+            throw new IllegalArgumentException("Основной объект аутентификации не может быть использован для получения ID");
+        }
     }
 
     @Override

@@ -88,33 +88,33 @@ public class CartServiceImpl implements CartService {
 
     @Transactional
     @Override
-    public void delete(Long userId, Long productId) {
-        log.debug("Attempting to remove product with ID: {} from cart for user ID: {}", productId, userId);
-        CartEntity cart = cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Cart with user ID " + userId + " does not exist"));
+    public void delete(Long productId) {
+        log.debug("Attempting to remove product with ID: {}", productId);
 
-        List<CartItemEntity> itemsToRemove = cart.getItems().stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
-                .collect(Collectors.toList());
+        // Находим все элементы корзины с данным продуктом
+        List<CartItemEntity> itemsToRemove = cartItemRepository.findByProductId(productId);
 
         if (itemsToRemove.isEmpty()) {
-            log.warn("No product with ID: {} found in the cart for user ID: {}", productId, userId);
-            throw new RuntimeException("Product with ID: " + productId + " not found in cart");
+            log.warn("No product with ID: {} found in any carts", productId);
+            throw new RuntimeException("Product with ID: " + productId + " not found in any cart");
         }
 
-        // Удаление товаров из корзины
+        // Удаляем все найденные элементы
         cartItemRepository.deleteAll(itemsToRemove);
-        cart.getItems().removeAll(itemsToRemove);
-        log.debug("Product with ID: {} removed from the cart for user ID: {}", productId, userId);
+        log.debug("Product with ID: {} removed from all carts", productId);
 
-        // Проверка, остались ли еще товары в корзине
-        if (cart.getItems().isEmpty()) {
-            cartRepository.delete(cart); // Удаляем корзину, если это был последний товар
-            log.debug("Cart for user ID: {} deleted as it was empty after removing products", userId);
-        } else {
-            cartRepository.save(cart); // Сохраняем изменения в корзине, если в ней остались товары
-            log.debug("Cart for user ID: {} updated with remaining products", userId);
-        }
+        // Проверяем корзины, нужно ли их очистить или удалить после удаления товара
+        itemsToRemove.forEach(item -> {
+            CartEntity cart = item.getCart();
+            cart.getItems().remove(item);
+            if (cart.getItems().isEmpty()) {
+                cartRepository.delete(cart);
+                log.debug("Cart for user ID: {} deleted as it was empty after removing product", cart.getUser().getId());
+            } else {
+                cartRepository.save(cart);
+                log.debug("Cart for user ID: {} updated with remaining products", cart.getUser().getId());
+            }
+        });
     }
 
     @Override

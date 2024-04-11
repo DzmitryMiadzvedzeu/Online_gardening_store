@@ -6,19 +6,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.shop.com.dto.OrderItemCreateDto;
-import org.shop.com.dto.OrderItemDto;
-import org.shop.com.entity.OrderEntity;
 import org.shop.com.entity.OrderItemEntity;
 import org.shop.com.entity.ProductEntity;
-import org.shop.com.exceptions.OrderItemAlreadyExistsException;
-import org.shop.com.repository.OrderItemJpaRepository;
-import org.shop.com.repository.OrderJpaRepository;
+import org.shop.com.exceptions.ProductNotFoundException;
+import org.shop.com.service.OrderItemService;
+import org.shop.com.service.ProductService;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -27,100 +21,56 @@ import static org.mockito.Mockito.*;
 class OrderItemServiceImplTest {
 
     @Mock
-    private OrderItemJpaRepository orderItemRepository;
-
-    @Mock
-    private OrderJpaRepository orderRepository;
-
-    @Mock
     private ProductService productService;
 
     @InjectMocks
     private OrderItemServiceImpl orderItemService;
 
     private OrderItemEntity orderItemEntity;
-    private OrderItemCreateDto orderItemCreateDto;
-    private long orderId = 1L;
-    private long productId = 2L;
-    private long orderItemId = 1L;
+    private ProductEntity productEntity;
+
+    private long productId = 1L;
+    private int quantity = 5;
 
     @BeforeEach
     void setUp() {
         orderItemEntity = new OrderItemEntity();
-        orderItemCreateDto = new OrderItemCreateDto(productId, 10, new BigDecimal("100"));
+        orderItemEntity.setProduct(new ProductEntity());
+        orderItemEntity.getProduct().setId(productId);
+        orderItemEntity.setQuantity(quantity);
+
+        productEntity = new ProductEntity();
+        productEntity.setId(productId);
+        productEntity.setPrice(new BigDecimal("19.99"));
     }
 
     @Test
-    void findAllByOrderId_WhenItemsExist_ShouldReturnNonEmptyListOfDtos() {
-        // Arrange
-        when(orderItemRepository.findByOrderId(orderId)).thenReturn(Arrays.asList(orderItemEntity));
+    void prepareOrderItem_WhenProductExists_ShouldSetPriceAtPurchaseCorrectly() {
+        // Подготовка
+        when(productService.findById(productId)).thenReturn(productEntity);
 
-        // Act
-        List<OrderItemDto> result = orderItemService.findAllByOrderId(orderId);
+        // Действие
+        OrderItemEntity result = orderItemService.prepareOrderItem(orderItemEntity);
 
-        // Assert
-        assertFalse(result.isEmpty(), "Result should not be empty");
-        verify(orderItemRepository).findByOrderId(orderId);
-    }
-
-    @Test
-    void findById_WhenItemExists_ShouldReturnOrderItem() {
-        // Arrange
-        when(orderItemRepository.findById(orderItemId)).thenReturn(Optional.of(orderItemEntity));
-
-        // Act
-        OrderItemEntity result = orderItemService.findById(orderItemId);
-
-        // Assert
-        assertNotNull(result, "The result should not be null");
-        verify(orderItemRepository).findById(orderItemId);
-    }
-
-    @Test
-    void create_WhenItemAlreadyExists_ShouldThrowOrderItemAlreadyExistsException() {
-        // Arrange
-        when(orderRepository.findById(orderId)).thenReturn(Optional.of(new OrderEntity()));
-        when(productService.findById(productId)).thenReturn(new ProductEntity());
-        when(orderItemRepository.findByOrderIdAndProductId(orderId, productId)).thenReturn(Optional.of(orderItemEntity));
-
-        // Act & Assert
-        assertThrows(OrderItemAlreadyExistsException.class,
-                () -> orderItemService.create(orderItemCreateDto, orderId),
-                "Should throw OrderItemAlreadyExistsException when order item already exists");
-
-        // Verify
-        verify(orderRepository).findById(orderId);
+        // Проверка
+        assertNotNull(result);
+        assertEquals(new BigDecimal("99.95"), result.getPriceAtPurchase());
         verify(productService).findById(productId);
-        verify(orderItemRepository).findByOrderIdAndProductId(orderId, productId);
-        verify(orderItemRepository, never()).save(any(OrderItemEntity.class));
     }
 
     @Test
-    void updateQuantity_WhenItemExists_ShouldUpdateQuantityAndReturnUpdatedDto() {
-        // Arrange
-        Integer newQuantity = 5;
-        orderItemEntity.setId(orderItemId);
-        orderItemEntity.setQuantity(3);
-        orderItemEntity.setPriceAtPurchase(new BigDecimal("100"));
-        when(orderItemRepository.findById(orderItemId)).thenReturn(Optional.of(orderItemEntity));
-        when(orderItemRepository.save(any(OrderItemEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
+    void prepareOrderItem_WhenProductDoesNotExist_ShouldThrowException() {
+        // Подготовка
+        when(productService.findById(productId)).thenReturn(null);
 
-        OrderItemDto result = orderItemService.updateQuantity(orderItemId, newQuantity);
+        // Действие и проверка
+        ProductNotFoundException thrown = assertThrows(
+                ProductNotFoundException.class,
+                () -> orderItemService.prepareOrderItem(orderItemEntity),
+                "Ожидалось, что метод prepareOrderItem выбросит исключение, но этого не произошло"
+        );
 
-        assertNotNull(result, "The result DTO should not be null");
-        assertEquals(newQuantity, result.getQuantity(), "The quantity should be updated in the result DTO");
-        verify(orderItemRepository).findById(orderItemId);
-        verify(orderItemRepository).save(any(OrderItemEntity.class));
+        assertTrue(thrown.getMessage().contains("Product not found with ID: " + productId));
+        verify(productService).findById(productId);
     }
-
-    @Test
-    void delete_WhenItemExists_ShouldCallDeleteMethod() {
-        when(orderItemRepository.findById(orderItemId)).thenReturn(Optional.of(orderItemEntity));
-
-        orderItemService.delete(orderItemId);
-
-        verify(orderItemRepository).findById(orderItemId);
-        verify(orderItemRepository).delete(orderItemEntity);
-    }
-
 }

@@ -33,7 +33,6 @@ public class CartControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    //
     @Test
     public void testCreateOrUpdateCart() throws Exception {
         CartCreateDto cartCreateDto = new CartCreateDto(1L, Collections.emptyList());
@@ -71,7 +70,7 @@ public class CartControllerIntegrationTest {
         Long cartId = 1L;
 
         mockMvc.perform(delete("/v1/carts/{cartId}", cartId))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         Mockito.verify(cartService, Mockito.times(1)).delete(cartId);
     }

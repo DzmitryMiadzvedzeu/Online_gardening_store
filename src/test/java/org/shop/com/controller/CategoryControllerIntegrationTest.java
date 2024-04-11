@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
+import jakarta.transaction.Transactional;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,10 +45,10 @@ public class CategoryControllerIntegrationTest {
 
     @Test
     void getById_WhenCategoryExists_ShouldReturnCategory() throws Exception {
-        mockMvc.perform(get("/v1/categories/{id}", 5)
+        mockMvc.perform(get("/v1/categories/{id}", 4)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is(5)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is(4)));
     }
 
     @Test
@@ -73,17 +74,25 @@ public class CategoryControllerIntegrationTest {
 
     @Test
     void deleteCategory_WhenCategoryExists_ShouldDeleteCategory() throws Exception {
-        mockMvc.perform(delete("/v1/categories/{id}", 1)
+        mockMvc.perform(delete("/v1/categories/{id}", 5)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
-
     @Test
     void findCategoryByName_WhenCategoryExists_ShouldReturnCategory() throws Exception {
-        mockMvc.perform(get("/v1/categories/search?name=Test")
+        String categoryName = "Garden Shovels";
+
+        mockMvc.perform(get("/v1/categories/search?name=" + categoryName)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name", Matchers.is("Test")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name", Matchers.is(categoryName)));
+    }
+
+    @Test
+    void findCategoryByName_WhenCategoryDoesNotExist_ShouldReturnNotFound() throws Exception {
+        mockMvc.perform(get("/v1/categories/search?name=Test")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }
 

@@ -11,7 +11,7 @@ public interface CartService {
 
     CartDto getByUserId(Long userId);
 
-    void delete(Long userId, Long productId);
+    void delete(Long productId);
 
     List<CartDto> getAll();
 }

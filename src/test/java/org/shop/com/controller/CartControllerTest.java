@@ -63,7 +63,8 @@ public class CartControllerTest {
 
         ResponseEntity<Void> response = cartController.delete(cartId);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+
     }
 
     @Test

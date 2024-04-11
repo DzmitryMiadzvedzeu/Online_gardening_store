@@ -1,5 +1,6 @@
 package org.shop.com.service;
 
+import org.shop.com.mapper.CategoryMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,11 +19,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+
 @ExtendWith(SpringExtension.class)
 class CategoryServiceImplTest {
 
     @Mock
     private CategoryJpaRepository categoryRepository;
+
+    @Mock
+    private CategoryMapper categoryMapper;
+
     @InjectMocks
     private CategoryServiceImpl categoryService;
 
@@ -63,12 +69,21 @@ class CategoryServiceImplTest {
     void createCategory_ShouldCreateAndReturnCategory() {
         CategoryCreateDTO createDTO = new CategoryCreateDTO();
         createDTO.setName("Test Category");
-        CategoryEntity category = new CategoryEntity();
-        when(categoryRepository.save(any(CategoryEntity.class))).thenReturn(category);
+
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setId(1L); // Устанавливаем ID для возвращаемого entity
+        categoryEntity.setName("Test Category");
+
+        when(categoryMapper.createDtoToEntity(any(CategoryCreateDTO.class))).thenReturn(categoryEntity);
+        when(categoryRepository.save(any(CategoryEntity.class))).thenReturn(categoryEntity);
 
         CategoryEntity result = categoryService.create(createDTO);
 
         assertNotNull(result);
+        assertEquals(1L, result.getId()); // Проверяем, что ID установлен
+        assertEquals("Test Category", result.getName()); // и имя корректно
+
+        verify(categoryMapper).createDtoToEntity(any(CategoryCreateDTO.class));
         verify(categoryRepository).save(any(CategoryEntity.class));
     }
 

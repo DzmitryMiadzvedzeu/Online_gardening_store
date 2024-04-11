@@ -22,7 +22,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -57,8 +57,8 @@ class UserControllerTest {
 
     @Test
     void registerUser_ShouldCreateUser() throws Exception {
-        UserCreateDto createDto = new UserCreateDto("Test",
-                "test@example.com", "1234567890", "hash");
+        UserCreateDto createDto = new UserCreateDto("Test", "test@example.com",
+                "1234567890", "hash");
         UserEntity userEntity = new UserEntity();
         userEntity.setId(1L);
         userEntity.setName("Test");
@@ -66,15 +66,21 @@ class UserControllerTest {
         userEntity.setPhoneNumber("1234567890");
         userEntity.setPasswordHash("hash");
         userEntity.setRole(UserRole.USER);
+
         UserDto userDto = new UserDto(1L, "Test", "test@example.com",
                 "1234567890", "hash", UserRole.USER);
-        given(userService.create(any(UserCreateDto.class))).willReturn(userEntity);
-        given(userMapper.toDto(any(UserEntity.class))).willReturn(userDto);
+
+        lenient().when(userMapper.userCreateDtoToEntity(any())).thenReturn(userEntity);
+        lenient().when(userService.create(any())).thenReturn(userEntity);
+        lenient().when(userMapper.toDto(any())).thenReturn(userDto);
+
         mockMvc.perform(post("/v1/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createDto)))
                 .andExpect(status().isCreated())
                 .andExpect(content().json(objectMapper.writeValueAsString(userDto)));
+
+        verify(userService).create(eq(userEntity));  // Проверка вызова создания пользователя
     }
 
     @Test

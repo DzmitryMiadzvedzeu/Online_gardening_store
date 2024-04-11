@@ -1,17 +1,21 @@
 package org.shop.com.controller;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.shop.com.dto.CartCreateDto;
 import org.shop.com.dto.CartDto;
+import org.shop.com.security.JwtService;
 import org.shop.com.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,12 +32,24 @@ public class CartControllerIntegrationTest {
     private MockMvc mockMvc;
 
     @MockBean
+    private JwtService jwtService;
+
+    @MockBean
     private CartService cartService;
 
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
+    @BeforeEach
+    public void setup() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    }
+
     @Test
+    @WithMockUser(username="admin",roles={"ADMIN"})
     public void testCreateOrUpdateCart() throws Exception {
         CartCreateDto cartCreateDto = new CartCreateDto(1L, Collections.emptyList());
         CartDto expectedCartDto = new CartDto(1L, 1L);
@@ -51,6 +67,7 @@ public class CartControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username="admin",roles={"ADMIN"})
     public void testGetCartByUserId() throws Exception {
         Long userId = 1L;
         CartDto expectedCartDto = new CartDto(1L, userId);
@@ -66,6 +83,7 @@ public class CartControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username="admin",roles={"ADMIN"})
     public void testDeleteCart() throws Exception {
         Long cartId = 1L;
 
@@ -76,6 +94,7 @@ public class CartControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username="admin",roles={"ADMIN"})
     public void testGetAllCarts() throws Exception {
         CartDto cartDto1 = new CartDto(1L, 1L);
         CartDto cartDto2 = new CartDto(2L, 2L);

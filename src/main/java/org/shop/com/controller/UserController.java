@@ -14,6 +14,9 @@ import org.shop.com.entity.UserEntity;
 import org.shop.com.exceptions.UserInvalidArgumentException;
 import org.shop.com.exceptions.UserNotFoundException;
 import org.shop.com.mapper.UserMapper;
+import org.shop.com.security.AuthenticationService;
+import org.shop.com.security.model.JwtAuthenticationResponse;
+import org.shop.com.security.model.SignInRequest;
 import org.shop.com.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +34,8 @@ public class UserController {
     private final UserService userService;
 
     private final UserMapper userMapper;
+
+    private final AuthenticationService authenticationService;
 
     @Operation(summary = "List all users")
     @GetMapping
@@ -72,6 +77,11 @@ public class UserController {
         log.debug("Attempting to delete user with ID: {}", id);
         userService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/login")
+    public JwtAuthenticationResponse login(@RequestBody SignInRequest request) {
+        return authenticationService.authenticate(request);
     }
 
     @ExceptionHandler(UserNotFoundException.class)

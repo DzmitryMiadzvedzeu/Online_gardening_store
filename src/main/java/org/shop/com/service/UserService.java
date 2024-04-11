@@ -2,6 +2,7 @@ package org.shop.com.service;
 
 import org.shop.com.dto.UserCreateDto;
 import org.shop.com.entity.UserEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface UserService {
     void delete(long id);
 
     Long getCurrentUserId();
+
+    UserEntity getByLogin(String login);
 }

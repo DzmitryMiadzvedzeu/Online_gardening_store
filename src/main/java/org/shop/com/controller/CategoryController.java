@@ -19,13 +19,13 @@ import org.shop.com.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 
 // http://localhost:8080/v1/categories
 
@@ -46,6 +46,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "404", description = "Categories not found",
                     content = @Content)
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> getAll() {
         log.debug("Received request to list all categories");

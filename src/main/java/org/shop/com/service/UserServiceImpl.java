@@ -5,9 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.UserCreateDto;
 import org.shop.com.entity.UserEntity;
 import org.shop.com.exceptions.UserNotFoundException;
-import org.shop.com.mapper.UserMapper;
 import org.shop.com.repository.UserJpaRepository;
-//import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -23,13 +22,13 @@ public class UserServiceImpl implements UserService {
 
     private final UserJpaRepository repository;
 
-    //    private final PasswordEncoder passwordEncoder;
-    private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserEntity create(UserEntity userEntity) {
         log.debug("Attempting to create a user: {}", userEntity.getEmail());
-//        String hashedPassword = passwordEncoder.encode();
+        String hashedPassword = passwordEncoder.encode(userEntity.getPasswordHash());
+        userEntity.setPasswordHash(hashedPassword);
         return repository.save(userEntity);
     }
 
@@ -76,5 +75,11 @@ public class UserServiceImpl implements UserService {
     public Long getCurrentUserId() {
         // логика доставания айди юзера из контекста аутентиффикации
         return defaultUserId;
+    }
+
+    @Override
+    public UserEntity getByLogin(String login) {
+        return repository.findByName(login)
+                .orElseThrow(() -> new UserNotFoundException("User with login {} not found " + login));
     }
 }

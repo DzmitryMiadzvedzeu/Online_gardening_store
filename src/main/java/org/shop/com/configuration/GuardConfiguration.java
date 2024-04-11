@@ -18,11 +18,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableMethodSecurity // Это для того что бы работали @PreAuthorize в контроллерах
+@EnableMethodSecurity
 @EnableWebSecurity
 public class GuardConfiguration {
 
-    //Набор ендпоинтов, что бы работал сваггер при включенном секьюрити
+    //Набор ендпоинтов
     private static final String[] SWAGGER = {
             "/v2/api-docs",
             "/v3/api-docs/**",
@@ -46,7 +46,7 @@ public class GuardConfiguration {
             "/csrf"
     };
 
-    //Фильтр, который будет проверять авторизацию по токену
+    //Фильтр проверки авторизации по токену
     @Autowired
     private JwtAuthenticationFilter authenticationFilter;
 
@@ -61,16 +61,13 @@ public class GuardConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        //разрешаем все для сваггера
-                        .requestMatchers(SWAGGER).permitAll()
+                        .requestMatchers(SWAGGER).permitAll() //разрешаем все для сваггера
                         //разрешаем логиниться пользователю для получения токена
                         .requestMatchers("/v1/users/login").permitAll()
                         //разрешаем регистрировать нового пользователя без токенов и паролей
                         .requestMatchers("/v1/users/register").permitAll()
-                        //все остальные запросы должны быть либо через базовую либо с токеном
-                        .anyRequest().authenticated())
-                //включаем возможность базовой аутентификации
-                .httpBasic(Customizer.withDefaults())
+                        .anyRequest().authenticated()) //другие запросы через базовую или с токеном
+                .httpBasic(Customizer.withDefaults())//возможность базовой аутентификации
                 //отключаем хранение состояния между запросами
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 //включаем работу с токеном

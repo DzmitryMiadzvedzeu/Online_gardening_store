@@ -46,7 +46,6 @@ public class CategoryController {
             @ApiResponse(responseCode = "404", description = "Categories not found",
                     content = @Content)
     })
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> getAll() {
         log.debug("Received request to list all categories");
@@ -77,6 +76,7 @@ public class CategoryController {
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = CategoryDTO.class))})
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<CategoryDTO> create(@Valid @RequestBody CategoryCreateDTO createDTO) {
         log.debug("Received request to create a new category: {}", createDTO.getName());
@@ -94,6 +94,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "404", description = "Category not found",
                     content = @Content)
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDTO> edit(@PathVariable Long id, @Valid @RequestBody CategoryCreateDTO categoryDTO) {
         log.debug("Received request to edit category with ID: {}", id);
@@ -107,6 +108,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "200", description = "Category deleted"),
             @ApiResponse(responseCode = "404", description = "Category not found")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("Received request to delete category with ID: {}", id);

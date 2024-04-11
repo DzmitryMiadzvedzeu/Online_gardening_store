@@ -1,5 +1,9 @@
 package org.shop.com.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.FavoritesCreateDto;
@@ -23,9 +27,15 @@ import java.util.stream.Collectors;
 public class FavoritesController {
 
     private final FavoritesService favoritesService;
+
     private final FavoritesMapper favoritesMapper;
+
     private final UserService userService;
 
+    @Operation(summary = "Add a product to favorites", description = "Adds a specified product to the current user's favorites.")
+    @ApiResponse(responseCode = "201", description = "Product added to favorites",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = FavoritesDto.class)))
     @PostMapping
     public ResponseEntity<FavoritesDto> addProductToFavorites
             (@RequestBody FavoritesCreateDto favoritesCreateDto) {
@@ -38,6 +48,10 @@ public class FavoritesController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Get all favorites", description = "Retrieves all favorites for the current user.")
+    @ApiResponse(responseCode = "200", description = "Favorites retrieved successfully",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = FavoritesDto[].class)))
     @GetMapping
     public ResponseEntity<List<FavoritesDto>> getAll() {
         log.debug("Getting all favorites for current user");
@@ -49,6 +63,8 @@ public class FavoritesController {
         return ResponseEntity.ok(favoritesDtos);
     }
 
+    @Operation(summary = "Remove a product from favorites", description = "Removes a specified product from the current user's favorites.")
+    @ApiResponse(responseCode = "204", description = "Product removed from favorites")
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> removeProductFromFavorites(@PathVariable Long productId) {
         log.debug("Removing product {} from favorites for current user", productId);

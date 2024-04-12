@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.shop.com.dto.FavoritesCreateDto;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 // http://localhost:8080/v1/favorites
+@Tag(name = "Favorites Controller", description = "Controller for favorites operations")
 @Slf4j
 @RestController
 @RequestMapping("/v1/favorites")
